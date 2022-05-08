@@ -1,3 +1,6 @@
 msh.o
 *.o
 **.o
+test.c
+test
+.DS_Store

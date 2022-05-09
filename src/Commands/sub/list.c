@@ -57,10 +57,12 @@ void msh_command_sub_list_getFirst() {
     } else if (word_compare(type, "Type&Value") == 0) {
         
     } else {
-        printf("Error: Option \"%s\" not found! Please only enter \"Index\", \"Type\" or \"Type&Value\".\n", type);
+        msh_error("");
+        printf("Option \"%s\" not found! Please only enter \"Index\", \"Type\" or \"Type&Value\".\n", type);
     }
     freeWordArr(wordArr, Teile);
 }
 void msh_command_sub_list_len() {
-    sprintf(msh_Wert, "%d", list_node_len(msh_getListByName(msh_Wert)));
+    // sprintf(msh_Wert, "%d", list_node_len(msh_getListByName(msh_Wert)));
+    intToString(list_node_len(msh_getListByName(msh_Wert)), msh_Wert);
 }

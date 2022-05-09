@@ -85,7 +85,8 @@ void msh_command_main_list_remove() {
     char * value = wordArr[2];
     list toMod = msh_getListByName(name);
     if (toMod == NULL) {
-        printf("Error: List \"%s\" not found!\n", name);
+        msh_error("");
+        printf("List \"%s\" not found!\n", name);
         freeWordArr(wordArr, Teile);
         return;
     }
@@ -213,7 +214,7 @@ void msh_command_main_list_print() {
 }
 void msh_command_main_list_delete() {
     if (LIST_SPEICHER == NULL) {
-        puts("Error: There are no lists!\n");
+        msh_error("Error: There are no lists!\n");
         return;
     }
     if ( word_compare( ((list) LIST_SPEICHER->el)->next->el , msh_Wert) == 0 ) {
@@ -234,7 +235,7 @@ void msh_command_main_list_delete() {
 }
 void msh_command_main_list_print_SPEICHER() {
     if (LIST_SPEICHER == NULL) {
-        puts("Error: There are no lists!\n");
+        msh_error("There are no lists!\n");
         return;
     }
     while (LIST_SPEICHER != NULL) {

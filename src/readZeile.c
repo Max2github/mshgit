@@ -217,7 +217,7 @@ int msh_readZeile(char Zeile[]) {
             int index = msh_get_Var(var_el[0], var);
             // printf("    %d : %s\n", index, var);
             if (index == -1) {
-                perror("Object does not exist!");
+                msh_error("Object does not exist!");
                 return 1;
             } else {
                 char newWert[VAR_MAXCHAR];
@@ -235,7 +235,10 @@ int msh_readZeile(char Zeile[]) {
                             int newSize = word_len(var_el[1]) + word_len(msh_Wert) + 2;
                             // printf("    %d\n", newSize);
                             echtEl[eEt] = realloc(echtEl[eEt], newSize * sizeof(char));
-                            sprintf(echtEl[eEt], "%s:%s", var_el[1], msh_Wert);
+                            word_copy(echtEl[eEt], var_el[1]);
+                            word_add(echtEl[eEt], ":");
+                            word_add(echtEl[eEt], msh_Wert);
+                            // sprintf(echtEl[eEt], "%s:%s", var_el[1], msh_Wert);
                             // printf("    %s\n", echtEl[eEt]);
                             break;
                         };
@@ -255,7 +258,8 @@ int msh_readZeile(char Zeile[]) {
                             };
                         };
                         if (alle == word_len(var_el[0])-1) {
-                            sprintf(echtEl[eEt], "%s", var_el[1]);
+                            word_copy(echtEl[eEt], var_el[1]);
+                            // sprintf(echtEl[eEt], "%s", var_el[1]);
                             break;
                         };
                     };

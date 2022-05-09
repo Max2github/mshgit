@@ -15,7 +15,7 @@ void msh_command_sub_pointto() {
     int n = 0;
     while (msh_Wert[i] != '\\' || msh_Wert[i+1] != 'p') {
         if (n > 32) {
-            printf("Error: could not find finishing \"\\p\"!\n");
+            msh_error("Could not find finishing \"\\p\"!\n");
             replaceS(msh_Wert, "pointTo()", "");
             break;
         }
@@ -27,7 +27,10 @@ void msh_command_sub_pointto() {
     // printf("var_name: %s\n", var_name);
     char repl[35];
     char search[44];
-    sprintf(search, "pointTo()%s\\p", var_name);
+    // sprintf(search, "pointTo()%s\\p", var_name);
+    word_copy(search, "pointTo()");
+    word_add(search, var_name);
+    word_add(search, "\\p");
     word_copy(repl, var_name);
     repl[n] = '(';
     repl[n+1] = ')';
@@ -51,7 +54,8 @@ void msh_command_sub_array() {
         if (find(msh_Wert, "&/arr//") == 0) {
             word_add(msh_Wert, "&/arr//&/null//");
         } else if (word_compare(msh_Wert, "&/arr//") == 0) {
-            sprintf(msh_Wert, "&/null//&/arr//&/null//");
+            // sprintf(msh_Wert, "&/null//&/arr//&/null//");
+            word_copy(msh_Wert, "&/null//&/arr//&/null//");
         } else {
             replaceS(msh_Wert, "&/arr//&/arr//", "&/arr//&/null//&/arr//");
         };
@@ -79,9 +83,11 @@ void msh_command_sub_random() {
     int Komma = atoi(zahlen[2]);
     double r = Random(MIN, MAX, Komma);
     char sr[VAR_MAXCHAR];
-    char selector[] = "%.Kommalf";
-    replaceS(selector, "Komma", zahlen[2]);
-    sprintf(sr, selector, r);
+    // char selector[] = "%.Kommalf";
+    // replaceS(selector, "Komma", zahlen[2]);
+    // sprintf(sr, selector, r);
+    doubleToString(r, atoi(zahlen[2]), sr);
+
     word_copy(msh_Wert, sr);
     // printf("%s\n", msh_Wert);
     freeWordArr(zahlen, zahlTeile);
@@ -90,7 +96,9 @@ void msh_command_sub_randomin() {
     char ** elems;
     int elemTeile = split(msh_Wert, "&/arr//", &elems);
     char arr[] = "0&/arr//%d&/arr//0";
-    sprintf(arr, "0&/arr//%d&/arr//0", elemTeile);
+    // sprintf(arr, "0&/arr//%d&/arr//0", elemTeile);
+    word_copy(arr, "0&/arr//");
+    intToString(elemTeile, arr+8); // not very beautifull
     word_copy(msh_Wert, arr);
     msh_command_sub_random();
     word_copy(msh_Wert, elems[atoi(msh_Wert)]);
@@ -108,8 +116,10 @@ void msh_command_sub_math() {
     // Kommastellen mit 0 am Ende entfernen
     char newWert[VAR_MAXCHAR];
     char repl[VAR_MAXCHAR];
-    sprintf(newWert, "%lf", erg);
-    sprintf(repl, "%d", (int) erg);
+    // sprintf(newWert, "%lf", erg);
+    doubleToString(erg, 6, newWert);
+    // printf(repl, "%d", (int) erg);
+    intToString((int) erg, repl);
     replaceS(newWert, repl, "");
     int last = word_len(newWert)-1;
     while (newWert[last] == '0') {
@@ -119,11 +129,16 @@ void msh_command_sub_math() {
     if (last == 0) {
         newWert[0] = '\0';
     };
-    sprintf(msh_Wert, "%s%s", repl, newWert);
+    // sprintf(msh_Wert, "%s%s", repl, newWert);
+    word_copy(msh_Wert, repl);
+    word_add(msh_Wert, ",");
+    word_add(msh_Wert, newWert);
 };
 void msh_command_sub_row() {
-    sprintf(msh_Wert, "%d", msh_Script_it);
+    // sprintf(msh_Wert, "%d", msh_Script_it);
+    intToString(msh_Script_it, msh_Wert);
 };
 void msh_command_sub_ascii() {
-    sprintf(msh_Wert, "%d", (int) msh_Wert[0]);
+    // sprintf(msh_Wert, "%d", (int) msh_Wert[0]);
+    intToString((int) msh_Wert[0], msh_Wert);
 };

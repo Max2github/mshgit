@@ -137,7 +137,9 @@ int msh_fillObj(char Code[]) {
 
             word_copy(newCode, Code);
             char newSPL[34];
-            sprintf(newSPL, ".%s", key_value[0]);
+            newSPL[0] = '.';
+            word_copy(newSPL, key_value[0]);
+            // sprintf(newSPL, ".%s", key_value[0]);
             word_add(spl, newSPL);
 
             // überprüfen, ob diese Element aufgerufen wird (auch wenn es selber ein Objekt ist)
@@ -193,8 +195,14 @@ int msh_fillObj(char Code[]) {
         continue;
 
         ARR: for (int a = 0; a < arrTeile+1; a++) {
-            sprintf(newCode, "%s", Code);
-            sprintf(spl, "%s.%d()", VAR_NAMES[i], a);
+            word_copy(newCode, Code);
+            word_copy(spl, VAR_NAMES[i]);
+            word_add(spl, ".");
+            char tempA[intLen(a)+1];
+            intToString(a, tempA);
+            word_add(spl, tempA);
+            // sprintf(newCode, "%s", Code);
+            // sprintf(spl, "%s.%d()", VAR_NAMES[i], a);
 
             if (find(newCode, spl) == 0) {
                 continue;

@@ -8,9 +8,10 @@ msh is programmining language I build myself. As I made it before I knew anythin
 # Building
 
 Currently supports only macos or linux as host.
+
 On macos you can also cross-compile :)
 Type "make help" for more information.
-Here a list of what is working until now:
+Here a list of what is working until now (if the host is a macos_arm64):
 - windows_x86_32 | ✔
 - windows_x86_64 | ✔
 - macos_i386     | x

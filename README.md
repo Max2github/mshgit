@@ -9,17 +9,6 @@ msh is programmining language I build myself. As I made it before I knew anythin
 
 Currently supports only macos or linux as host.
 
-On macos you can also cross-compile :)
-Type "make help" for more information.
-Here a list of what is working until now (if the host is a macos_arm64):
-- windows_x86_32 | ✔
-- windows_x86_64 | ✔
-- macos_i386     | x
-- linux_arm      | x
-- macos_x86_64   | x
-- linux_x86_64   | x
-- linux_x86_32   | x
-
 Copy the source code / clone it.
 Check the files (mshgit/dependencies) "std.h" and "all.c". In "all.c" replace: 
 
@@ -49,4 +38,24 @@ To include it in a c / c++ file:
 To build it afterwards:
 
     gcc -o <your executable> <your code files> mshgit/msh.o
+
+## Cross-compiling
+On macos you can also cross-compile :)
+Type "make help" for more information.
+Here a list of what is working until now (if the host is a macos_arm64):
+- windows_x86_32 | ✔
+- windows_x86_64 | ✔
+- macos_i386     | x
+- linux_arm      | x
+- macos_x86_64   | x
+- linux_x86_64   | x
+- linux_x86_32   | x
+
+A list of tools you need to install first:
+
+
+`
+brew install x86_64-elf-gcc (linux x86_64 & x86_32)
+sudo port install mingw-w64 (windows x86_64 & x86_32)
+`
 

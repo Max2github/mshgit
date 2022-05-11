@@ -6,6 +6,19 @@ msh is programmining language I build myself. As I made it before I knew anythin
 (e.g. You should never create the variable "y" -> the command "display" will not work afterwards)
 
 # Building
+
+Currently supports only macos or linux as host.
+On macos you can also cross-compile :)
+Type "make help" for more information.
+Here a list of what is working until now:
+- windows_x86_32 | ✔
+- windows_x86_64 | ✔
+- macos_i386     | x
+- linux_arm      | x
+- macos_x86_64   | x
+- linux_x86_64   | x
+- linux_x86_32   | x
+
 Copy the source code / clone it.
 Check the files (mshgit/dependencies) "std.h" and "all.c". In "all.c" replace: 
 

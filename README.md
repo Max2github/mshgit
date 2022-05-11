@@ -21,11 +21,11 @@ by their correct paths. If you do not have them get them (they are also from me)
 In std.h: You can change the <stdio.h> and the <stdlib.h> libraris with other libraries, as long as you provide the functions needed.
 
 ## -) .o File: 
-    Go to the directory in Terminal:
+Go to the directory in Terminal:
 
     cd <Your Path>/mshgit
 
-    and build it:
+and build it:
 
     make objlib
 

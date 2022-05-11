@@ -53,9 +53,14 @@ Here a list of what is working until now (if the host is a macos_arm64):
 
 A list of tools you need to install first:
 
+linux x86_64 & x86_32:
 
-`
-brew install x86_64-elf-gcc (linux x86_64 & x86_32)
-sudo port install mingw-w64 (windows x86_64 & x86_32)
-`
+    brew install x86_64-elf-gcc
+
+windows x86_64 & x86_32:
+
+    sudo port install mingw-w64
+
+
+
 

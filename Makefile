@@ -75,20 +75,39 @@ CLD_FLAGS += --target=i386-apple-darwin-macho
 	ifneq (,$(filter $(target),linux_arm linux_arm64 linux_aarch64 linux_m1))
 # macos: brew : aarch64-elf-gcc, aarch64-elf-binutils 
 		ifeq ($(host), macos)
-#CC = aarch64-elf-gcc
-#LD = aarch64-elf-ld
-CC = gcc
-LD = ld
-CFLAGS += --target=arm64-unknown-linux-gnu
-LD_FLAGS += --target=arm64-unknown-linux-gnu
+#CC = aarch64-none-elf-gcc
+CC = aarch64-unknown-linux-gnu-gcc
+LD = aarch64-unknown-linux-gnu-ld
+#LD = aarch64-elf-gcc
+#LD_FLAGS += -L /usr/local/lib/aarch64-elf/bfd-plugins #-ldep #/usr/local/lib/gcc/aarch64-elf/12.1.0
+#LD = arm-linux-gnueabihf-ld
+#LD = aarch64-none-elf-ld
+#CC = arm-none-eabi-gcc
+#LD = arm-none-eabi-ld
+#CFLAGS += -march=armv8-a
+#CFLAGS += --sysroot=/Applications/Arm/
+#LD_FLAGS += --sysroot=/Applications/Arm/
+#LD_FLAGS += --sysroot=/Applications/Arm/aarch64-none-elf/
+#CFLAGS += -Os -flto -ffunction-sections -fdata-sections
+#LD_FLAGS += -L /Applications/ARM/bin/../lib/gcc/arm-none-eabi/11.2.1/
+#LD_FLAGS += -L /Applications/ARM/bin/../lib/gcc/aarch64-none-elf/11.2.1/ -lgcc -lcaf_single -lgcov $(wildcard /usr/local/lib/gcc/aarch64-elf/12.1.0/*.o)
+#LD_FLAGS += -L. -L /Applications/Arm/aarch64-none-elf/lib -Map=$(EXE_BASE_NAME).map #-T /Applications/Arm/aarch64-none-elf/ldscripts/gcc.ld
+#LD_FLAGS += --sysroot=/Applications/Arm/aarch64-none-elf/ -L /Applications/Arm/aarch64-none-elf/lib -lc --specs=/Applications/Arm/aarch64-none-elf/lib/rdimon.specs
+#LD_FLAGS += -L /Applications/Arm/aarch64-unknown-linux-gnu/lib/gcc/aarch64-unknown-linux-gnu/8.3.0
+#LD_FLAGS += --sysroot=/Applications/Arm/aarch64-unknown-linux-gnu/aarch64-unknown-linux-gnu/sysroot -L /Applications/Arm/aarch64-unknown-linux-gnu/aarch64-unknown-linux-gnu/sysroot/lib -lgcc_s
+#CC = clang
+#LD = ld
+#CFLAGS += --target=arm64-unknown-linux-elf
+#LD_FLAGS += --target=arm64-unknown-linux-elf
 		endif
 	endif
 	ifneq (,$(filter $(target),linux_i386 linux_x86_32 linux_x86))
 # macos : brew : x86_64-elf-binutils, x86_64-elf-gcc, x86_64-elf-gdb
 		ifeq ($(host), macos)
+#export PATH="/usr/local/Cellar/x86_64-elf-binutils/2.38/bin/:/usr/local/Cellar/x86_64-elf-gcc/12.1.0/bin/:/usr/local/Cellar/i386-elf-gdb/12.1/bin:$PATH"
 CC = x86_64-elf-gcc
 LD = x86_64-elf-ld
-CFLAGS += -m32
+CFLAGS += -m32 #--sysroot=/usr/local/Cellar/x86_64-elf-gcc/12.1.0/
 LD_FLAGS += -m elf_i386
 		endif
 	endif
@@ -117,8 +136,12 @@ CLD_FLAGS += --target=x86_64-apple-darwin-macho
 		ifeq ($(host), macos)
 CC = x86_64-elf-gcc
 LD = x86_64-elf-ld
-CFLAGS += -m64
-LD_FLAGS += -m elf_x86_64
+CFLAGS += -m64 -I lib/gcc/x86_64-elf/12.1.0/include
+LD_FLAGS += -m elf_x86_64 -L lib/gcc/x86_64-elf/12.1.0
+#CC = clang
+#LD = ld
+#CFLAGS += --target=x86_64-elf
+#LD_FLAGS += --target=x86_64-elf
 		endif
 	endif
 endif
@@ -127,7 +150,7 @@ endif
 
 all: 
 
-objlib: LD_FLAGS = -r
+objlib: LD_FLAGS += -r
 objlib: EXE = $(EXE_BASE_NAME).o
 objlib: $(EXE_BASE_NAME).o
 

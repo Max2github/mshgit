@@ -7,3 +7,8 @@ The homepage is:
 
     https://thinkski.github.io/osx-arm-linux-toolchains/
 
+Important: Before cross-compiling you must add the compiler to your PATH:
+
+    export PATH=$PATH:/Applications/ARM/aarch64-unknown-linux-gnu/bin/
+
+

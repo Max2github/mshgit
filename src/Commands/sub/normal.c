@@ -105,9 +105,10 @@ void msh_command_sub_randomin() {
     freeWordArr(elems, elemTeile);
 };
 void msh_command_sub_input() {
-    printf("%s", msh_Wert);
+    // printf("%s", msh_Wert);
+    msh_command_main_print(); // will print msh_Wert
     // scanf(" %s", msh_Wert);
-    fgets(msh_Wert, VAR_MAXCHAR-1, stdin);
+    fgets(msh_Wert, VAR_MAXCHAR-1, stdin); // this could cause problems
     replaceS(msh_Wert, "\n", "");
     replaceS(msh_Wert, "=", "&/equals//");
 };

@@ -22,11 +22,14 @@ ifdef dep
 # set to none - this may generate an error
 DEP := 
 DEP_DIR := none
+DEP_OBJ := $(wildcard $(OBJ_DIR)/lib/*.o)
 	endif
 else
 DEP_DIR := dependencies
 # all source files of the dependencies / own libraries
 DEP := $(wildcard $(DEP_DIR)/*.c)
+# all .o files of the dependencies / own libraries
+DEP_OBJ := $(DEP:$(DEP_DIR)/%.c=$(OBJ_DIR)/lib/%.o)
 endif
 
 #paths to other src directories
@@ -47,9 +50,6 @@ SRC := $(SRC_NORM) $(SRC_COM)
 # all object files
 OBJ := $(SRC_NORM:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
 		$(SRC_COM:$(COM_SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-
-# all .o files of the dependencies / own libraries
-DEP_OBJ := $(DEP:$(DEP_DIR)/%.c=$(OBJ_DIR)/lib/%.o)
 
 # check for host / target
 # windows_x86_32 | ✔

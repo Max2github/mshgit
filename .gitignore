@@ -2,4 +2,10 @@
 msh.o
 .DS_Store
 test*
-o/**
+
+# unnecessairy .o files
+o/lib/*.o
+o/dependencies/*.o
+o/lib/*.o
+o/main/*.o
+o/*.o

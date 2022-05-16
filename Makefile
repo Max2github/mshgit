@@ -18,11 +18,11 @@ OBJ_DIR := o
 INC_DIR := include
 
 ifdef dep
-	ifeq (dep, false)
+	ifeq ($(dep), false)
 # set to none - this may generate an error
 DEP := 
 DEP_DIR := none
-DEP_OBJ := $(wildcard $(OBJ_DIR)/lib/*.o)
+DEP_OBJ := $(OBJ_DIR)/lib/all.o
 	endif
 else
 DEP_DIR := dependencies

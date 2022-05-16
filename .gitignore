@@ -8,4 +8,5 @@ o/lib/*.o
 o/dependencies/*.o
 o/lib/*.o
 o/main/*.o
+o/sub/*.o
 o/*.o

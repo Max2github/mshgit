@@ -119,7 +119,7 @@ void msh_command_sub_math() {
     char repl[VAR_MAXCHAR];
     // sprintf(newWert, "%lf", erg);
     doubleToString(erg, 6, newWert);
-    // printf(repl, "%d", (int) erg);
+    // sprintf(repl, "%d", (int) erg);
     intToString((int) erg, repl);
     replaceS(newWert, repl, "");
     int last = word_len(newWert)-1;
@@ -132,8 +132,10 @@ void msh_command_sub_math() {
     };
     // sprintf(msh_Wert, "%s%s", repl, newWert);
     word_copy(msh_Wert, repl);
-    word_add(msh_Wert, ",");
-    word_add(msh_Wert, newWert);
+    if (word_len(newWert) > 0) {
+        word_add(msh_Wert, ".");
+        word_add(msh_Wert, newWert);
+    }
 };
 void msh_command_sub_row() {
     // sprintf(msh_Wert, "%d", msh_Script_it);

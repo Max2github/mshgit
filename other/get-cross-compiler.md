@@ -9,6 +9,6 @@ The homepage is:
 
 Important: Before cross-compiling you must add the compiler to your PATH:
 
-    export PATH=$PATH:/Applications/ARM/aarch64-unknown-linux-gnu/bin/
+    export PATH=$PATH:/<your path>/aarch64-unknown-linux-gnu/bin/
 
 

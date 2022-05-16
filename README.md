@@ -56,13 +56,14 @@ To build it afterwards:
 On macos (intel (x86) && m1 (arm64)) you can also cross-compile :)
 Type "make help" for more information.
 Here a list of what is working until now (if the host is a macos_arm64):
-- windows_x86_32 | ✔
-- windows_x86_64 | ✔
-- macos_i386     | x
-- linux_arm      | ✔
-- macos_x86_64   | x
-- linux_x86_64   | ✔
-- linux_x86_32   | x
+- `windows_x86_32 | ✔`
+- `windows_x86_64 | ✔`
+- `macos_i386     | x`
+- `macos_x86_64   | x`
+- `linux_arm      | ✔`
+- `macos_x86_64   | x`
+- `linux_x86_64   | ✔`
+- `linux_x86_32   | x`
 
 A list of tools you need to install first:
 

@@ -53,7 +53,7 @@ To build it afterwards:
     gcc -o <your executable> <your code files> mshgit/msh.o
 
 ## Cross-compiling
-On macos (intel (x86) && m1 (arm64)) you can also cross-compile :)
+On macos (intel (x86) && m1 (arm64)) you can also cross-compile :)<br>
 Type "make help" for more information.
 Here a list of what is working until now (if the host is a macos_arm64):
 - `windows_x86_32 | ✔`

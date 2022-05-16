@@ -133,7 +133,6 @@ void msh_command_sub_math() {
     // sprintf(msh_Wert, "%s%s", repl, newWert);
     word_copy(msh_Wert, repl);
     if (word_len(newWert) > 0) {
-        word_add(msh_Wert, ".");
         word_add(msh_Wert, newWert);
     }
 };

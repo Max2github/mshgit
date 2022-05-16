@@ -1,3 +1,6 @@
+# Errors while cross-compiling
+When an executable (e.g aarch64-unknown-linux-gnu-gcc) is invoked for the first time, you may get the message that this App cannot be opened. If this is the case, search for the executable in the directory of toolchain. -> Right click -> "Open". Now your mac should ask you if you really want to open this -> Hit "Open". You can close the terminal / kill the program after that. Now it should work.
+
 # aarch64-unknown-linux-gnu
 Download the toolchain from here: (Direct Link)
 
@@ -10,5 +13,22 @@ The homepage is:
 Important: Before cross-compiling you must add the compiler to your PATH:
 
     export PATH=$PATH:/<your path>/aarch64-unknown-linux-gnu/bin/
+
+# x86_64-unknown-linux-gnu
+Download the toolchain from here: (Direct Link)
+
+    https://github.com/fafk/mac-to-linux-cross-toolchain/releases/download/v1.0/x86_64-unknown-linux-gnu.tar.gz
+
+The homepage is:
+
+    https://github.com/fafk/mac-to-linux-cross-toolchain
+
+Important: Before cross-compiling you must add the compiler to your PATH:
+
+    export PATH=$PATH:/<your path>/x86_64-unknown-linux-gnu/bin/
+
+(For me it is:
+    export PATH=$PATH:/Users/max/Downloads/x86_64-unknown-linux-gnu/bin/
+)
 
 

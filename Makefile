@@ -114,8 +114,10 @@ LD = aarch64-unknown-linux-gnu-ld
 # macos : brew : x86_64-elf-binutils, x86_64-elf-gcc, x86_64-elf-gdb
 		ifeq ($(host), macos)
 #export PATH="/usr/local/Cellar/x86_64-elf-binutils/2.38/bin/:/usr/local/Cellar/x86_64-elf-gcc/12.1.0/bin/:/usr/local/Cellar/i386-elf-gdb/12.1/bin:$PATH"
-CC = x86_64-elf-gcc
-LD = x86_64-elf-ld
+#CC = x86_64-elf-gcc
+#LD = x86_64-elf-ld
+CC = x86_64-unknown-linux-gnu-gcc
+LD = x86_64-unknown-linux-gnu-ld
 CFLAGS += -m32 #--sysroot=/usr/local/Cellar/x86_64-elf-gcc/12.1.0/
 LD_FLAGS += -m elf_i386
 		endif
@@ -143,10 +145,12 @@ CLD_FLAGS += --target=x86_64-apple-darwin-macho
 	endif
 	ifeq ($(target), linux_x86_64)
 		ifeq ($(host), macos)
-CC = x86_64-elf-gcc
-LD = x86_64-elf-ld
-CFLAGS += -m64 -I lib/gcc/x86_64-elf/12.1.0/include
-LD_FLAGS += -m elf_x86_64 -L lib/gcc/x86_64-elf/12.1.0
+CC = x86_64-unknown-linux-gnu-gcc
+LD = x86_64-unknown-linux-gnu-ld
+#CC = x86_64-elf-gcc
+#LD = x86_64-elf-ld
+#CFLAGS += -m64 -I lib/gcc/x86_64-elf/12.1.0/include
+#LD_FLAGS += -m elf_x86_64 -L lib/gcc/x86_64-elf/12.1.0
 #CC = clang
 #LD = ld
 #CFLAGS += --target=x86_64-elf

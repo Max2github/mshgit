@@ -6,7 +6,6 @@ msh is programmining language I build myself. As I made it before I knew anythin
 (e.g. You should never create the variable "y" -> the command "display" will not work afterwards)
 
 # Building
-
 Currently supports only macos or linux as host.
 
 Copy the source code / clone it.
@@ -18,7 +17,21 @@ Check the files (mshgit/dependencies) "std.h" and "all.c". In "all.c" replace:
 
 by their correct paths. If you do not have them get them (they are also from me).
 
-In std.h: You can change the <stdio.h> and the <stdlib.h> libraries with other libraries, as long as you provide the functions needed.
+As of now you cannot get the libraries needed, so I uploaded some precompiled .o files in the folder "other"
+
+    other/<your system>/all.o
+
+Copy this file and put it in the folder:
+
+    o/lib/
+
+Now you should build with the follwing option:
+
+    make dep=false ...
+
+If it still doesn't work try removing the all.c file from the dependency directory (then make should not find it).
+
+In std.h: You can change the <stdio.h> and the <stdlib.h> libraries with other libraries, as long as you provide the functions needed. For the moment this feature will not be possible, because the libraries also need <stdio.h> and <stdlib.h>.
 
 ## -) .o File: 
 Go to the directory in Terminal:
@@ -45,11 +58,11 @@ Type "make help" for more information.
 Here a list of what is working until now (if the host is a macos_arm64):
 - windows_x86_32 | ✔
 - windows_x86_64 | ✔
-- macos_i386     | x
-- linux_arm      | x
-- macos_x86_64   | x
-- linux_x86_64   | x
-- linux_x86_32   | x
+- macos_i386 $~~~~~~~$ | x
+- linux_arm $~~~~~~~~~~~$ | ✔
+- macos_x86_64 $~~$ | x
+- linux_x86_64 $~~~~~$ | x
+- linux_x86_32 $~~~~~$ | x
 
 A list of tools you need to install first:
 
@@ -60,6 +73,8 @@ linux x86_64 & x86_32:
 windows x86_64 & x86_32:
 
     sudo port install mingw-w64
+
+For the other tools check out the file others/get-cross-compiler.md.
 
 
 

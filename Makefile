@@ -14,9 +14,20 @@ EXE = $(EXE_BASE_NAME)
 
 
 SRC_DIR := src
-DEP_DIR := dependencies
 OBJ_DIR := o
 INC_DIR := include
+
+ifdef dep
+	ifeq (dep, false)
+# set to none - this may generate an error
+DEP := 
+DEP_DIR := none
+	endif
+else
+DEP_DIR := dependencies
+# all source files of the dependencies / own libraries
+DEP := $(wildcard $(DEP_DIR)/*.c)
+endif
 
 #paths to other src directories
 COM_SRC_DIR := $(SRC_DIR)/Commands
@@ -37,8 +48,6 @@ SRC := $(SRC_NORM) $(SRC_COM)
 OBJ := $(SRC_NORM:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
 		$(SRC_COM:$(COM_SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-# all source files of the dependencies / own libraries
-DEP := $(wildcard $(DEP_DIR)/*.c)
 # all .o files of the dependencies / own libraries
 DEP_OBJ := $(DEP:$(DEP_DIR)/%.c=$(OBJ_DIR)/lib/%.o)
 

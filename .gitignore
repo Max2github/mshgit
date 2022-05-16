@@ -1,3 +1,5 @@
-**.o
+#**.o
+msh.o
 .DS_Store
 test*
+o/**

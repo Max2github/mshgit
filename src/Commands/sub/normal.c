@@ -108,7 +108,11 @@ void msh_command_sub_input() {
     // printf("%s", msh_Wert);
     msh_command_main_print(); // will print msh_Wert
     // scanf(" %s", msh_Wert);
-    fgets(msh_Wert, VAR_MAXCHAR-1, stdin); // this could cause problems
+    // fgets(msh_Wert, VAR_MAXCHAR-1, stdin); // this could cause problems
+    // char * temp; size_t len = 0;
+    // getline(&temp, &len, stdin); word_copy(msh_Wert, temp); free(temp);
+    char * wertP = msh_Wert;
+    while(*wertP != '\n') { *wertP = getchar(); wertP++; }
     replaceS(msh_Wert, "\n", "");
     replaceS(msh_Wert, "=", "&/equals//");
 };

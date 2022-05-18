@@ -1,6 +1,10 @@
 #pragma once
 #include "../dependencies/list.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // msh-functions
 int msh_push_Var(char value[], char name[]); // 62
 int msh_get_Var(char name[], char saveto[]); // 86
@@ -57,3 +61,7 @@ int msh_readZeile(char Zeile[]); // 483
 int msh_readScript(char Script[]); // 662
 int msh_readFunc(char Script[]); // 676
 int msh_readFile(char filename[]); // 688
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int find(const char text[], const char search[]);
 int findIndex(const char text[], const char search[], int * saveto);
 int findWords(const int found[], int size, int searchNumber, int wordsFound, int words[][2]);
@@ -28,3 +32,7 @@ void doubleToString(float zahl, int afterpoint, char * saveto);
 
 unsigned int word_len_until(const char * word, const char * search);
 const char * word_copy_until(char * dest, const char * word, const char * search);
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,6 +1,10 @@
 #pragma once
 #include <stdarg.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum list_types {
     Char, Integer, Float, Double, String, // primitive Variables
     Char_pointer, Integer_pointer, Float_pointer, Double_pointer, // pointer
@@ -92,3 +96,7 @@ void list_swap_element(list_element_pointer a, list_element_pointer b);
 int list_sort_compare(sort_key keyword, int eins, int zwei);
 void list_sort_size_to_first(list head, sort_key keyword);
 void list_sort(list head, sort_key keyword);
+
+#ifdef __cplusplus
+}
+#endif

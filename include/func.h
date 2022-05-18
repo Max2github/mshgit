@@ -1,6 +1,10 @@
 #pragma once
 #include "../dependencies/superstring.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // extern s_arr FUNC_SPEICHER; //= NULL; // stores all funcs and their nam
 // extern s_arr FUNC_NAMES; // = NULL; // stores the names of the funcs
 struct FUNC_ONE_STACK {
@@ -37,3 +41,7 @@ superstring msh_func_get_code(const char name[]) ; // returns the code / content
 
 // This is basically the main-function in this file
 void msh_func_call(const char * name); // executes a func (including setting up stack, handling arguments, ...)
+
+#ifdef __cplusplus
+}
+#endif

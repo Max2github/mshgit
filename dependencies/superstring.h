@@ -14,6 +14,10 @@
  *      -) one node of an s_arr
  * */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // one s_element saves a char and how often it occurs at this position
 // -> "lll" will be saved as c = 'l', anzahl = 3
 // like an Array in C, a superstring is only a pointer to the first element
@@ -92,3 +96,7 @@ superstring s_replace(superstring text, const superstring search, const superstr
 superstring s_replaceStr(superstring text, char * search, char * repl);
 superstring s_replaceFirst(superstring text, const superstring search, const superstring repl); // !!! CHANGE !!! -> ugly
 superstring s_replaceFirstStr(superstring text, char * search, char * repl);
+
+#ifdef __cplusplus
+}
+#endif

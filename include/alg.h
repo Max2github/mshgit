@@ -1,8 +1,13 @@
 #pragma once
 #include "../include/func.h"
 #include "../dependencies/list.h"
+
 #ifndef NULL
 #define NULL 0
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 // init func-vars
@@ -28,3 +33,7 @@ extern int msh_STOP;
 extern int msh_Script_it;
 
 void msh_error(const char *);
+
+#ifdef __cplusplus
+}
+#endif

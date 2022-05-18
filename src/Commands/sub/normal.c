@@ -112,7 +112,7 @@ void msh_command_sub_input() {
     // char * temp; size_t len = 0;
     // getline(&temp, &len, stdin); word_copy(msh_Wert, temp); free(temp);
     char * wertP = msh_Wert;
-    while(*wertP != '\n') { *wertP = getchar(); wertP++; }
+    while(*wertP != '\n') { *wertP = getc(stdin); wertP++; }
     replaceS(msh_Wert, "\n", "");
     replaceS(msh_Wert, "=", "&/equals//");
 };

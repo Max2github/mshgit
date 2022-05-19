@@ -114,6 +114,7 @@ void msh_command_sub_input() {
     char * wertP = msh_Wert;
     char now = 'n';
     while(now != '\n') { *wertP = getchar(); now = *wertP; wertP++; }
+    *wertP = '\0';
     replaceS(msh_Wert, "\n", "");
     replaceS(msh_Wert, "=", "&/equals//");
 };

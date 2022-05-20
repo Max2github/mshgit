@@ -137,7 +137,7 @@ int msh_fillObj(char Code[]) {
 
             word_copy(newCode, Code);
             char newSPL[34];
-            newSPL[0] = '.';
+            word_copy(newSPL, ".");
             word_add(newSPL, key_value[0]);
             // sprintf(newSPL, ".%s", key_value[0]);
             word_add(spl, newSPL);

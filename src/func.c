@@ -163,7 +163,7 @@ void msh_func_call(const char * name) {
     new_s_arr nameANDargs = s_split(fullname, spl); // 0: name, 1: args + ')'
     s_free(spl);
     if (s_arr_len(nameANDargs) > 1) {
-        superstring name = s_arr_getEl(nameANDargs, 0); // just for a better understanding
+        // superstring name = s_arr_getEl(nameANDargs, 0); // just for a better understanding
         superstring args = s_arr_getEl(nameANDargs, 1);
         s_removeChar(args, s_len(args)-1); // remove the ')' at the end
 

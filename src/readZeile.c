@@ -208,8 +208,19 @@ int msh_readZeile(char Zeile[]) {
         if (find(array[0], ".") != 0) {
             local_found = 0; // not supported yet
         } else {
-            msh_func_update_local_Var(array[0], msh_Wert, stack_id);
-            local_found = 1;
+            char nowhere[VAR_MAXCHAR];
+            // if not found as local var, but as global var
+            // not found local + found global -> priority: global
+            if (msh_func_get_local_Var_index(array[0], stack_id) == -1 && msh_get_Var(array[0], nowhere) != -1) {
+                local_found = 0;
+            } 
+            // not found local + not found global -> priority: local
+            // found local + not found global -> priority: local
+            // found local + found global -> priority: local
+            else {
+                msh_func_update_local_Var(array[0], msh_Wert, stack_id);
+                local_found = 1;
+            }
         }
     } 
     if (arrTeile > 0 && local_found == 0) {

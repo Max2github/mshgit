@@ -201,13 +201,18 @@ int msh_readZeile(char Zeile[]) {
             msh_command_main_list_print_SPEICHER();
         };
 
-    if (IN_FUNC && arrTeile > 0) {
+    int local_found = 0;
+    if (IN_FUNC == 1 && arrTeile > 0) {
+        local_found = 1;
         int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
         if (find(array[0], ".") != 0) {
-            
+            local_found = 0; // not supported yet
+        } else {
+            msh_func_update_local_Var(array[0], msh_Wert, stack_id);
+            local_found = 1;
         }
-        msh_func_update_local_Var(array[0], msh_Wert, stack_id);
-    } else if (arrTeile > 0) {
+    } 
+    if (arrTeile > 0 && local_found == 0) {
         if (find(array[0], ".") != 0) {
             // printf("%s = %s\n", array[0], msh_Wert);
             char ** var_el;

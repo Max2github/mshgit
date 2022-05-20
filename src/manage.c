@@ -130,7 +130,7 @@ int msh_fillObj(char Code[]) {
         if (ALT == 0) {
             u = ALT_index;
         }
-        for (u = u; u < objTeile+1; u++) {
+        for (;u < objTeile+1; u++) {
             char ** key_value;
             int keyvalAnzahl = split(obj_Teile[u], ":", &key_value);
             // printWordArr(key_value, 1);
@@ -138,7 +138,7 @@ int msh_fillObj(char Code[]) {
             word_copy(newCode, Code);
             char newSPL[34];
             newSPL[0] = '.';
-            word_copy(newSPL, key_value[0]);
+            word_add(newSPL, key_value[0]);
             // sprintf(newSPL, ".%s", key_value[0]);
             word_add(spl, newSPL);
 

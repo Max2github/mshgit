@@ -56,3 +56,30 @@ void msh_fill_local_Var(char Code[]) {
         temp = temp->next;
     };
 }
+
+void msh_fill_local_Obj(char Code[]) {
+    int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
+
+    s_arr temp = *msh_func_get_func_var_names_pointer(stack_id);
+    while (temp != NULL) {
+        superstring name = temp->element;
+        
+        int name_len = s_len(name);
+        char spl[name_len+3];
+        s_stringify(name, spl);
+
+        char var[VAR_MAXCHAR];
+        s_stringify(msh_func_get_local_Var(spl, stack_id), var);
+
+        spl[name_len] = '(';
+        spl[name_len+1] = ')';
+        spl[name_len+2] = '\0';
+
+        char newCode[VAR_MAXCHAR];
+        word_copy(newCode, Code);
+        replaceS(newCode, spl, var);
+        word_copy(Code, newCode);
+
+        temp = temp->next;
+    };
+}

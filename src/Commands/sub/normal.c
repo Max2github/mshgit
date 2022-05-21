@@ -123,11 +123,15 @@ void msh_command_sub_math() {
     // Kommastellen mit 0 am Ende entfernen
     char newWert[VAR_MAXCHAR];
     char repl[VAR_MAXCHAR];
-    // sprintf(newWert, "%lf", erg);
+    int neg = 0;
+    if (erg < 0) {
+        erg *= -1;
+        neg = 1;
+    }
     doubleToString(erg, 6, newWert);
-    // sprintf(repl, "%d", (int) erg);
     intToString((int) erg, repl);
     replaceS(newWert, repl, "");
+    // printf("%s\n", newWert);
     int last = word_len(newWert)-1;
     while (newWert[last] == '0') {
         newWert[last] = '\0';
@@ -137,9 +141,14 @@ void msh_command_sub_math() {
         newWert[0] = '\0';
     };
     // sprintf(msh_Wert, "%s%s", repl, newWert);
-    word_copy(msh_Wert, repl);
+    char * nWertP = msh_Wert;
+    if (neg) {
+        word_copy(msh_Wert, "-");
+        nWertP++;
+    }
+    word_copy(nWertP, repl);
     if (word_len(newWert) > 0) {
-        word_add(msh_Wert, newWert);
+        word_add(nWertP, newWert);
     }
 };
 void msh_command_sub_row() {

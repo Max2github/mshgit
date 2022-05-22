@@ -201,6 +201,7 @@ int msh_fillObj(char Code[]) {
             char tempA[intLen(a)+1];
             intToString(a, tempA);
             word_add(spl, tempA);
+            word_add(spl, "()");
             // sprintf(newCode, "%s", Code);
             // sprintf(spl, "%s.%d()", VAR_NAMES[i], a);
 

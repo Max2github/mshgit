@@ -14,7 +14,7 @@
 
 int main(int argvc, char * argv[]) {
     if (argvc > 2) { puts("!! Error : too many arguments"); return 1; }
-    if(word_compare(argv[1], "help") == 0) {  }
+    // if(word_compare(argv[1], "help") == 0) {  }
     char path[200];
     GetCurrentDir(path, 200);
     word_add(path, "/");

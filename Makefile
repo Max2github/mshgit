@@ -12,6 +12,11 @@ LD_FLAGS =  # flags for linker
 EXE_BASE_NAME := msh
 EXE = $(EXE_BASE_NAME)
 
+MEMCHECK = leaks
+MEMCHECK_FLAGS = --atExit -- 
+# MEMCHECK = valgrind
+# MEMCHECK_FLAGS = 
+
 
 SRC_DIR := src
 OBJ_DIR := o
@@ -68,6 +73,10 @@ OBJ := $(SRC_NORM:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
 ifdef host
 	ifneq (,$(filter $(host),macos_i386 macos_x86_32 macos_x86 macos_arm macos_arm64 macos_aarch64 macos_m1 macos_x86_64))
 host = macos
+	endif
+	ifneq (,$(filter $(host),linux_i386 linux_x86_32 linux_x86 linux_arm linux_arm64 linux_aarch64 linux_m1 linux_x86_64))
+MEMCHECK = valgrind
+MEMCHECK_FLAGS = 
 	endif
 else
 host = macos
@@ -159,12 +168,22 @@ LD = x86_64-unknown-linux-gnu-ld
 	endif
 endif
 
+ifdef memcheck
+MEMCHECK_FILE := $(memcheck)
+else 
+MEMCHECK_FILE := 
+endif
+
 .PHONY: all # default: do nothing
 .PHONY: clean cleanshell cleanexe_win cleanexe cleanbuild # cleaning up
 .PHONY: objlib shell # building
 .PHONY: help # help screen
+.PHONY: memcheck_shell # testing
 
 all: 
+
+memcheck_shell:
+	$(MEMCHECK) $(MEMCHECK_FLAGS) ./$(EXE) $(MEMCHECK_FILE)
 
 objlib: LD_FLAGS += -r
 objlib: EXE = $(EXE_BASE_NAME).o

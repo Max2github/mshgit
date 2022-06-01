@@ -159,7 +159,10 @@ LD = x86_64-unknown-linux-gnu-ld
 	endif
 endif
 
-.PHONY: all clean objlib help shell
+.PHONY: all # default: do nothing
+.PHONY: clean cleanshell cleanexe_win cleanexe cleanbuild # cleaning up
+.PHONY: objlib shell # building
+.PHONY: help # help screen
 
 all: 
 
@@ -167,10 +170,17 @@ objlib: LD_FLAGS += -r
 objlib: EXE = $(EXE_BASE_NAME).o
 objlib: $(EXE_BASE_NAME).o
 
+shell: LD = $(CC)
+shell: $(EXE)
+
+shell.o: shell.c
+	$(CC) $(CFLAGS) -o $@ $^
+
 $(EXE_BASE_NAME).o: $(OBJ) $(DEP_OBJ)
 	$(LD) $(LD_FLAGS) -o $(EXE) $+
 
-$(EXE): $(OBJ) $(DEP_OBJ)
+# not needed - now for shell
+$(EXE): $(OBJ) $(DEP_OBJ) shell.o
 	$(LD) $(LD_FLAGS) -o $@ $+
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
@@ -195,6 +205,18 @@ clean:
 	rm -f .DS_Store
 	rm $(OBJ)
 	rm $(DEP_OBJ)
+
+cleanshell: clean
+	rm shell.o
+
+cleanexe_win:
+	rm $(EXE).exe
+
+cleanexe:
+	rm $(EXE)
+
+cleanbuild:
+	rm $(EXE_BASE_NAME).o
 
 help:
 	echo "\

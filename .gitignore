@@ -10,3 +10,5 @@ o/lib/*.o
 o/main/*.o
 o/sub/*.o
 o/*.o
+msh
+shell.o

@@ -1,5 +1,12 @@
+# Cross-compiling
+This is only for MacOS.
+
 # Errors while cross-compiling
 When an executable (e.g aarch64-unknown-linux-gnu-gcc) is invoked for the first time, you may get the message that this App cannot be opened. If this is the case, search for the executable in the directory of toolchain. -> Right click -> "Open". Now your mac should ask you if you really want to open this -> Hit "Open". You can close the terminal / kill the program after that. Now it should work.
+
+## windows x86_64 & x86_32:
+
+    sudo port install mingw-w64
 
 # aarch64-unknown-linux-gnu
 Download the toolchain from here: (Direct Link)

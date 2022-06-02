@@ -5,6 +5,18 @@ msh is programmining language I build myself. As I made it before I knew anythin
 
 (e.g. You should never create the variable "y" -> the command "display" will not work afterwards)
 
+# Installing
+msh can be installed via homebrew.
+Add the formulas:
+
+    brew tap Max2github/msh
+
+and install:
+
+    brew install msh
+
+Alternatively you can also just download the executable (see releases -> Shell program).
+
 # Building
 Currently supports only macos or linux as host.
 
@@ -65,13 +77,16 @@ Here a list of what is working until now (if the host is a macos_arm64):
 - `linux_x86_64   | ✔`
 - `linux_x86_32   | x`
 
-A list of tools you need to install first:
+If you have a m1 mac, but want to compile for macos_x86_64, 
+there is a little trick:
+- in Finder: Applications -> search for Terminal
+- duplicate the Terminal.app and rename the duplicate
+- right click on the duplicate -> Information
+-> set "open with rosetta"
+- open the duplicate and type "arch" -> Enter -> now it should respond "i386"
+- This duplicate Terminal.app is now on x86_64 and if you build the project there, it will build for macos_x86_64
 
-windows x86_64 & x86_32:
-
-    sudo port install mingw-w64
-
-For the other tools check out the file others/get-cross-compiler.md.
+For the cross-compiling tools check out the file [other/get-cross-compiler.md](other/get-cross-compiler.md).
 
 
 

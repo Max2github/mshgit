@@ -12,3 +12,4 @@ o/sub/*.o
 o/*.o
 msh
 shell.o
+msh.exe

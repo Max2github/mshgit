@@ -200,7 +200,7 @@ $(EXE_BASE_NAME).o: $(OBJ) $(DEP_OBJ)
 
 # not needed - now for shell
 $(EXE): $(OBJ) $(DEP_OBJ) shell.o
-	$(LD) $(LD_FLAGS) -o $@ $+
+	$(LD) $(LD_FLAGS) -o $@ $^
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -o $@ $^

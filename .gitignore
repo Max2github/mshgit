@@ -13,3 +13,4 @@ o/*.o
 msh
 shell.o
 msh.exe
+build/msh*

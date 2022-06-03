@@ -5,12 +5,38 @@
 # $+ ... all dependencies - including duplicates
 
 CC = gcc # compiler
-LD = ld # linker
+LD = gcc #ld # linker
 CFLAGS = -c -Wall #-std=c++20 # flags for compiler
 LD_FLAGS =  # flags for linker
 # executable / target file
 EXE_BASE_NAME := msh
 EXE = $(EXE_BASE_NAME)
+
+CROSS_CC_WIN_x86_32 := i686-w64-mingw32-gcc
+CROSS_CC_WIN_x86_64 := x86_64-w64-mingw32-gcc
+CROSS_CC_LINUX_x86_32 := x86_64-unknown-linux-gnu-gcc
+CROSS_CC_LINUX_x86_64 := x86_64-unknown-linux-gnu-gcc
+CROSS_CC_LINUX_ARM64 := aarch64-unknown-linux-gnu-gcc
+CROSS_CC_MAC_x86_64 := $(CC)
+CROSS_CC_MAC_ARM64 := $(CC)
+
+CROSS_LD_WIN_x86_32 := i686-w64-mingw32-ld
+CROSS_LD_WIN_x86_64 := x86_64-w64-mingw32-ld
+CROSS_LD_LINUX_x86_32 := x86_64-unknown-linux-gnu-ld
+CROSS_LD_LINUX_x86_64 := x86_64-unknown-linux-gnu-ld
+CROSS_LD_LINUX_ARM64 := aarch64-unknown-linux-gnu-ld
+CROSS_LD_MAC_x86_64 := $(LD)
+CROSS_LD_MAC_ARM64 := $(LD)
+
+EXE_BUILD_DIR := build
+
+EXE_RELEASE_MACOS_ARM64 := $(EXE_BUILD_DIR)/$(EXE_BASE_NAME)_mach-o_arm64
+EXE_RELEASE_MACOS_x86_64 := $(EXE_BUILD_DIR)/$(EXE_BASE_NAME)_mach-o_x86_64
+EXE_RELEASE_LINUX_ARM64 := $(EXE_BUILD_DIR)/$(EXE_BASE_NAME)_linux_arm64
+EXE_RELEASE_LINUX_x86_32 := $(EXE_BUILD_DIR)/$(EXE_BASE_NAME)_linux_x86_32
+EXE_RELEASE_LINUX_x86_64 := $(EXE_BUILD_DIR)/$(EXE_BASE_NAME)_linux_x86_64
+EXE_RELEASE_WINDOWS_x86_32 := $(EXE_BUILD_DIR)/$(EXE_BASE_NAME)_win_x86_32.exe
+EXE_RELEASE_WINDOWS_x86_64 := $(EXE_BUILD_DIR)/$(EXE_BASE_NAME)_win_x86_64.exe
 
 MEMCHECK = leaks
 MEMCHECK_FLAGS = --atExit -- 
@@ -71,8 +97,13 @@ OBJ := $(SRC_NORM:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
 #       |          ^~~~~~~~~
 # compilation terminated.
 ifdef host
-	ifneq (,$(filter $(host),macos_i386 macos_x86_32 macos_x86 macos_arm macos_arm64 macos_aarch64 macos_m1 macos_x86_64))
+	ifneq (,$(filter $(host),macos_i386 macos_x86_32 macos_x86 macos_x86_64))
 host = macos
+arch = x86_64
+	endif
+	ifneq (,$(filter $(host),macos_arm macos_arm64 macos_aarch64 macos_m1))
+host = macos
+arch = arm
 	endif
 	ifneq (,$(filter $(host),linux_i386 linux_x86_32 linux_x86 linux_arm linux_arm64 linux_aarch64 linux_m1 linux_x86_64))
 MEMCHECK = valgrind
@@ -94,8 +125,8 @@ CLD_FLAGS += --target=i386-apple-darwin-macho
 # macos: brew : aarch64-elf-gcc, aarch64-elf-binutils 
 		ifeq ($(host), macos)
 #CC = aarch64-none-elf-gcc
-CC = aarch64-unknown-linux-gnu-gcc
-LD = aarch64-unknown-linux-gnu-ld
+CC = $(CROSS_CC_LINUX_ARM64)
+LD = $(CROSS_LD_LINUX_ARM64)
 #LD = aarch64-elf-gcc
 #LD_FLAGS += -L /usr/local/lib/aarch64-elf/bfd-plugins #-ldep #/usr/local/lib/gcc/aarch64-elf/12.1.0
 #LD = arm-linux-gnueabihf-ld
@@ -125,8 +156,8 @@ LD = aarch64-unknown-linux-gnu-ld
 #export PATH="/usr/local/Cellar/x86_64-elf-binutils/2.38/bin/:/usr/local/Cellar/x86_64-elf-gcc/12.1.0/bin/:/usr/local/Cellar/i386-elf-gdb/12.1/bin:$PATH"
 #CC = x86_64-elf-gcc
 #LD = x86_64-elf-ld
-CC = x86_64-unknown-linux-gnu-gcc
-LD = x86_64-unknown-linux-gnu-ld
+CC = $(CROSS_CC_LINUX_x86_32)
+LD = $(CROSS_LD_LINUX_x86_32)
 CFLAGS += -m32 #--sysroot=/usr/local/Cellar/x86_64-elf-gcc/12.1.0/
 LD_FLAGS += -m elf_i386
 		endif
@@ -134,28 +165,28 @@ LD_FLAGS += -m elf_i386
 	ifneq (,$(filter $(target),windows_i386 windows_x86_32 windows_x86))
 # macos : macports : i686-w64-mingw32-gcc, x86_64-w64-mingw32-gcc
 		ifeq ($(host), macos)
-CC = i686-w64-mingw32-gcc
-LD = i686-w64-mingw32-ld
+CC = $(CROSS_CC_WIN_x86_32)
+LD = $(CROSS_LD_WIN_x86_32)
 		endif
 	endif
 	ifeq ($(target), windows_x86_64)
 		ifeq ($(host), macos)
-CC = x86_64-w64-mingw32-gcc
-LD = x86_64-w64-mingw32-ld
+CC = $(CROSS_CC_WIN_x86_64)
+LD = $(CROSS_LD_WIN_x86_64)
 		endif
 	endif
 	ifeq ($(target), macos_x86_64)
 		ifeq ($(host), macos)
-CC = gcc
-LD = ld
+CC = $(CROSS_CC_MAC_x86_64)
+LD = $(CROSS_CC_MAC_x86_64)
 CFLAGS += --target=x86_64-apple-darwin-macho
 CLD_FLAGS += --target=x86_64-apple-darwin-macho
 		endif
 	endif
 	ifeq ($(target), linux_x86_64)
 		ifeq ($(host), macos)
-CC = x86_64-unknown-linux-gnu-gcc
-LD = x86_64-unknown-linux-gnu-ld
+CC = $(CROSS_CC_LINUX_x86_64)
+LD = $(CROSS_LD_LINUX_x86_64)
 #CC = x86_64-elf-gcc
 #LD = x86_64-elf-ld
 #CFLAGS += -m64 -I lib/gcc/x86_64-elf/12.1.0/include
@@ -176,7 +207,7 @@ endif
 
 .PHONY: all # default: do nothing
 .PHONY: clean cleanshell cleanexe_win cleanexe cleanbuild # cleaning up
-.PHONY: objlib shell # building
+.PHONY: objlib shell release # building
 .PHONY: help # help screen
 .PHONY: memcheck_shell # testing
 
@@ -195,10 +226,52 @@ shell: $(EXE)
 shell.o: shell.c
 	$(CC) $(CFLAGS) -o $@ $^
 
+release:
+	mkdir build
+release: $(EXE_RELEASE_LINUX_ARM64) $(EXE_RELEASE_LINUX_x86_64)
+#release : $(EXE_RELEASE_LINUX_x86_32)
+#release: $(EXE_RELEASE_MACOS_ARM64)
+#release: $(EXE_RELEASE_MACOS_x86_64)
+release: $(EXE_RELEASE_WINDOWS_x86_32) $(EXE_RELEASE_WINDOWS_x86_64)
+release: $(EXE) # nativ -> in this case for macos
+
+# release
+$(EXE_RELEASE_LINUX_ARM64):
+	make target=linux_arm shell
+	mv $(EXE) $@
+	make cleanshell
+$(EXE_RELEASE_LINUX_x86_32):
+	make target=linux_x86_32 shell
+	mv $(EXE) $@
+	make cleanshell
+$(EXE_RELEASE_LINUX_x86_64):
+	make target=linux_x86_64 shell
+	mv $(EXE) $@
+	make cleanshell
+$(EXE_RELEASE_MACOS_ARM64):
+	make target=macos_arm shell
+	mv $(EXE) $@
+	make cleanshell
+$(EXE_RELEASE_MACOS_x86_64):
+	make target=macos_x86_64 shell
+	mv $(EXE) $@
+	make cleanshell
+$(EXE_RELEASE_WINDOWS_x86_32): EXE = $(EXE_BASE_NAME).exe
+$(EXE_RELEASE_WINDOWS_x86_32):
+	make target=windows_x86_32 shell
+	mv $(EXE) $@
+	make cleanshell
+$(EXE_RELEASE_WINDOWS_x86_64): EXE = $(EXE_BASE_NAME).exe
+$(EXE_RELEASE_WINDOWS_x86_64):
+	make target=windows_x86_64 shell
+	mv $(EXE) $@
+	make cleanshell
+
+# objlib
 $(EXE_BASE_NAME).o: $(OBJ) $(DEP_OBJ)
 	$(LD) $(LD_FLAGS) -o $(EXE) $+
 
-# not needed - now for shell
+# shell
 $(EXE): $(OBJ) $(DEP_OBJ) shell.o
 	$(LD) $(LD_FLAGS) -o $@ $^
 

@@ -224,6 +224,7 @@ int msh_Breaks(char Code[]) {
         for (int i = 0; i <= CodeTeile; i++) {
             msh_readZeile(Code_Teile[i]);
         };
+        freeWordArr(Code_Teile, CodeTeile);
         return 1;
     };
     freeWordArr(Code_Teile, CodeTeile);

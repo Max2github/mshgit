@@ -76,7 +76,7 @@ host = macos
 	endif
 	ifneq (,$(filter $(host),linux_i386 linux_x86_32 linux_x86 linux_arm linux_arm64 linux_aarch64 linux_m1 linux_x86_64))
 MEMCHECK = valgrind
-MEMCHECK_FLAGS = 
+MEMCHECK_FLAGS = --leak-check=full
 	endif
 else
 host = macos

@@ -88,55 +88,65 @@ OBJ := $(SRC_NORM:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o) \
 # macos_i386     | x
 # linux_arm      | x
 # macos_x86_64   | x
-# linux_x86_64   | x
+# linux_x86_64   | ✔
 # linux_x86_32   | x
 
-# x ... always (with clang it is always this way...) :
-# src/../dependencies/std.h:1:10: fatal error: stdio.h: No such file or directory
-#     1 | #include <stdio.h>
-#       |          ^~~~~~~~~
-# compilation terminated.
+HOST_OS = macos
+HOST_ARCH = arm
+
 ifdef host
 	ifneq (,$(filter $(host),macos_i386 macos_x86_32 macos_x86 macos_x86_64))
-host = macos
-arch = x86_64
+		HOST_OS = macos
+		HOST_ARCH = x86_64
 	endif
 	ifneq (,$(filter $(host),macos_arm macos_arm64 macos_aarch64 macos_m1))
-host = macos
-arch = arm
+		HOST_OS = macos
+		HOST_ARCH = arm
 	endif
-	ifneq (,$(filter $(host),linux_i386 linux_x86_32 linux_x86 linux_x86_64))
-MEMCHECK = valgrind
-MEMCHECK_FLAGS = --leak-check=full
-host = linux
-arch = arm
+	ifneq (,$(filter $(host),linux_i386 linux_x86_32 linux_x86))
+		MEMCHECK = valgrind
+		MEMCHECK_FLAGS = --leak-check=full
+		CROSS_CC_LINUX_x86_32 = gcc
+		CROSS_LD_LINUX_x86_32 = gcc
+		CROSS_CC_LINUX_x86_64 = x86_64-linux-gnu-gcc
+		CROSS_LD_LINUX_x86_64 = x86_64-linux-gnu-ld
+		HOST_OS = linux
+		HOST_ARCH = arm
+	endif
+	ifeq ($(host), linux_x86_64)
+		CROSS_CC_LINUX_x86_32 = gcc
+		CROSS_LD_LINUX_x86_32 = gcc
+		CROSS_CC_LINUX_x86_64 = gcc
+		CROSS_LD_LINUX_x86_64 = gcc
 	endif
 	ifneq (,$(filter $(host),linux_arm linux_arm64 linux_aarch64 linux_m1))
-MEMCHECK = valgrind
-MEMCHECK_FLAGS = --leak-check=full
-CROSS_CC_LINUX_x86_32 = x86_64-linux-gnux32-gcc
-CROSS_LD_LINUX_x86_32 = x86_64-linux-gnux32-gcc
-host = linux
-arch = arm
+		MEMCHECK = valgrind
+		MEMCHECK_FLAGS = --leak-check=full
+		CROSS_CC_LINUX_x86_32 = x86_64-linux-gnux32-gcc
+		CROSS_LD_LINUX_x86_32 = x86_64-linux-gnux32-ld
+		CROSS_CC_LINUX_x86_64 = x86_64-linux-gnu-gcc
+		CROSS_LD_LINUX_x86_64 = x86_64-linux-gnu-ld
+		CROSS_CC_LINUX_ARM64 = gcc
+		HOST_OS = linux
+		HOST_ARCH = arm
 	endif
-else
-host = macos
 endif
 ifdef target
 # filter: if $(host) matches one of the names
 # ifneq : is the result from filter not empty?
 	ifneq (,$(filter $(target),macos_i386 macos_x86_32 macos_x86))
-CC = gcc
-LD = ld
-CFLAGS += --target=i386-apple-darwin-macho
-CLD_FLAGS += --target=i386-apple-darwin-macho
+		CC = gcc
+		LD = ld
+		CFLAGS += --target=i386-apple-darwin-macho
+		CLD_FLAGS += --target=i386-apple-darwin-macho
 	endif
 	ifneq (,$(filter $(target),linux_arm linux_arm64 linux_aarch64 linux_m1))
 # macos: brew : aarch64-elf-gcc, aarch64-elf-binutils 
-		ifeq ($(host), macos)
+		ifneq (, $(filter $(HOST_OS), macos, linux))
+#ifeq ($(host), $(filter linux, macos))
 #CC = aarch64-none-elf-gcc
-CC = $(CROSS_CC_LINUX_ARM64)
-LD = $(CROSS_LD_LINUX_ARM64)
+			CC = $(CROSS_CC_LINUX_ARM64)
+			LD = $(CROSS_LD_LINUX_ARM64)
 #LD = aarch64-elf-gcc
 #LD_FLAGS += -L /usr/local/lib/aarch64-elf/bfd-plugins #-ldep #/usr/local/lib/gcc/aarch64-elf/12.1.0
 #LD = arm-linux-gnueabihf-ld
@@ -162,41 +172,41 @@ LD = $(CROSS_LD_LINUX_ARM64)
 	endif
 	ifneq (,$(filter $(target),linux_i386 linux_x86_32 linux_x86))
 # macos : brew : x86_64-elf-binutils, x86_64-elf-gcc, x86_64-elf-gdb
-		ifneq (, $(filter $(host), macos, linux))
+		ifneq (, $(filter $(HOST_OS), macos linux))
 #export PATH="/usr/local/Cellar/x86_64-elf-binutils/2.38/bin/:/usr/local/Cellar/x86_64-elf-gcc/12.1.0/bin/:/usr/local/Cellar/i386-elf-gdb/12.1/bin:$PATH"
 #CC = x86_64-elf-gcc
 #LD = x86_64-elf-ld
-CC = $(CROSS_CC_LINUX_x86_32)
-LD = $(CROSS_LD_LINUX_x86_32)
-#CFLAGS += -m32 #--sysroot=/usr/local/Cellar/x86_64-elf-gcc/12.1.0/
-#LD_FLAGS += -m elf_i386
+			CC = $(CROSS_CC_LINUX_x86_32)
+			LD = $(CROSS_LD_LINUX_x86_32)
+#CFLAGS += -m64 #--sysroot=/usr/local/Cellar/x86_64-elf-gcc/12.1.0/
+#LD_FLAGS += -m elf_x86_64
 		endif
 	endif
 	ifneq (,$(filter $(target),windows_i386 windows_x86_32 windows_x86))
 # macos : macports : i686-w64-mingw32-gcc, x86_64-w64-mingw32-gcc
-		ifeq ($(host), macos)
-CC = $(CROSS_CC_WIN_x86_32)
-LD = $(CROSS_LD_WIN_x86_32)
+		ifneq (, $(filter $(HOST_OS), macos linux))
+			CC = $(CROSS_CC_WIN_x86_32)
+			LD = $(CROSS_LD_WIN_x86_32)
 		endif
 	endif
 	ifeq ($(target), windows_x86_64)
-		ifeq ($(host), macos)
-CC = $(CROSS_CC_WIN_x86_64)
-LD = $(CROSS_LD_WIN_x86_64)
+		ifneq (, $(filter $(HOST_OS), macos linux))
+			CC = $(CROSS_CC_WIN_x86_64)
+			LD = $(CROSS_LD_WIN_x86_64)
 		endif
 	endif
 	ifeq ($(target), macos_x86_64)
-		ifeq ($(host), macos)
-CC = $(CROSS_CC_MAC_x86_64)
-LD = $(CROSS_CC_MAC_x86_64)
-CFLAGS += --target=x86_64-apple-darwin-macho
-CLD_FLAGS += --target=x86_64-apple-darwin-macho
+		ifeq ($(HOST_OS), macos)
+			CC = $(CROSS_CC_MAC_x86_64)
+			LD = $(CROSS_CC_MAC_x86_64)
+			CFLAGS += --target=x86_64-apple-darwin-macho
+			CLD_FLAGS += --target=x86_64-apple-darwin-macho
 		endif
 	endif
 	ifeq ($(target), linux_x86_64)
-		ifeq ($(host), macos)
-CC = $(CROSS_CC_LINUX_x86_64)
-LD = $(CROSS_LD_LINUX_x86_64)
+		ifneq (, $(filter $(HOST_OS), macos linux))
+			CC = $(CROSS_CC_LINUX_x86_64)
+			LD = $(CROSS_LD_LINUX_x86_64)
 #CC = x86_64-elf-gcc
 #LD = x86_64-elf-ld
 #CFLAGS += -m64 -I lib/gcc/x86_64-elf/12.1.0/include
@@ -209,10 +219,8 @@ LD = $(CROSS_LD_LINUX_x86_64)
 	endif
 endif
 
-ifdef memcheck
-MEMCHECK_FILE := $(memcheck)
-else 
-MEMCHECK_FILE := 
+ifndef file
+	file := 
 endif
 
 .PHONY: all # default: do nothing
@@ -224,7 +232,7 @@ endif
 all: 
 
 memcheck_shell:
-	$(MEMCHECK) $(MEMCHECK_FLAGS) ./$(EXE) $(MEMCHECK_FILE)
+	$(MEMCHECK) $(MEMCHECK_FLAGS) ./$(EXE) $(file)
 
 objlib: LD_FLAGS += -r
 objlib: EXE = $(EXE_BASE_NAME).o

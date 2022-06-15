@@ -67,15 +67,28 @@ To build it afterwards:
 ## Cross-compiling
 On macos (intel (x86) && m1 (arm64)) you can also cross-compile :)<br>
 Type "make help" for more information.
-Here a list of what is working until now (if the host is a macos_arm64):
+Here a list of what is working until now:
+
+### macos (arm64) (host)
+
 - `windows_x86_32 | ✔`
 - `windows_x86_64 | ✔`
 - `macos_i386     | x`
 - `macos_x86_64   | x`
 - `linux_arm      | ✔`
-- `macos_x86_64   | x`
+- `macos_x86_64   | x` (trick -> run terminal with rosetta)
 - `linux_x86_64   | ✔`
 - `linux_x86_32   | x`
+
+### linux (arm64) (host)
+
+- `windows_x86_32 | ✔`
+- `windows_x86_64 | ✔`
+- `macos_i386     | x`
+- `macos_x86_64   | x`
+- `macos_x86_64   | x` (trick -> run terminal with rosetta, see below)
+- `linux_x86_64   | ✔` (not tested yet)
+- `linux_x86_32   | ✔` (not tested yet)
 
 If you have a m1 mac, but want to compile for macos_x86_64, 
 there is a little trick:

@@ -105,9 +105,19 @@ arch = x86_64
 host = macos
 arch = arm
 	endif
-	ifneq (,$(filter $(host),linux_i386 linux_x86_32 linux_x86 linux_arm linux_arm64 linux_aarch64 linux_m1 linux_x86_64))
+	ifneq (,$(filter $(host),linux_i386 linux_x86_32 linux_x86 linux_x86_64))
 MEMCHECK = valgrind
 MEMCHECK_FLAGS = --leak-check=full
+host = linux
+arch = arm
+	endif
+	ifneq (,$(filter $(host),linux_arm linux_arm64 linux_aarch64 linux_m1))
+MEMCHECK = valgrind
+MEMCHECK_FLAGS = --leak-check=full
+CROSS_CC_LINUX_x86_32 = x86_64-linux-gnux32-gcc
+CROSS_LD_LINUX_x86_32 = x86_64-linux-gnux32-gcc
+host = linux
+arch = arm
 	endif
 else
 host = macos
@@ -152,14 +162,14 @@ LD = $(CROSS_LD_LINUX_ARM64)
 	endif
 	ifneq (,$(filter $(target),linux_i386 linux_x86_32 linux_x86))
 # macos : brew : x86_64-elf-binutils, x86_64-elf-gcc, x86_64-elf-gdb
-		ifeq ($(host), macos)
+		ifneq (, $(filter $(host), macos, linux))
 #export PATH="/usr/local/Cellar/x86_64-elf-binutils/2.38/bin/:/usr/local/Cellar/x86_64-elf-gcc/12.1.0/bin/:/usr/local/Cellar/i386-elf-gdb/12.1/bin:$PATH"
 #CC = x86_64-elf-gcc
 #LD = x86_64-elf-ld
 CC = $(CROSS_CC_LINUX_x86_32)
 LD = $(CROSS_LD_LINUX_x86_32)
-CFLAGS += -m32 #--sysroot=/usr/local/Cellar/x86_64-elf-gcc/12.1.0/
-LD_FLAGS += -m elf_i386
+#CFLAGS += -m32 #--sysroot=/usr/local/Cellar/x86_64-elf-gcc/12.1.0/
+#LD_FLAGS += -m elf_i386
 		endif
 	endif
 	ifneq (,$(filter $(target),windows_i386 windows_x86_32 windows_x86))

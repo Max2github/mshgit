@@ -15,6 +15,10 @@ and install:
 
     brew install msh
 
+Sometimes an error occors, saying that the xcode command line tools (CLI) are too old. Executing the command "softwareupdate ..." suggested by homebrew will make a softwareupdate of your system! Do not do this casually! Instead I recommend trying the command:
+
+    sudo xcode-select --install
+
 Alternatively you can also just download the executable (see releases -> Shell program).
 
 # Building

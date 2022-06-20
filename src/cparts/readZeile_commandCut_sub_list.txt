@@ -1,0 +1,3 @@
+replaceS(msh_Wert, "list-toString()", "");
+replaceS(msh_Wert, "list-Len()", "");
+replaceS(msh_Wert, "list-getFirst()", "");

@@ -63,33 +63,38 @@ int msh_readZeile(char Zeile[]) {
 
     // cut functions out of value
     // sub
-    replaceS(msh_Wert, "Array()", "");
+#include "cparts/readZeile_commandCut_sub.txt"
+    /* replaceS(msh_Wert, "Array()", "");
     replaceS(msh_Wert, "object()", "");
     replaceS(msh_Wert, "random()", "");
     replaceS(msh_Wert, "randomin()", "");
     replaceS(msh_Wert, "input()", "");
     replaceS(msh_Wert, "math()", "");
     replaceS(msh_Wert, "row()", "");
-    replaceS(msh_Wert, "Ascii()", "");
+    replaceS(msh_Wert, "Ascii()", ""); */
         // list
-        replaceS(msh_Wert, "list-toString()", "");
+        #include "cparts/readZeile_commandCut_sub_list.txt"
+        /* replaceS(msh_Wert, "list-toString()", "");
         replaceS(msh_Wert, "list-Len()", "");
-        replaceS(msh_Wert, "list-getFirst()", "");
+        replaceS(msh_Wert, "list-getFirst()", ""); */
     // main
-    replaceS(msh_Wert, "display()", "");
+    #include "cparts/readZeile_commandCut_main.txt"
+    /* replaceS(msh_Wert, "display()", "");
     replaceS(msh_Wert, "print()", "");
     replaceS(msh_Wert, "stop()", "");
     replaceS(msh_Wert, "del()", "");
     replaceS(msh_Wert, "call()", "");
-    replaceS(msh_Wert, "goto()", "");
+    replaceS(msh_Wert, "goto()", ""); */
         // list 
-        replaceS(msh_Wert, "list-add()", "");
+        #include "cparts/readZeile_commandCut_main_list.txt"
+        /* replaceS(msh_Wert, "list-add()", "");
         replaceS(msh_Wert, "list-remove()", "");
         replaceS(msh_Wert, "list-mod()", "");
         replaceS(msh_Wert, "list-Print()", "");
         replaceS(msh_Wert, "list-Del()", "");
-        replaceS(msh_Wert, "list-print-SPEICHER()", "");
+        replaceS(msh_Wert, "list-print-SPEICHER()", ""); */
     // printf("Wert: %s\n", msh_Wert);
+
 
     // pointer- / var- or fill-commands
     int found_pointTo = 0;
@@ -103,16 +108,21 @@ int msh_readZeile(char Zeile[]) {
     };
     // sub-commands
         // list
-        int found_list_toString = find(newZeile, "list-toString()");
+        #include "cparts/readZeile_commandFunc_sub_list.txt"
+/*         int found_list_toString = find(newZeile, "list-toString()");
         if (found_list_toString != 0) {
             msh_command_sub_list_toString();
         };
-        // list
         int found_list_len = find(newZeile, "list-Len()");
         if (found_list_len != 0) {
             msh_command_sub_list_len();
         };
-    int found_array = find(newZeile, "Array()");
+        int found_list_getFirst = find(newZeile, "list-getFirst()");
+        if (found_list_getFirst != 0) {
+            msh_command_sub_list_getFirst();
+        }; */
+    #include "cparts/readZeile_commandFunc_sub.txt"
+    /* int found_array = find(newZeile, "Array()");
     if (found_array != 0) {
         msh_command_sub_array();
     };
@@ -143,15 +153,11 @@ int msh_readZeile(char Zeile[]) {
     int found_math = find(newZeile, "math()");
     if (found_math != 0) {
         msh_command_sub_math();
-    };
-        // list
-        int found_list_getFirst = find(newZeile, "list-getFirst()");
-        if (found_list_getFirst != 0) {
-            msh_command_sub_list_getFirst();
-        };
+    }; */
 
     // main-commands
-    int found_display = find(newZeile, "display()");
+    #include "cparts/readZeile_commandFunc_main.txt"
+/*     int found_display = find(newZeile, "display()");
     if (found_display != 0) {
         msh_command_main_display();
     };
@@ -174,9 +180,10 @@ int msh_readZeile(char Zeile[]) {
     int found_goto = find(newZeile, "goto()");
     if (found_goto != 0) {
         msh_command_main_goto();
-    };
+    }; */
         // list 
-        int found_list_add = find(newZeile, "list-add()");
+        #include "cparts/readZeile_commandFunc_main_list.txt"
+/*         int found_list_add = find(newZeile, "list-add()");
         if (found_list_add != 0) {
             msh_command_main_list_add();
         };
@@ -199,7 +206,7 @@ int msh_readZeile(char Zeile[]) {
         int found_list_print_SPEICHER = find(newZeile, "list-print-SPEICHER()");
         if (found_list_print_SPEICHER != 0) {
             msh_command_main_list_print_SPEICHER();
-        };
+        }; */
 
     int local_found = 0;
     if (IN_FUNC == 1 && arrTeile > 0) {

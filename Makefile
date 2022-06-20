@@ -15,6 +15,7 @@ EXE = $(EXE_BASE_NAME)
 CROSS_CC_WIN_x86_32 := i686-w64-mingw32-gcc
 CROSS_CC_WIN_x86_64 := x86_64-w64-mingw32-gcc
 CROSS_CC_LINUX_x86_32 := x86_64-unknown-linux-gnu-gcc
+CROSS_CC_LINUX_i386 := x86_64-unknown-linux-gnu-gcc
 CROSS_CC_LINUX_x86_64 := x86_64-unknown-linux-gnu-gcc
 CROSS_CC_LINUX_ARM64 := aarch64-unknown-linux-gnu-gcc
 CROSS_CC_MAC_x86_64 := $(CC)
@@ -23,6 +24,7 @@ CROSS_CC_MAC_ARM64 := $(CC)
 CROSS_LD_WIN_x86_32 := i686-w64-mingw32-ld
 CROSS_LD_WIN_x86_64 := x86_64-w64-mingw32-ld
 CROSS_LD_LINUX_x86_32 := x86_64-unknown-linux-gnu-ld
+CROSS_CC_LINUX_i386 := x86_64-unknown-linux-gnu-ld
 CROSS_LD_LINUX_x86_64 := x86_64-unknown-linux-gnu-ld
 CROSS_LD_LINUX_ARM64 := aarch64-unknown-linux-gnu-ld
 CROSS_LD_MAC_x86_64 := $(LD)
@@ -108,6 +110,8 @@ ifdef host
 		MEMCHECK_FLAGS = --leak-check=full
 		CROSS_CC_LINUX_x86_32 = gcc
 		CROSS_LD_LINUX_x86_32 = gcc
+		CROSS_CC_LINUX_i386 = gcc
+		CROSS_LD_LINUX_i386 = gcc
 		CROSS_CC_LINUX_x86_64 = x86_64-linux-gnu-gcc
 		CROSS_LD_LINUX_x86_64 = x86_64-linux-gnu-ld
 		HOST_OS = linux
@@ -123,7 +127,10 @@ ifdef host
 		MEMCHECK = valgrind
 		MEMCHECK_FLAGS = --leak-check=full
 		CROSS_CC_LINUX_x86_32 = x86_64-linux-gnux32-gcc
-		CROSS_LD_LINUX_x86_32 = x86_64-linux-gnux32-ld
+		CROSS_LD_LINUX_x86_32 = x86_64-linux-gnux32-gcc
+		CROSS_CC_LINUX_i386 = i686-linux-gnu-gcc
+		CROSS_LD_LINUX_i386 = i686-linux-gnu-gcc
+#x86_64-linux-gnu-ld -m elf_i386 #-L /usr/lib/gcc-cross/x86_64-linux-gnu/9/ -lgcc #x86_64-linux-gnux32-ld
 		CROSS_CC_LINUX_x86_64 = x86_64-linux-gnu-gcc
 		CROSS_LD_LINUX_x86_64 = x86_64-linux-gnu-ld
 		CROSS_CC_LINUX_ARM64 = gcc
@@ -176,12 +183,18 @@ ifdef target
 #export PATH="/usr/local/Cellar/x86_64-elf-binutils/2.38/bin/:/usr/local/Cellar/x86_64-elf-gcc/12.1.0/bin/:/usr/local/Cellar/i386-elf-gdb/12.1/bin:$PATH"
 #CC = x86_64-elf-gcc
 #LD = x86_64-elf-ld
-			CC = $(CROSS_CC_LINUX_x86_32)
-			LD = $(CROSS_LD_LINUX_x86_32)
+			ifneq ($(target), linux_i386)
+				CC = $(CROSS_CC_LINUX_i386)
+				LD = $(CROSS_LD_LINUX_i386)
+			else
+				CC = $(CROSS_CC_LINUX_i386)
+				LD = $(CROSS_LD_LINUX_i386)
+			endif
 #CFLAGS += -m64 #--sysroot=/usr/local/Cellar/x86_64-elf-gcc/12.1.0/
 #LD_FLAGS += -m elf_x86_64
 		endif
 	endif
+
 	ifneq (,$(filter $(target),windows_i386 windows_x86_32 windows_x86))
 # macos : macports : i686-w64-mingw32-gcc, x86_64-w64-mingw32-gcc
 		ifneq (, $(filter $(HOST_OS), macos linux))
@@ -238,7 +251,7 @@ objlib: LD_FLAGS += -r
 objlib: EXE = $(EXE_BASE_NAME).o
 objlib: $(EXE_BASE_NAME).o
 
-shell: LD = $(CC)
+#shell: LD = $(CC)
 shell: $(EXE)
 
 shell.o: shell.c
@@ -291,6 +304,7 @@ $(EXE_BASE_NAME).o: $(OBJ) $(DEP_OBJ)
 
 # shell
 $(EXE): $(OBJ) $(DEP_OBJ) shell.o
+	echo "$(LD)"
 	$(LD) $(LD_FLAGS) -o $@ $^
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c

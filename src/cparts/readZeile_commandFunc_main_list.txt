@@ -1,0 +1,24 @@
+int found_list_add = find(newZeile, "list-add()");
+if (found_list_add != 0) {
+    msh_command_main_list_add();
+};
+int found_list_remove = find(newZeile, "list-remove()");
+if (found_list_remove != 0) {
+    msh_command_main_list_remove();
+};
+int found_list_mod = find(newZeile, "list-mod()");
+if (found_list_mod != 0) {
+    msh_command_main_list_mod();
+};
+int found_list_print = find(newZeile, "list-Print()");
+if (found_list_print != 0) {
+    msh_command_main_list_print();
+};
+int found_list_del = find(newZeile, "list-Del()");
+if (found_list_del != 0) {
+    msh_command_main_list_delete();
+};
+int found_list_print_SPEICHER = find(newZeile, "list-print-SPEICHER()");
+if (found_list_print_SPEICHER != 0) {
+    msh_command_main_list_print_SPEICHER();
+};

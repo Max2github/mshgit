@@ -1,0 +1,6 @@
+replaceS(msh_Wert, "display()", "");
+replaceS(msh_Wert, "print()", "");
+replaceS(msh_Wert, "stop()", "");
+replaceS(msh_Wert, "del()", "");
+replaceS(msh_Wert, "call()", "");
+replaceS(msh_Wert, "goto()", "");

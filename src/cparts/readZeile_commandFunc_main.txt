@@ -1,0 +1,24 @@
+int found_display = find(newZeile, "display()");
+if (found_display != 0) {
+    msh_command_main_display();
+};
+int found_print = find(newZeile, "print()");
+if (found_print != 0) {
+    msh_command_main_print();
+};
+int found_stop = find(newZeile, "stop()");
+if (found_stop != 0) {
+    msh_command_main_stop();
+};
+int found_del = find(newZeile, "del()");
+if (found_del != 0) {
+    msh_command_main_del();
+};
+int found_call = find(newZeile, "call()");
+if (found_call != 0) {
+    msh_command_main_call();
+};
+int found_goto = find(newZeile, "goto()");
+if (found_goto != 0) {
+    msh_command_main_goto();
+};

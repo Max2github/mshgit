@@ -45,6 +45,9 @@ MEMCHECK_FLAGS = --atExit --
 # MEMCHECK = valgrind
 # MEMCHECK_FLAGS = 
 
+DEVELOP_EXE := devel
+DEVELOP_DIR := develop
+DEVELOP_SRC := $(DEVELOP_DIR)/develop.c
 
 SRC_DIR := src
 OBJ_DIR := o
@@ -239,10 +242,14 @@ endif
 .PHONY: all # default: do nothing
 .PHONY: clean cleanshell cleanexe_win cleanexe cleanbuild # cleaning up
 .PHONY: objlib shell release # building
+.PHONY: develop # build development tools
+.PHONY: command # use development tools
 .PHONY: help # help screen
 .PHONY: memcheck_shell # testing
 
 all: 
+
+develop: $(DEVELOP_EXE)
 
 memcheck_shell:
 	$(MEMCHECK) $(MEMCHECK_FLAGS) ./$(EXE) $(file)
@@ -341,6 +348,12 @@ cleanexe:
 
 cleanbuild:
 	rm $(EXE_BASE_NAME).o
+
+$(DEVELOP_EXE): $(DEVELOP_SRC) $(DEP_OBJ)
+	$(CC) -o $@ $^
+
+command: develop
+	./$(DEVELOP_EXE) $(action) $(data)
 
 help:
 	echo "\

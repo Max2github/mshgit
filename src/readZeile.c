@@ -4,6 +4,10 @@
 #include "../include/super.h"
 #include "../include/msh.h"
 
+#include "cparts/command_def.h"
+
+void msh_command_sub_pointto();
+
 int msh_readZeile(char Zeile[]) {
     char ** Zeile_Teile;
     char newZeile[VAR_MAXCHAR];
@@ -58,42 +62,15 @@ int msh_readZeile(char Zeile[]) {
         word_copy(newZeile, array[1]);
     };
     replaceS(newZeile, "&/equals//", "=");
-    word_copy(msh_Wert, newZeile);
+    // word_copy(msh_Wert, newZeile);
+    set_msh_Wert(newZeile);
     // printf("%s\n", newZeile);
 
     // cut functions out of value
     // sub
-#include "cparts/readZeile_commandCut_sub.txt"
-    /* replaceS(msh_Wert, "Array()", "");
-    replaceS(msh_Wert, "object()", "");
-    replaceS(msh_Wert, "random()", "");
-    replaceS(msh_Wert, "randomin()", "");
-    replaceS(msh_Wert, "input()", "");
-    replaceS(msh_Wert, "math()", "");
-    replaceS(msh_Wert, "row()", "");
-    replaceS(msh_Wert, "Ascii()", ""); */
-        // list
-        #include "cparts/readZeile_commandCut_sub_list.txt"
-        /* replaceS(msh_Wert, "list-toString()", "");
-        replaceS(msh_Wert, "list-Len()", "");
-        replaceS(msh_Wert, "list-getFirst()", ""); */
+    #include "cparts/readZeile_commandCut_sub.txt"
     // main
     #include "cparts/readZeile_commandCut_main.txt"
-    /* replaceS(msh_Wert, "display()", "");
-    replaceS(msh_Wert, "print()", "");
-    replaceS(msh_Wert, "stop()", "");
-    replaceS(msh_Wert, "del()", "");
-    replaceS(msh_Wert, "call()", "");
-    replaceS(msh_Wert, "goto()", ""); */
-        // list 
-        #include "cparts/readZeile_commandCut_main_list.txt"
-        /* replaceS(msh_Wert, "list-add()", "");
-        replaceS(msh_Wert, "list-remove()", "");
-        replaceS(msh_Wert, "list-mod()", "");
-        replaceS(msh_Wert, "list-Print()", "");
-        replaceS(msh_Wert, "list-Del()", "");
-        replaceS(msh_Wert, "list-print-SPEICHER()", ""); */
-    // printf("Wert: %s\n", msh_Wert);
 
 
     // pointer- / var- or fill-commands
@@ -107,109 +84,13 @@ int msh_readZeile(char Zeile[]) {
         // printf("Wert: %s\n", msh_Wert);
     };
     // sub-commands
-        // list
-        #include "cparts/readZeile_commandFunc_sub_list.txt"
-/*         int found_list_toString = find(newZeile, "list-toString()");
-        if (found_list_toString != 0) {
-            msh_command_sub_list_toString();
-        };
-        int found_list_len = find(newZeile, "list-Len()");
-        if (found_list_len != 0) {
-            msh_command_sub_list_len();
-        };
-        int found_list_getFirst = find(newZeile, "list-getFirst()");
-        if (found_list_getFirst != 0) {
-            msh_command_sub_list_getFirst();
-        }; */
     #include "cparts/readZeile_commandFunc_sub.txt"
-    /* int found_array = find(newZeile, "Array()");
-    if (found_array != 0) {
-        msh_command_sub_array();
-    };
-    int found_object = find(newZeile, "object()");
-    if (found_object != 0) {
-        msh_command_sub_object();
-    };
-    int found_random = find(newZeile, "random()");
-    if (found_random != 0) {
-        msh_command_sub_random();
-    };
-    int found_randomin = find(newZeile, "randomin()");
-    if (found_randomin != 0) {
-        msh_command_sub_randomin();
-    };
-    int found_input = find(newZeile, "input()");
-    if (found_input != 0) {
-        msh_command_sub_input();
-    };
-    int found_row = find(newZeile, "row()");
-    if (found_row != 0) {
-        msh_command_sub_row();
-    };
-    int found_ascii = find(newZeile, "Ascii()");
-    if (found_ascii != 0) {
-        msh_command_sub_ascii();
-    };
-    int found_math = find(newZeile, "math()");
-    if (found_math != 0) {
-        msh_command_sub_math();
-    }; */
 
     // main-commands
     #include "cparts/readZeile_commandFunc_main.txt"
-/*     int found_display = find(newZeile, "display()");
-    if (found_display != 0) {
-        msh_command_main_display();
-    };
-    int found_print = find(newZeile, "print()");
-    if (found_print != 0) {
-        msh_command_main_print();
-    };
-    int found_stop = find(newZeile, "stop()");
-    if (found_stop != 0) {
-        msh_command_main_stop();
-    };
-    int found_del = find(newZeile, "del()");
-    if (found_del != 0) {
-        msh_command_main_del();
-    };
-    int found_call = find(newZeile, "call()");
-    if (found_call != 0) {
-        msh_command_main_call();
-    };
-    int found_goto = find(newZeile, "goto()");
-    if (found_goto != 0) {
-        msh_command_main_goto();
-    }; */
-        // list 
-        #include "cparts/readZeile_commandFunc_main_list.txt"
-/*         int found_list_add = find(newZeile, "list-add()");
-        if (found_list_add != 0) {
-            msh_command_main_list_add();
-        };
-        int found_list_remove = find(newZeile, "list-remove()");
-        if (found_list_remove != 0) {
-            msh_command_main_list_remove();
-        };
-        int found_list_mod = find(newZeile, "list-mod()");
-        if (found_list_mod != 0) {
-            msh_command_main_list_mod();
-        };
-        int found_list_print = find(newZeile, "list-Print()");
-        if (found_list_print != 0) {
-            msh_command_main_list_print();
-        };
-        int found_list_del = find(newZeile, "list-Del()");
-        if (found_list_del != 0) {
-            msh_command_main_list_delete();
-        };
-        int found_list_print_SPEICHER = find(newZeile, "list-print-SPEICHER()");
-        if (found_list_print_SPEICHER != 0) {
-            msh_command_main_list_print_SPEICHER();
-        }; */
 
     int local_found = 0;
-    if (IN_FUNC == 1 && arrTeile > 0) {
+    if (IN_FUNC && arrTeile > 0) {
         local_found = 1;
         int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
         if (find(array[0], ".") != 0) {
@@ -257,7 +138,7 @@ int msh_readZeile(char Zeile[]) {
                         if (alle == 0) {
                             int newSize = word_len(var_el[1]) + word_len(msh_Wert) + 2;
                             // printf("    %d\n", newSize);
-                            echtEl[eEt] = realloc(echtEl[eEt], newSize * sizeof(char));
+                            echtEl[eEt] = MSH_REALLOC(echtEl[eEt], newSize * sizeof(char));
                             word_copy(echtEl[eEt], var_el[1]);
                             word_add(echtEl[eEt], ":");
                             word_add(echtEl[eEt], msh_Wert);

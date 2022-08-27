@@ -13,7 +13,7 @@ int msh_push_Var(char value[], char name[]) {
 
     };
     if (32 < len) {
-        printf("Name of Variable \"%s\" is too long (maximum lenght = 32)", name);
+        MSH_PRINTF("Name of Variable \"%s\" is too long (maximum lenght = 32)", name);
         return 1;
     };
     /* for (int n = 0; n < zeichen; n++) {
@@ -62,7 +62,7 @@ int msh_get_Var_element(int Var_index, char el_name[], char saveto[]) {
         char ** arr_Teile;
         int arrTeile = split(VAR_SPEICHER[Var_index], "&/arr//", &arr_Teile);
         for (int i = 0; i < arrTeile+1; i++) {
-            if (i == atoi(el_name)) {
+            if (i == MSH_STRING_TO_INT(el_name)) {
                 word_copy(saveto, arr_Teile[i]);
             };
         };
@@ -78,7 +78,6 @@ int msh_fillVar(char Code[]) {
         spl[name_len] = '(';
         spl[name_len+1] = ')';
         spl[name_len+2] = '\0';
-        // printf("%s\n", spl);
         char newCode[VAR_MAXCHAR];
         newCode[0] = '\0';
         word_copy(newCode, Code);
@@ -139,14 +138,12 @@ int msh_fillObj(char Code[]) {
             char newSPL[34];
             word_copy(newSPL, ".");
             word_add(newSPL, key_value[0]);
-            // sprintf(newSPL, ".%s", key_value[0]);
             word_add(spl, newSPL);
 
             // überprüfen, ob diese Element aufgerufen wird (auch wenn es selber ein Objekt ist)
             char checkSPL[VAR_MAXCHAR];
             word_copy(checkSPL, spl);
             word_add(checkSPL, "()");
-            // printf("checkSPL: %s\n", checkSPL);
             if (find(newCode, checkSPL) != 0) {
                 replaceS(newCode, checkSPL, key_value[1]);
                 word_copy(Code, newCode);
@@ -165,7 +162,6 @@ int msh_fillObj(char Code[]) {
                 goto ARR;
             };
             msh_fillVar(value);
-            // printf("value: %s\n", value);
             if (find(value, "&/obj//") != 0) {
                 ALT = 1;
                 ALT_index = u + 1;
@@ -202,8 +198,6 @@ int msh_fillObj(char Code[]) {
             intToString(a, tempA);
             word_add(spl, tempA);
             word_add(spl, "()");
-            // sprintf(newCode, "%s", Code);
-            // sprintf(spl, "%s.%d()", VAR_NAMES[i], a);
 
             if (find(newCode, spl) == 0) {
                 continue;

@@ -10,25 +10,25 @@ int msh_func_stacks_count(FUNC_STACK head) {
     return i;
 }
 void msh_func_stack_print(FUNC_STACK head, int stack_id) {
-    puts("READ");
-        printf("Stack %d:\n", stack_id);
+    MSH_PUTS("READ");
+        MSH_PRINTF("Stack %d:\n", stack_id);
         s_arr_print(*msh_func_get_func_var_names_pointer(stack_id));
         s_arr_print(*msh_func_get_func_var_speicher_pointer(stack_id));
-    puts("READ END");
+    MSH_PUTS("READ END");
 }
 void msh_func_stacks_print(FUNC_STACK head) {
-    puts("READ");
+    MSH_PUTS("READ");
     int i = 0;
     for (;head != NULL; i++) {
-        printf("Stack %d:\n", i);
+        MSH_PRINTF("Stack %d:\n", i);
         s_arr_print(head->VAR_NAMES);
         s_arr_print(head->VAR_SPEICHER);
         head = head->next;
     }
-    puts("READ END");
+    MSH_PUTS("READ END");
 }
 FUNC_STACK msh_func_create_new_stack(FUNC_STACK head) {
-    FUNC_STACK new_FUNC_stack = (FUNC_STACK) malloc(sizeof(FUNC_ONE_STACK));
+    FUNC_STACK new_FUNC_stack = (FUNC_STACK) MSH_MALLOC(sizeof(FUNC_ONE_STACK));
     new_FUNC_stack->VAR_NAMES = NULL;
     new_FUNC_stack->VAR_SPEICHER = NULL;
     if (head == NULL) {
@@ -46,14 +46,14 @@ FUNC_STACK msh_func_remove_last(FUNC_STACK head) {
     if (head->next == NULL) {
         s_arr_free(head->VAR_NAMES);
         s_arr_free(head->VAR_SPEICHER);
-        free(head);
+        MSH_FREE(head);
         return NULL;
     }
     FUNC_STACK temp = head;
     for (;temp->next->next != NULL; temp = temp->next);
     s_arr_free(temp->next->VAR_NAMES);
     s_arr_free(temp->next->VAR_SPEICHER);
-    free(temp->next);
+    MSH_FREE(temp->next);
     temp->next = NULL;
     return head;
 }
@@ -153,7 +153,6 @@ superstring msh_func_get_code(const char name[]) {
 void msh_func_call(const char * name) {
     FUNC_STACKS = msh_func_create_new_stack(FUNC_STACKS);
     int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
-    // printf("stack_id: %d\n", stack_id);
     s_arr * func_var_names_pointer = msh_func_get_func_var_names_pointer(stack_id);
     s_arr * func_var_speicher_pointer = msh_func_get_func_var_speicher_pointer(stack_id);
 

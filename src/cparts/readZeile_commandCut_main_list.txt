@@ -1,6 +1,0 @@
-replaceS(msh_Wert, "list-add()", "");
-replaceS(msh_Wert, "list-remove()", "");
-replaceS(msh_Wert, "list-mod()", "");
-replaceS(msh_Wert, "list-Print()", "");
-replaceS(msh_Wert, "list-Del()", "");
-replaceS(msh_Wert, "list-print-SPEICHER()", "");

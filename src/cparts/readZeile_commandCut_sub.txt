@@ -1,8 +1,0 @@
-replaceS(msh_Wert, "Array()", "");
-replaceS(msh_Wert, "object()", "");
-replaceS(msh_Wert, "random()", "");
-replaceS(msh_Wert, "randomin()", "");
-replaceS(msh_Wert, "input()", "");
-replaceS(msh_Wert, "math()", "");
-replaceS(msh_Wert, "row()", "");
-replaceS(msh_Wert, "Ascii()", "");

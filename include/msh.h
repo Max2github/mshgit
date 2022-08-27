@@ -14,39 +14,7 @@ int msh_fillObj(char Code[]); // 144
 int msh_Breaks(char Code[]); // 197
 
 // Commands
-// main
-void msh_command_main_display(); // 212
-void msh_command_main_print(); // 223
-void msh_command_main_stop(); // 233
-void msh_command_main_del(); // 236
-void msh_command_main_call(); // 253
-void msh_command_main_goto(); // 256
-    // list (part of main)
-    list msh_getListByName(const char * name);
-    list msh_getNodeByName(const char * name);
-    list msh_getBeforeNodeByName(const char * name);
-    void msh_command_main_list_add();
-    void msh_command_main_list_remove();
-    void msh_command_main_list_mod();
-    void msh_command_main_list_print();
-    void msh_command_main_list_delete();
-    void msh_command_main_list_print_SPEICHER();
-// sub
-    // list
-    void msh_command_sub_list_toString();
-    void msh_command_sub_list_getFirst();
-    void msh_command_sub_list_len();
-void msh_command_sub_pointto(); // 260
-void msh_command_sub_array(); 
-void msh_command_sub_object(); // 287
-void msh_command_sub_random(); // 296
-void msh_command_sub_randomin(); // 311
-void msh_command_sub_input(); // 321
-void msh_command_sub_math(); // 328
-void msh_command_sub_row(); // 346
-void msh_command_sub_ascii(); // 349
-    // list
-    void msh_command_sub_list_getFirst();
+
 // spezial
 int msh_command_isSpezial(char Code[]); // 355
 void msh_command_spezial_def(char Cond[], char text[]); // 373

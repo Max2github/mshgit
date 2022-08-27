@@ -12,11 +12,12 @@ extern "C" {
 
 // init func-vars
 extern s_arr FUNC_SPEICHER;
-extern FUNC_STACK FUNC_STACKS;
+extern /* __thread */ FUNC_STACK FUNC_STACKS;
 extern s_arr FUNC_NAMES;
 
 // init global vars
-extern int IN_FUNC;
+extern int MSH_MUTEX;
+extern __thread int IN_FUNC;
 
 // Variables & Memory
 extern int VAR_MAXWORDS; // max-ammount of vars
@@ -28,11 +29,13 @@ extern int VAR_ZEICHENZAELER; // lenght of the current longest line
 extern list LIST_SPEICHER; // Stack / Heap / Memory for linked lists (stores in fact only pointers + names)
 
 // needed generally & especially for scripts
-extern char msh_Wert[4000];
+extern __thread char msh_Wert[4000];
 extern int msh_STOP;
 extern int msh_Script_it;
 
 void msh_error(const char *);
+void set_msh_Wert(const char *);
+// const char * get_msh_Wert();
 
 #ifdef __cplusplus
 }

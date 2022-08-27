@@ -10,8 +10,16 @@ o/lib/*.o
 o/main/*.o
 o/sub/*.o
 o/*.o
-msh
 shell.o
+
+# unnecessary executables
+msh
 msh.exe
 build/msh*
 devel
+
+# Commands
+src/Commands/main/*.c
+src/Commands/sub/*.c
+src/Commands/cparts/*.txt
+src/Commands/cparts/*.h

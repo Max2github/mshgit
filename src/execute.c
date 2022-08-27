@@ -54,23 +54,27 @@ int msh_readFunc(char Script[]) {
     return 0;
 };
 int msh_readFile(char filename[]) {
-    FILE* file;
-    file = fopen(filename, "r");
-    if(file == NULL) {
-      printf("!! ERROR: Can not open file \"%s\"!\n", filename);
-      return -1;
-   };
-    char * string;
-    // go to the end of the file
-    fseek(file, 0, SEEK_END);
-    int len = ftell(file);
-    // go to the beginning of the file
-    fseek(file, 0, SEEK_SET);
-    string = malloc(len+1 * sizeof(char));
-    fread(string, len, 1, file);
-    fclose(file);
-    // printf("%s\n", string);
-    msh_readScript(string);
-    free(string);
+    #if FILESYSTEM == 1
+        FILE* file;
+        file = fopen(filename, "r");
+        if(file == NULL) {
+            MSH_PRINTF("!! ERROR: Can not open file \"%s\"!\n", filename);
+            return -1;
+        };
+        char * string;
+        // go to the end of the file
+        fseek(file, 0, SEEK_END);
+        int len = ftell(file);
+        // go to the beginning of the file
+        fseek(file, 0, SEEK_SET);
+        string = malloc(len+1 * sizeof(char));
+        fread(string, len, 1, file);
+        fclose(file);
+        // printf("%s\n", string);
+        msh_readScript(string);
+        free(string);
+    #else
+        MSH_PRINTF("Error: %s\n", "No filesystem provided!");
+    #endif
     return 0;
 };

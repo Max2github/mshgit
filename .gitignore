@@ -29,3 +29,4 @@ src/cparts/readZeile_commandCut_main.txt
 src/cparts/readZeile_commandCut_sub.txt
 src/cparts/readZeile_commandFunc_main.txt
 src/cparts/readZeile_commandFunc_sub.txt
+src/cparts/command_def.h

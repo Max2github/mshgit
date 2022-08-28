@@ -12,7 +12,7 @@ extern "C" {
 
 // init func-vars
 extern s_arr FUNC_SPEICHER;
-extern /* __thread */ FUNC_STACK FUNC_STACKS;
+// extern /* __thread */ FUNC_STACK FUNC_STACKS;
 extern s_arr FUNC_NAMES;
 
 // init global vars

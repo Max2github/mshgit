@@ -4,7 +4,7 @@
 
 // init func-vars
 s_arr FUNC_SPEICHER = NULL;
-/* __thread */ FUNC_STACK FUNC_STACKS = NULL;
+// /* __thread */ FUNC_STACK FUNC_STACKS = NULL;
 s_arr FUNC_NAMES = NULL;
 
 // init global vars

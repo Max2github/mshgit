@@ -13,7 +13,7 @@ int msh_readScript(char Script[]) {
     for (msh_Script_it = 0; msh_Script_it <= Zeilen_Anzahl; msh_Script_it++) {
         // printf("it: %d\n", msh_Script_it);
         if (!check_Func(Zeilen)) {
-            msh_readZeile(Zeilen[msh_Script_it]);
+            msh_readZeile(Zeilen[msh_Script_it], NULL);
             if (msh_STOP == 1) {
                 msh_STOP = 0;
                 break;
@@ -27,16 +27,16 @@ int msh_readScript(char Script[]) {
     FUNC_SPEICHER = NULL;
     FUNC_NAMES = NULL;
     LIST_SPEICHER = NULL;
-    msh_func_remove_all();
+    // msh_func_remove_all();
     return 0;
 };
-int msh_readFunc(char Script[]) {
+int msh_readFunc(char Script[], FUNC_LOCAL_STACK * stack) {
     char ** Zeilen;
     int msh_Script_it_echt = msh_Script_it;
     IN_FUNC = 1;
     int Zeilen_Anzahl = split(Script, "\n", &Zeilen);
     for (int FuncI = 0; FuncI <= Zeilen_Anzahl; FuncI++) {
-        msh_readZeile(Zeilen[FuncI]);
+        msh_readZeile(Zeilen[FuncI], stack);
         if (msh_STOP == 1) {
             msh_STOP = 0;
             break;
@@ -49,8 +49,9 @@ int msh_readFunc(char Script[]) {
     freeWordArr(Zeilen, Zeilen_Anzahl);
     // reset func-memory / stack
     // msh_func_stack_print(FUNC_STACKS, msh_func_stacks_count(FUNC_STACKS) - 1);
-    FUNC_STACKS = msh_func_remove_last(FUNC_STACKS);
-    if (list_node_len((list) FUNC_STACKS) == 0) { IN_FUNC = 0; }
+    // FUNC_STACKS = msh_func_remove_last(FUNC_STACKS);
+    // if (list_node_len((list) FUNC_STACKS) == 0) { IN_FUNC = 0; }
+    // msh_func_remove_last(stack);
     return 0;
 };
 int msh_readFile(char filename[]) {

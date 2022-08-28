@@ -211,12 +211,12 @@ int msh_fillObj(char Code[]) {
     };
     return 0;
 };
-int msh_Breaks(char Code[]) {
+int msh_Breaks(char Code[], FUNC_LOCAL_STACK * stack) {
     char ** Code_Teile;
     int CodeTeile = split(Code, "&/break//", &Code_Teile);
     if (CodeTeile > 0) {
         for (int i = 0; i <= CodeTeile; i++) {
-            msh_readZeile(Code_Teile[i]);
+            msh_readZeile(Code_Teile[i], stack);
         };
         freeWordArr(Code_Teile, CodeTeile);
         return 1;

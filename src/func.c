@@ -4,6 +4,7 @@
 #include "../dependencies/words.h"
 #include "../include/msh.h"
 
+/*
 int msh_func_stacks_count(FUNC_STACK head) {
     int i = 0;
     for (; head != NULL; i++) { head = head->next; }
@@ -71,38 +72,43 @@ s_arr * msh_func_get_func_var_speicher_pointer(int func_speicher_index) {
     FUNC_STACK temp = FUNC_STACKS;
     for (int i = 0; i < func_speicher_index; i++) { temp = temp->next; }
     return &(temp->VAR_SPEICHER);
-}
-int msh_func_get_local_Var_index(const char name[], int func_speicher_index) {
+} */
+int msh_func_get_local_Var_index(const char name[], FUNC_LOCAL_STACK * stack) {
     superstring nameS = s_init(name);
-    s_arr func_var_names = *msh_func_get_func_var_names_pointer(func_speicher_index);
-    int index = s_arr_findFirstIndex(func_var_names, nameS);
+    // s_arr func_var_names = *msh_func_get_func_var_names_pointer(func_speicher_index);
+    // int index = s_arr_findFirstIndex(func_var_names, nameS);
+    int index = s_arr_findFirstIndex(stack->VAR_NAMES, nameS);
     s_free(nameS);
     return index;
 }
-superstring msh_func_get_local_Var(const char name[], int func_speicher_index) {
-    int index = msh_func_get_local_Var_index(name, func_speicher_index);
+superstring msh_func_get_local_Var(const char name[], FUNC_LOCAL_STACK * stack) {
+    int index = msh_func_get_local_Var_index(name, stack);
     if (index == -1) {
         return NULL;
     }
-    s_arr func_var_speicher = *msh_func_get_func_var_speicher_pointer(func_speicher_index);
-    superstring valueS = s_arr_getEl(func_var_speicher, index);
-    return valueS;
+    // s_arr func_var_speicher = *msh_func_get_func_var_speicher_pointer(func_speicher_index);
+    // superstring valueS = s_arr_getEl(func_var_speicher, index);
+    // return valueS;
+    return s_arr_getEl(stack->VAR_SPEICHER, index);
 }
-void msh_func_set_local_Var(const char name[], const char value[], int func_speicher_index) {
-    s_arr * func_var_names_pointer = msh_func_get_func_var_names_pointer(func_speicher_index);
-    s_arr * func_var_speicher_pointer = msh_func_get_func_var_speicher_pointer(func_speicher_index);
-    *func_var_names_pointer = s_arr_addFirst(*func_var_names_pointer, s_init(name));
-    *func_var_speicher_pointer = s_arr_addFirst(*func_var_speicher_pointer, s_init(value));
+void msh_func_set_local_Var(const char name[], const char value[], FUNC_LOCAL_STACK * stack) {
+    // s_arr * func_var_names_pointer = msh_func_get_func_var_names_pointer(func_speicher_index);
+    // s_arr * func_var_speicher_pointer = msh_func_get_func_var_speicher_pointer(func_speicher_index);
+    // *func_var_names_pointer = s_arr_addFirst(*func_var_names_pointer, s_init(name));
+    // *func_var_speicher_pointer = s_arr_addFirst(*func_var_speicher_pointer, s_init(value));
+    stack->VAR_NAMES = s_arr_addFirst(stack->VAR_NAMES, s_init(name));
+    stack->VAR_SPEICHER = s_arr_addFirst(stack->VAR_SPEICHER, s_init(value));
 }
-void msh_func_update_local_Var(const char name[], const char value[], int func_speicher_index) {
+void msh_func_update_local_Var(const char name[], const char value[], FUNC_LOCAL_STACK * stack) {
     superstring nameS = s_init(name);
-    int index = msh_func_get_local_Var_index(name, func_speicher_index);
+    int index = msh_func_get_local_Var_index(name, stack);
     s_free(nameS);
     if (index == -1) {
-        msh_func_set_local_Var(name, value, func_speicher_index);
+        msh_func_set_local_Var(name, value, stack);
         return;
     }
-    s_arr temp = *msh_func_get_func_var_speicher_pointer(func_speicher_index);
+    // s_arr temp = *msh_func_get_func_var_speicher_pointer(func_speicher_index);
+    s_arr temp = stack->VAR_SPEICHER;
     for (int i = 0; i < index; i++) { temp = temp->next; }
     s_free(temp->element);
     temp->element = s_init(value);
@@ -151,10 +157,14 @@ superstring msh_func_get_code(const char name[]) {
 }
 
 void msh_func_call(const char * name) {
-    FUNC_STACKS = msh_func_create_new_stack(FUNC_STACKS);
-    int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
-    s_arr * func_var_names_pointer = msh_func_get_func_var_names_pointer(stack_id);
-    s_arr * func_var_speicher_pointer = msh_func_get_func_var_speicher_pointer(stack_id);
+    int IN_FUNC_old = IN_FUNC;
+    // FUNC_STACKS = msh_func_create_new_stack(FUNC_STACKS);
+    // int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
+    FUNC_LOCAL_STACK stack;
+    stack.VAR_NAMES = NULL;
+    stack.VAR_SPEICHER = NULL;
+    // s_arr * func_var_names_pointer = msh_func_get_func_var_names_pointer(stack_id);
+    // s_arr * func_var_speicher_pointer = msh_func_get_func_var_speicher_pointer(stack_id);
 
     // getting full name of the function and required arguments
     superstring fullname = msh_func_get_fullname(name); // full name
@@ -174,7 +184,8 @@ void msh_func_call(const char * name) {
             superstring nameS = temp->element; // the current argument / just for better understanding
 
             // define the names (without the values) in the stack
-            *func_var_names_pointer = s_arr_addFirst(*func_var_names_pointer, s_copy(nameS));
+            // *func_var_names_pointer = s_arr_addFirst(*func_var_names_pointer, s_copy(nameS));
+            stack.VAR_NAMES = s_arr_addFirst(stack.VAR_NAMES, s_copy(nameS));
         }
         s_arr_free(argList);
     }
@@ -197,14 +208,21 @@ void msh_func_call(const char * name) {
             if (find(argArray[i], ":")) {
                 char ** argTeile;
                 int argTeile_Anzahl = split(argArray[i], ":", &argTeile);
-                if (s_arr_len(*func_var_speicher_pointer) != s_arr_len(*func_var_names_pointer)) {
+                /* if (s_arr_len(*func_var_speicher_pointer) != s_arr_len(*func_var_names_pointer)) {
                     *func_var_speicher_pointer = s_arr_addFirst(*func_var_speicher_pointer, s_init(argTeile[1]));
                 } else {
                     msh_func_update_local_Var(argTeile[0], argTeile[1], stack_id);
+                } */
+                if (s_arr_len(stack.VAR_SPEICHER) != s_arr_len(stack.VAR_NAMES)) {
+                    stack.VAR_SPEICHER = s_arr_addFirst(stack.VAR_SPEICHER, s_init(argTeile[1]));
+                } else {
+                    // msh_func_update_local_Var(argTeile[0], argTeile[1], stack_id);
                 }
                 freeWordArr(argTeile, argTeile_Anzahl);
-            } else if (s_arr_len(*func_var_speicher_pointer) < s_arr_len(*func_var_names_pointer)) {
-                *func_var_speicher_pointer = s_arr_addFirst(*func_var_speicher_pointer, s_init(argArray[i]));
+            // } else if (s_arr_len(*func_var_speicher_pointer) < s_arr_len(*func_var_names_pointer)) {
+            //     *func_var_speicher_pointer = s_arr_addFirst(*func_var_speicher_pointer, s_init(argArray[i]));
+            } else if (s_arr_len(stack.VAR_SPEICHER) < s_arr_len(stack.VAR_NAMES)) {
+                stack.VAR_SPEICHER = s_arr_addFirst(stack.VAR_SPEICHER, s_init(argArray[i]));
             } else {
                 msh_error("too many nameless arguments");
             }
@@ -213,13 +231,17 @@ void msh_func_call(const char * name) {
 
         freeWordArr(wordArr, Teile);
     }
-    if (s_arr_len(*func_var_speicher_pointer) != s_arr_len(*func_var_names_pointer)) {
+    // if (s_arr_len(*func_var_speicher_pointer) != s_arr_len(*func_var_names_pointer)) {
+     if (s_arr_len(stack.VAR_SPEICHER) != s_arr_len(stack.VAR_NAMES)) {
         // s_arr_print(FUNC_VAR_NAMES);
         // s_arr_print(FUNC_VAR_SPEICHER);
         msh_error("count of required arguments and provided arguments is not even!\n!! Abording");
-        msh_func_remove_last(FUNC_STACKS);
+        // msh_func_remove_last(FUNC_STACKS);
         return;
     }
     // executing function
-    msh_readFunc(codeStr);
+    msh_readFunc(codeStr, &stack);
+    s_arr_free(stack.VAR_NAMES);
+    s_arr_free(stack.VAR_SPEICHER);
+    IN_FUNC = IN_FUNC_old;
 }

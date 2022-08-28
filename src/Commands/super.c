@@ -3,7 +3,7 @@
 #include "../../dependencies/words.h"
 
 int check_Func(char ** Script);
-void msh_fill_local_Var(char Code[]);
+void msh_fill_local_Var(char Code[], FUNC_LOCAL_STACK * stack);
 
 int check_Func(char ** Script) {
     char * Zeile = Script[msh_Script_it];
@@ -31,10 +31,11 @@ int check_Func(char ** Script) {
     }
     return 0;
 }
-void msh_fill_local_Var(char Code[]) {
-    int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
+void msh_fill_local_Var(char Code[], FUNC_LOCAL_STACK * stack) {
+    // int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
 
-    s_arr temp = *msh_func_get_func_var_names_pointer(stack_id);
+    // s_arr temp = *msh_func_get_func_var_names_pointer(stack_id);
+    s_arr temp = stack->VAR_NAMES;
     while (temp != NULL) {
         superstring name = temp->element;
         int name_len = s_len(name);
@@ -42,7 +43,7 @@ void msh_fill_local_Var(char Code[]) {
         s_stringify(name, spl);
 
         char var[VAR_MAXCHAR];
-        s_stringify(msh_func_get_local_Var(spl, stack_id), var);
+        s_stringify(msh_func_get_local_Var(spl, stack), var);
 
         spl[name_len] = '(';
         spl[name_len+1] = ')';
@@ -57,10 +58,11 @@ void msh_fill_local_Var(char Code[]) {
     };
 }
 
-void msh_fill_local_Obj(char Code[]) {
-    int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
+void msh_fill_local_Obj(char Code[], FUNC_LOCAL_STACK * stack) {
+    // int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
 
-    s_arr temp = *msh_func_get_func_var_names_pointer(stack_id);
+    // s_arr temp = *msh_func_get_func_var_names_pointer(stack_id);
+    s_arr temp = stack->VAR_NAMES;
     while (temp != NULL) {
         superstring name = temp->element;
         
@@ -69,7 +71,7 @@ void msh_fill_local_Obj(char Code[]) {
         s_stringify(name, spl);
 
         char var[VAR_MAXCHAR];
-        s_stringify(msh_func_get_local_Var(spl, stack_id), var);
+        s_stringify(msh_func_get_local_Var(spl, stack), var);
 
         spl[name_len] = '(';
         spl[name_len+1] = ')';

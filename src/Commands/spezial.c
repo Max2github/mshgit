@@ -4,7 +4,7 @@
 #include "../../dependencies/words.h"
 #include "../../dependencies/std.h"
 
-int msh_command_isSpezial(char Code[]) {
+int msh_command_isSpezial(char Code[], FUNC_LOCAL_STACK * stack) {
     if (find(Code, ":") == 0) {
         return 0;
     };
@@ -24,7 +24,7 @@ int msh_command_isSpezial(char Code[]) {
     while (IN_FUNC) {
         char altCond[VAR_MAXCHAR];
         word_copy(altCond, newCond);
-        msh_fill_local_Var(newCond);
+        msh_fill_local_Var(newCond, stack);
         if (word_compare(altCond, newCond) == 0) {
             break;
         };
@@ -50,23 +50,23 @@ int msh_command_isSpezial(char Code[]) {
         return 1;
     } else if (find(repl, "if()") != 0) {
         replaceS(newCond, "if()", "");
-        msh_command_spezial_if(newCond, newText);
+        msh_command_spezial_if(newCond, newText, stack);
         return 1;
     } else if (find(repl, "for()") != 0) {
         replaceS(newCond, "for()", "");
-        msh_command_spezial_for(newCond, newText);
+        msh_command_spezial_for(newCond, newText, stack);
         return 1;
     } else if (find(repl, "foreach()") != 0) {
         replaceS(newCond, "foreach()", "");
-        msh_command_spezial_foreach(newCond, newText);
+        msh_command_spezial_foreach(newCond, newText, stack);
         return 1;
     } else if (find(repl, "forcount()") != 0) {
         replaceS(newCond, "forcount()", "");
-        msh_command_spezial_forcount(newCond, newText);
+        msh_command_spezial_forcount(newCond, newText, stack);
         return 1;
     } else if (find(repl, "while()") != 0) {
         replaceS(newCond, "while()", "");
-        msh_command_spezial_while(newCond, newText);
+        msh_command_spezial_while(newCond, newText, stack);
         return 1;
     };
     return 0;
@@ -152,11 +152,11 @@ int msh_check_if(char Cond[]) {
     freeWordArr(Bed6, Bed_Anzahl);
     return 0;
 }
-void msh_command_spezial_if(char Cond[], char text[]) {
+void msh_command_spezial_if(char Cond[], char text[], FUNC_LOCAL_STACK * stack) {
     replace(text, " ", "_");
-    if (msh_check_if(Cond)) { msh_readZeile(text); }
+    if (msh_check_if(Cond)) { msh_readZeile(text, stack); }
 };
-void msh_command_spezial_for(char Cond[], char text[]) {
+void msh_command_spezial_for(char Cond[], char text[], FUNC_LOCAL_STACK * stack) {
     char ** array;
     int CondTeile = split(Cond, "IN", &array);
     if (CondTeile != 1) { return; };
@@ -175,7 +175,7 @@ void msh_command_spezial_for(char Cond[], char text[]) {
     word_copy(value, "0");
     // sprintf(value, "%d", 0);
 
-    for (int i = 0; i <= arrTeile; i = i) {
+    for (int i = 0; i <= arrTeile;) {
         // printf("%d\n", i);
         // printf("%s\n", arr_Teile[i]);
         if (msh_STOP == 1) {
@@ -189,7 +189,7 @@ void msh_command_spezial_for(char Cond[], char text[]) {
             continue;
         }
         word_copy(VAR_SPEICHER[var_index], value);
-        msh_readZeile(text);
+        msh_readZeile(text, stack);
         i++;
         // sprintf(value, "%d", i);
         char tempI[intLen(i)+1];
@@ -197,7 +197,7 @@ void msh_command_spezial_for(char Cond[], char text[]) {
     }
     freeWordArr(arr_Teile, arrTeile);
 };
-void msh_command_spezial_foreach(char Cond[], char text[]) {
+void msh_command_spezial_foreach(char Cond[], char text[], FUNC_LOCAL_STACK * stack) {
     char ** array;
     int CondTeile = split(Cond, "IN", &array);
     if (CondTeile != 1) { return; };
@@ -215,7 +215,7 @@ void msh_command_spezial_foreach(char Cond[], char text[]) {
     word_copy(value, arr_Teile[0]);
     freeWordArr(array, CondTeile);
 
-    for (int i = 0; i <= arrTeile; i = i) {
+    for (int i = 0; i <= arrTeile;) {
         // printf("%d\n", i);
         // printf("%s\n", arr_Teile[i]);
         if (word_compare(arr_Teile[i], "&/null//") == 0 || word_compare(arr_Teile[i], "") == 0) {
@@ -225,14 +225,14 @@ void msh_command_spezial_foreach(char Cond[], char text[]) {
             continue;
         }
         word_copy(VAR_SPEICHER[var_index], value);
-        msh_readZeile(text);
+        msh_readZeile(text, stack);
         i++;
         // sprintf(value, "%s", arr_Teile[i]);
         word_copy(value, arr_Teile[i]);
     }
     freeWordArr(arr_Teile, arrTeile);
 };
-void msh_command_spezial_forcount(char Cond[], char text[]) {
+void msh_command_spezial_forcount(char Cond[], char text[], FUNC_LOCAL_STACK * stack) {
     char ** array;
     int CondTeile = split(Cond, "IN", &array);
     if (CondTeile != 1 && CondTeile != 0) { return; };
@@ -264,9 +264,9 @@ void msh_command_spezial_forcount(char Cond[], char text[]) {
     };
 
     if (Ende > Anfang) {
-        for (int i = Anfang; i <= Ende; i = i) {
+        for (int i = Anfang; i <= Ende;) {
             word_copy(VAR_SPEICHER[var_index], value);
-            msh_readZeile(text);
+            msh_readZeile(text, stack);
             i++;
             if (CondTeile == 1) {
                 // sprintf(value, "%d", i);
@@ -274,9 +274,9 @@ void msh_command_spezial_forcount(char Cond[], char text[]) {
             };
         };
     } else if (Anfang > Ende) {
-        for (int i = Anfang; i <= Ende; i = i) {
+        for (int i = Anfang; i <= Ende;) {
             word_copy(VAR_SPEICHER[var_index], value);
-            msh_readZeile(text);
+            msh_readZeile(text, stack);
             i++;
             if (CondTeile == 1) {
                 // sprintf(value, "%d", i);
@@ -285,6 +285,6 @@ void msh_command_spezial_forcount(char Cond[], char text[]) {
         };
     };
 };
-void msh_command_spezial_while(char Cond[], char text[]) {
-    if (msh_check_if(Cond)) { msh_readZeile(text); msh_Script_it--; }
+void msh_command_spezial_while(char Cond[], char text[], FUNC_LOCAL_STACK * stack) {
+    if (msh_check_if(Cond)) { msh_readZeile(text, stack); msh_Script_it--; }
 }

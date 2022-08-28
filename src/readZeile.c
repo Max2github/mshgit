@@ -8,7 +8,7 @@
 
 void msh_command_sub_pointto();
 
-int msh_readZeile(char Zeile[]) {
+int msh_readZeile(char Zeile[], FUNC_LOCAL_STACK * stack) {
     char ** Zeile_Teile;
     char newZeile[VAR_MAXCHAR];
 
@@ -16,18 +16,18 @@ int msh_readZeile(char Zeile[]) {
     join((const char **) Zeile_Teile, teile_Anzahl, "", newZeile);
     freeWordArr(Zeile_Teile, teile_Anzahl);
 
-    if (msh_Breaks(newZeile) == 1) {
+    if (msh_Breaks(newZeile, stack) == 1) {
         return 0;
     };
 
-    if (msh_command_isSpezial(newZeile) != 0) {
+    if (msh_command_isSpezial(newZeile, stack) != 0) {
         return 0;
     };
 
     while (IN_FUNC) {
         char altZeile[VAR_MAXCHAR];
         word_copy(altZeile, newZeile);
-        msh_fill_local_Var(newZeile);
+        msh_fill_local_Var(newZeile, stack);
         if (word_compare(altZeile, newZeile) == 0) {
             break;
         };
@@ -42,11 +42,11 @@ int msh_readZeile(char Zeile[]) {
         };
     };
 
-    if (msh_Breaks(newZeile) == 1) {
+    if (msh_Breaks(newZeile, stack) == 1) {
         return 0;
     };
 
-    if (msh_command_isSpezial(newZeile) != 0) {
+    if (msh_command_isSpezial(newZeile, stack) != 0) {
         return 0;
     };
 
@@ -92,21 +92,24 @@ int msh_readZeile(char Zeile[]) {
     int local_found = 0;
     if (IN_FUNC && arrTeile > 0) {
         local_found = 1;
-        int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
+        // int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
         if (find(array[0], ".") != 0) {
             local_found = 0; // not supported yet
         } else {
             char nowhere[VAR_MAXCHAR];
             // if not found as local var, but as global var
             // not found local + found global -> priority: global
-            if (msh_func_get_local_Var_index(array[0], stack_id) == -1 && msh_get_Var(array[0], nowhere) != -1) {
+            /* if (msh_func_get_local_Var_index(array[0], stack_id) == -1 && msh_get_Var(array[0], nowhere) != -1) {
                 local_found = 0;
-            } 
+            } */
+            if (msh_func_get_local_Var_index(array[0], stack) == -1 && msh_get_Var(array[0], nowhere) != -1) {
+                local_found = 0;
+            }
             // not found local + not found global -> priority: local
             // found local + not found global -> priority: local
             // found local + found global -> priority: local
             else {
-                msh_func_update_local_Var(array[0], msh_Wert, stack_id);
+                msh_func_update_local_Var(array[0], msh_Wert, stack);
                 local_found = 1;
             }
         }

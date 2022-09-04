@@ -21,12 +21,21 @@ int msh_readScript(char Script[]) {
         }
     };
     freeWordArr(Zeilen, Zeilen_Anzahl);
+    // execute all functions in MSH_ON_EXIT
+    list temp = MSH_ON_EXIT;
+    while(temp != NULL) {
+        void (*function)() = (void (*)()) temp->el;
+        function();
+        temp = temp->next;
+    }
     s_arr_free(FUNC_SPEICHER);
     s_arr_free(FUNC_NAMES);
-    list_free(LIST_SPEICHER);
+    list_free(LIST_SPEICHER); // move to MSH_ON_EXIT later
+    list_free(MSH_ON_EXIT);
     FUNC_SPEICHER = NULL;
     FUNC_NAMES = NULL;
-    LIST_SPEICHER = NULL;
+    LIST_SPEICHER = NULL; // move to MSH_ON_EXIT later
+    MSH_ON_EXIT = NULL;
     // msh_func_remove_all();
     return 0;
 };

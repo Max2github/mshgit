@@ -152,7 +152,7 @@ ifdef target
 	endif
 	ifneq (,$(filter $(target),linux_arm linux_arm64 linux_aarch64 linux_m1))
 # macos: brew : aarch64-elf-gcc, aarch64-elf-binutils 
-		ifneq (, $(filter $(HOST_OS), macos, linux))
+		ifneq (, $(filter $(HOST_OS), macos linux))
 #ifeq ($(host), $(filter linux, macos))
 #CC = aarch64-none-elf-gcc
 			CC = $(CROSS_CC_LINUX_ARM64)
@@ -311,8 +311,7 @@ $(EXE_BASE_NAME).o: $(OBJ) $(DEP_OBJ)
 
 # shell
 $(EXE): $(OBJ) $(DEP_OBJ) shell.o
-	echo "$(LD)"
-	$(LD) $(LD_FLAGS) -o $@ $^
+	$(CC) $(LD_FLAGS) -o $@ $^
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -o $@ $^

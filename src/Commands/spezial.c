@@ -1,8 +1,8 @@
+#include "../../dependencies/std.h"
+#include "../../include/alg.h"
 #include "../../include/msh.h"
 #include "../../include/super.h"
-#include "../../include/alg.h"
 #include "../../dependencies/words.h"
-#include "../../dependencies/std.h"
 
 int msh_command_isSpezial(char Code[], FUNC_LOCAL_STACK * stack) {
     if (find(Code, ":") == 0) {

@@ -4,8 +4,8 @@
 
 // toogle
 #define FILESYSTEM 1
-#define MULTI_THREAD 1
-#define MULTI_THREAD_MUTEX_PRINT 1 // somehow this doesn't change anything
+#define MULTI_THREAD 0
+#define MULTI_THREAD_MUTEX_PRINT 0 // somehow this doesn't change anything
 
 // DO NOT EDIT
 // make sure to set MACROS to 0,

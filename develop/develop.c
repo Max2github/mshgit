@@ -2,16 +2,19 @@
 #include <stdlib.h>
 #include "../dependencies/words.h"
 
-#ifdef WINDOWS
+#if defined(WINDOWS) || defined(WIN32) || defined(_WIN32)
     #include <direct.h>
+    #include <io.h>
     #define GetCurrentDir _getcwd
     #define PATH_SEP_CHAR '\\'
     #define PATH_SEP_STRING "\\"
+    #define file_open(fileStruct, fileName, mode) fopen_s(fileStruct, fileName, mode)
 #else
     #include <unistd.h>
     #define GetCurrentDir getcwd
     #define PATH_SEP_CHAR '/'
     #define PATH_SEP_STRING "/"
+    #define file_open(fileStruct, fileName, mode) *(fileStruct) = fopen(fileName, mode)
 #endif
 
 #define PATH_PACKAGE_LIST "src/cparts/packages.txt"
@@ -42,10 +45,13 @@ void File_setCurrentByte(char b, FILE * file) {
 }
 
 bool File_copy(const char * tar, const char * src) {
-    FILE * srcFile = fopen(src, "r");
-    FILE * tarAlready = fopen(tar, "r");
+    FILE* srcFile = NULL;
+    file_open(&srcFile, src, "r");
+    FILE* tarAlready = NULL;
+    file_open(&tarAlready, tar, "r");
     if(tarAlready == NULL && srcFile != NULL) {
-        FILE * tarFile = fopen(tar, "w");
+        FILE* tarFile = NULL;
+        file_open(&tarFile, tar, "w");
         int ch;
         while((ch = fgetc(srcFile)) != EOF) { fputc(ch, tarFile); };
         fclose(tarFile);
@@ -60,8 +66,12 @@ bool File_copy(const char * tar, const char * src) {
 bool File_deleteBytes(const  char * path, long startPos, int bytes) {
     char byte = 'n'; // our dummy buffer
     long readPos = startPos + bytes;
-    FILE * file = fopen(path, "r+");
+    FILE* file = NULL;
+    file_open(&file, path, "r+");
     if (file == NULL) { return false; }
+
+    fseek(file, 0, SEEK_END);
+    const long fileEndPos = ftell(file);
 
     // read
     fseek(file, readPos, SEEK_SET);
@@ -78,14 +88,19 @@ bool File_deleteBytes(const  char * path, long startPos, int bytes) {
         // switch to reading
         fseek(file, readPos, SEEK_SET);
     }
-    ftruncate(fileno(file), startPos);
+#if defined(WINDOWS) || defined(WIN32) || defined(_WIN32)
+    _chsize_s(_fileno(file), fileEndPos - bytes);
+#else
+    ftruncate(fileno(file), fileEndPos - bytes);
+#endif
     fclose(file);
     return true;
 }
 
 bool File_insertBytes(const char * path, long startPos, const char * byteStream, int bytes) {
 
-    FILE * file = fopen(path, "r+");
+    FILE* file = NULL;
+    file_open(&file, path, "r+");
     if (file == NULL) { return false; }
 
     fseek(file, 0, SEEK_END);
@@ -129,7 +144,8 @@ bool File_insertBytes(const char * path, long startPos, const char * byteStream,
 }
 
 long File_read_until(char * target, const char * path, const long startPos, const char search) {
-    FILE * file = fopen(path, "r");
+    FILE* file = NULL;
+    file_open(&file, path, "r");
     if (file == NULL) { return 0; }
 
     fseek(file, startPos, SEEK_SET);
@@ -157,7 +173,12 @@ void add(const char * list, const char * def, const char * cut, const char * fun
     char nameMsh[word_len(name)+1];
     word_copy(nameMsh, name);
     replace(nameMsh, "_", "-"); // for names including '-' : in c '-' is an operator, in msh '_' is a space
-    FILE* commandList = fopen(temp, "a+");
+    FILE* commandList = NULL;
+    file_open(&commandList, temp, "a+");
+    if (commandList == NULL) {
+        printf("!! ERROR: Can not open file \"%s\"!\n", temp);
+        return;
+    }
 
     // check if the command already exists
         // go to the end of the file
@@ -188,14 +209,16 @@ void add(const char * list, const char * def, const char * cut, const char * fun
     // add to definition (def)
     word_copy(temp, path);
     word_add(temp, def);
-    FILE* def_custom = fopen(temp, "a");
+    FILE* def_custom = NULL;
+    file_open(&def_custom, temp, "a");
     fputs("void ", def_custom); fputs(full, def_custom); fputs("();", def_custom); fputc('\n', def_custom);
     fclose(def_custom);
 
     // add to cut
     word_copy(temp, path);
     word_add(temp, cut);
-    FILE* cut_main = fopen(temp, "a");
+    FILE* cut_main = NULL;
+    file_open(&cut_main, temp, "a");
     fputs("replaceS(msh_Wert, \"", cut_main);
     fputs(nameMsh, cut_main);
     fputs("()\", \"\");\n", cut_main);
@@ -204,7 +227,8 @@ void add(const char * list, const char * def, const char * cut, const char * fun
     // add to func
     word_copy(temp, path);
     word_add(temp, func);
-    FILE* func_main = fopen(temp, "a");
+    FILE* func_main = NULL;
+    file_open(&func_main, temp, "a");
     fputs("int found_", func_main); fputs(name, func_main); fputs(" = find(newZeile, \"", func_main); fputs(nameMsh, func_main); fputs("()\");\n", func_main);
     fputs("if (found_", func_main); fputs(name, func_main); fputs(" != 0) {\n", func_main);
     fputs("    ", func_main); fputs(full, func_main); fputs("();\n", func_main);
@@ -247,12 +271,14 @@ void removeC(const char * list, const char * def, const char * cut, const char *
     char nameMsh[word_len(name)+1];
     word_copy(nameMsh, name);
     replace(nameMsh, "_", "-"); // for names including '-' : in c '-' is an operator, in msh '_' is a space
-    FILE* commandList = fopen(temp, "r");
+    FILE* commandList = NULL;
+    file_open(&commandList, temp, "r");
     if (commandList == NULL) {
         puts("Error: No commands installed!");
         fclose(commandList);
         return;
     }
+    puts(name);
 
     // check where the command is + remove it
         // go to the end of the file
@@ -325,7 +351,8 @@ void package(const char * path, const char * list) {
     word_copy(pkgDir, pathfull);
     word_add(pathfull, PATH_SEP_STRING); word_add(pathfull, "config.txt");
 
-    FILE * config = fopen(pathfull, "r");
+    FILE* config = NULL;
+    file_open(&config, pathfull, "r");
     if(config == NULL) {
         printf("!! ERROR: Can not open file \"%s\"!\n", pathfull);
     };
@@ -366,7 +393,7 @@ void package(const char * path, const char * list) {
         if (word_compare("main", type) == 0) {
             add(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_MAIN, PATH_COMMAND_FUNC_MAIN, name, full);
             // if not left blank
-            if (word_compare(src, "") != 0 && *src != '-') {
+            if (!OPTION_FLAG_NOCOPY && word_compare(src, "") != 0 && *src != '-') {
                 // copy to src/Commands/main
                 const char * r = src;
                 while(find(r, PATH_SEP_STRING)) { r += word_len_until(r, PATH_SEP_STRING)+1; }
@@ -380,12 +407,12 @@ void package(const char * path, const char * list) {
                 word_copy(srcFull, pkgDir); word_add(srcFull, PATH_SEP_STRING);
                 word_add(srcFull, src);
                 printf("copy: %s -> %s\n\n", srcFull, targetPath);
-                if (!OPTION_FLAG_NOCOPY) { File_copy(targetPath, srcFull); }
+                File_copy(targetPath, srcFull);
             }
         } else if (word_compare("sub", type) == 0) {
             add(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_SUB, PATH_COMMAND_FUNC_SUB, name, full);
             // if not left blank
-            if (word_compare(src, "") != 0 && *src != '-') {
+            if (!OPTION_FLAG_NOCOPY && word_compare(src, "") != 0 && *src != '-') {
                 // copy to src/Commands/sub
                 const char * r = src;
                 while(find(r, PATH_SEP_STRING)) { r += word_len_until(r, PATH_SEP_STRING)+1; }
@@ -399,7 +426,7 @@ void package(const char * path, const char * list) {
                 word_copy(srcFull, pkgDir); word_add(srcFull, PATH_SEP_STRING);
                 word_add(srcFull, src);
                 printf("copy: %s -> %s\n\n", srcFull, targetPath);
-                if (!OPTION_FLAG_NOCOPY) { File_copy(targetPath, srcFull); }
+                File_copy(targetPath, srcFull);
             }
         }
     }
@@ -468,9 +495,9 @@ int main(int argc, char * argv[]) {
         // printWordArr((const char **) argArr, argArrTeile);
         freeWordArr(argArr, argArrTeile);
         if (word_compare(argArr[2], "main") == 0) {
-            add(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_MAIN, PATH_COMMAND_FUNC_MAIN, argArr[3], argv[2]);
+            add(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_MAIN, PATH_COMMAND_FUNC_MAIN, argArr[3], argv[curArg+1]);
         } else if (word_compare(argArr[2], "sub") == 0) {
-            add(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_SUB, PATH_COMMAND_FUNC_SUB, argArr[3], argv[2]);
+            add(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_SUB, PATH_COMMAND_FUNC_SUB, argArr[3], argv[curArg+1]);
         }
     } else if (word_compare("package", argv[curArg]) == 0) {
         package(argv[curArg+1], PATH_PACKAGE_LIST);
@@ -487,9 +514,9 @@ int main(int argc, char * argv[]) {
         // printWordArr((const char **) argArr, argArrTeile);
         freeWordArr(argArr, argArrTeile);
         if (word_compare(argArr[2], "main") == 0) {
-            removeC(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_MAIN, PATH_COMMAND_FUNC_MAIN, argArr[3], argv[2]);
+            removeC(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_MAIN, PATH_COMMAND_FUNC_MAIN, argArr[3], argv[curArg+1]);
         } else if (word_compare(argArr[2], "sub") == 0) {
-            removeC(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_SUB, PATH_COMMAND_FUNC_SUB, argArr[3], argv[2]);
+            removeC(PATH_COMMAND_LIST, PATH_COMMAND_DEF, PATH_COMMAND_CUT_SUB, PATH_COMMAND_FUNC_SUB, argArr[3], argv[curArg+1]);
         }
     } else if (word_compare("removeP", argv[curArg]) == 0) {
 

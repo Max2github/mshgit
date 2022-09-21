@@ -11,6 +11,10 @@ o/main/*.o
 o/sub/*.o
 o/*.o
 shell.o
+**.obj
+**/Debug/*
+**/x64/*
+**/Release/*
 
 # unnecessary executables
 msh
@@ -19,14 +23,17 @@ build/msh*
 devel
 
 # Commands
+src/Commands/*
 src/Commands/main/*.c
 src/Commands/sub/*.c
 src/Commands/cparts/*.txt
 src/Commands/cparts/*.h
 
+src/cparts/*
 src/cparts/commandList.txt
 src/cparts/readZeile_commandCut_main.txt
 src/cparts/readZeile_commandCut_sub.txt
 src/cparts/readZeile_commandFunc_main.txt
 src/cparts/readZeile_commandFunc_sub.txt
 src/cparts/command_def.h
+/x64/Debug

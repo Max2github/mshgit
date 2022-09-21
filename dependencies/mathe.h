@@ -4,6 +4,13 @@
 extern "C" {
 #endif
 
+#ifdef max
+#undef max
+#endif
+#ifdef min
+#undef min
+#endif
+
 int Klammern(char text[], char saveto[]);
 long double rechnen(char text[6]);
 double hoch(double basis, int exponent);

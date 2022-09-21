@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include "dependencies/words.h"
 
-#ifdef WINDOWS
-#include <direct.h>
-#define GetCurrentDir _getcwd
-#else
-#include <unistd.h>
-#define GetCurrentDir getcwd
+#if defined(WINDOWS) || defined(WIN32) || defined(_WIN32)
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#elif defined(__unix__)
+    #include <unistd.h>
+#   define GetCurrentDir getcwd
 #endif
 
 #define DEFAULT_MAIN "main.msh"

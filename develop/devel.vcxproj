@@ -129,9 +129,6 @@
   <ItemGroup>
     <ClCompile Include="develop.c" />
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="..\o\lib\all.o" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

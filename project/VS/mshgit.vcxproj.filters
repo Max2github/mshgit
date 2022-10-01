@@ -9,60 +9,56 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Ressourcendateien">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="shell.c">
+    <ClCompile Include="$(ProjectDir)\src\alg.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\alg.c">
+    <ClCompile Include="$(ProjectDir)\src\execute.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\execute.c">
+    <ClCompile Include="$(ProjectDir)\src\func.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\func.c">
+    <ClCompile Include="$(ProjectDir)\src\Commands\dependencies\list.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\manage.c">
+    <ClCompile Include="$(ProjectDir)\src\manage.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\readZeile.c">
+    <ClCompile Include="$(ProjectDir)\src\Commands\msh_comand_sub_pointto.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Commands\msh_comand_sub_pointto.c">
+    <ClCompile Include="$(ProjectDir)\src\readZeile.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Commands\spezial.c">
+    <ClCompile Include="$(ProjectDir)\shell.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Commands\super.c">
+    <ClCompile Include="$(ProjectDir)\src\Commands\spezial.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Commands\dependencies\list.c">
+    <ClCompile Include="$(ProjectDir)\src\Commands\super.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\alg.h">
+    <ClInclude Include="$(ProjectDir)\include\alg.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="include\func.h">
+    <ClInclude Include="$(ProjectDir)\include\func.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="include\list.h">
+    <ClInclude Include="$(ProjectDir)\include\list.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="include\msh.h">
+    <ClInclude Include="$(ProjectDir)\include\msh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="include\super.h">
+    <ClInclude Include="$(ProjectDir)\dependencies\std.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\std.h">
+    <ClInclude Include="$(ProjectDir)\include\super.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

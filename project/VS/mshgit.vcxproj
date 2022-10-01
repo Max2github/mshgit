@@ -70,14 +70,41 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros">
+    <ProjectDir>../../</ProjectDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
+    <SourcePath>$(VC_SourcePath);$(ProjectDir)</SourcePath>
+    <IntDir>$(ProjectDir)\o\VS\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>build\VS\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
+    <SourcePath>$(VC_SourcePath);$(ProjectDir)</SourcePath>
+    <IntDir>$(ProjectDir)\o\VS\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>build\VS\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
+    <SourcePath>$(VC_SourcePath);$(ProjectDir)</SourcePath>
+    <IntDir>$(ProjectDir)\o\VS\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>build\VS\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
+    <SourcePath>$(VC_SourcePath);$(ProjectDir)</SourcePath>
+    <IntDir>$(ProjectDir)\o\VS\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>build\VS\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <ObjectFileName>$(ProjectDir)\o\VS\$(IntDir)%(RelativeDir)</ObjectFileName>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,7 +119,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <ObjectFileName>$(ProjectDir)\o\VS\$(IntDir)%(RelativeDir)</ObjectFileName>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,12 +138,15 @@
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <ObjectFileName>$(ProjectDir)\o\VS\$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <BuildLog>
+      <Path>$(ProjectDir)\log\VS\$(IntDir)$(MSBuildProjectName).log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -126,7 +157,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <ObjectFileName>$(ProjectDir)\o\VS\$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,26 +165,29 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <BuildLog>
+      <Path>$(ProjectDir)\log\VS\$(IntDir)$(MSBuildProjectName).log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="shell.c" />
-    <ClCompile Include="src\alg.c" />
-    <ClCompile Include="src\Commands\dependencies\list.c" />
-    <ClCompile Include="src\Commands\msh_comand_sub_pointto.c" />
-    <ClCompile Include="src\Commands\spezial.c" />
-    <ClCompile Include="src\Commands\super.c" />
-    <ClCompile Include="src\execute.c" />
-    <ClCompile Include="src\func.c" />
-    <ClCompile Include="src\manage.c" />
-    <ClCompile Include="src\readZeile.c" />
+    <ClCompile Include="$(ProjectDir)\shell.c" />
+    <ClCompile Include="$(ProjectDir)\src\alg.c" />
+    <ClCompile Include="$(ProjectDir)\src\Commands\dependencies\list.c" />
+    <ClCompile Include="$(ProjectDir)\src\Commands\msh_comand_sub_pointto.c" />
+    <ClCompile Include="$(ProjectDir)\src\Commands\spezial.c" />
+    <ClCompile Include="$(ProjectDir)\src\Commands\super.c" />
+    <ClCompile Include="$(ProjectDir)\src\execute.c" />
+    <ClCompile Include="$(ProjectDir)\src\func.c" />
+    <ClCompile Include="$(ProjectDir)\src\manage.c" />
+    <ClCompile Include="$(ProjectDir)\src\readZeile.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dependencies\std.h" />
-    <ClInclude Include="include\alg.h" />
-    <ClInclude Include="include\func.h" />
-    <ClInclude Include="include\list.h" />
-    <ClInclude Include="include\msh.h" />
-    <ClInclude Include="include\super.h" />
+    <ClInclude Include="$(ProjectDir)\dependencies\std.h" />
+    <ClInclude Include="$(ProjectDir)\include\alg.h" />
+    <ClInclude Include="$(ProjectDir)\include\func.h" />
+    <ClInclude Include="$(ProjectDir)\include\list.h" />
+    <ClInclude Include="$(ProjectDir)\include\msh.h" />
+    <ClInclude Include="$(ProjectDir)\include\super.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

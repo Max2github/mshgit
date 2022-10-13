@@ -48,6 +48,10 @@ int msh_command_isSpezial(char Code[], FUNC_LOCAL_STACK * stack) {
         replaceS(newCond, "def()", "");
         msh_command_spezial_def(newCond, newText);
         return 1;
+    } else if (find(repl, "val()") != 0) {
+        replaceS(newCond, "val()", "");
+        msh_command_spezial_val(newCond, newText, stack);
+        return 1;
     } else if (find(repl, "if()") != 0) {
         replaceS(newCond, "if()", "");
         msh_command_spezial_if(newCond, newText, stack);
@@ -75,6 +79,35 @@ int msh_command_isSpezial(char Code[], FUNC_LOCAL_STACK * stack) {
 void msh_command_spezial_def(char Cond[], char text[]) {
     msh_push_Var(text, Cond);
 };
+void msh_command_spezial_val(char Cond[], char text[], FUNC_LOCAL_STACK * stack) {
+    // get var
+    int local = 0;
+    if (IN_FUNC && msh_func_get_local_Var_index(text, stack) != -1) {
+        superstring textS = msh_func_get_local_Var(text, stack);
+        s_stringify(textS, text);
+        local = 1;
+    } else {
+        msh_get_Var(text, text);
+    }
+
+    // replace
+    replaceS(text, "=", "&/equals//");
+    replaceS(text, "\r", "\\r");
+    replaceS(text, "\n", "\\n");
+
+    // update var
+    if (local) {
+        msh_func_update_local_Var(Cond, text, stack);
+    } else {
+        char var[VAR_MAXCHAR];
+        int index = msh_get_Var(Cond, var);
+        if (index == -1) {
+            msh_push_Var(text, Cond);
+        } else {
+            word_copy(VAR_SPEICHER[index], text);
+        };
+    }
+}
 int msh_check_if(char Cond[]) {
     // Bedingung 1 : "=="
     char ** Bed1;
@@ -221,7 +254,7 @@ void msh_command_spezial_foreach(char Cond[], char text[], FUNC_LOCAL_STACK * st
         if (word_compare(arr_Teile[i], "&/null//") == 0 || word_compare(arr_Teile[i], "") == 0) {
             i++;
             // sprintf(value, "%s",  arr_Teile[i]);
-            word_copy(value, arr_Teile[i]);
+            // word_copy(value, arr_Teile[i]);
             continue;
         }
         word_copy(VAR_SPEICHER[var_index], value);

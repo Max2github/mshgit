@@ -18,6 +18,7 @@ int msh_Breaks(char Code[], FUNC_LOCAL_STACK * stack); // 197
 
 // spezial
 int msh_command_isSpezial(char Code[], FUNC_LOCAL_STACK * stack); // 355
+void msh_command_spezial_val(char Cond[], char text[], FUNC_LOCAL_STACK * stack);
 void msh_command_spezial_def(char Cond[], char text[]); // 373
 void msh_command_spezial_if(char Cond[], char text[], FUNC_LOCAL_STACK * stack); // 376
 void msh_command_spezial_for(char Cond[], char text[], FUNC_LOCAL_STACK * stack); // 448
@@ -30,6 +31,9 @@ int msh_readZeile(char Zeile[], FUNC_LOCAL_STACK * stack); // 483
 int msh_readScript(char Script[]); // 662
 int msh_readFunc(char Script[], FUNC_LOCAL_STACK * stack); // 676
 int msh_readFile(char filename[]); // 688
+
+void msh_freeRessources();
+// void msh_initRessources();
 
 #ifdef __cplusplus
 }

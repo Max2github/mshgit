@@ -5,7 +5,7 @@
 #if defined(WINDOWS) || defined(WIN32) || defined(_WIN32)
     #include <direct.h>
     #define GetCurrentDir _getcwd
-#elif defined(__unix__)
+#else
     #include <unistd.h>
 #   define GetCurrentDir getcwd
 #endif

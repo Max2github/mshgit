@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SUPERSTRING_H_H
+#define SUPERSTRING_H_H
+
 /**
  * This library defines 4 new datatypes:
  * 1.) superstring
@@ -99,4 +101,6 @@ superstring s_replaceFirstStr(superstring text, char * search, char * repl);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

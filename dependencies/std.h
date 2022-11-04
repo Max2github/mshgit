@@ -1,6 +1,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../../lib/templates/def.h"
+#include "../../../lib/templates/simple_list.h"
+#include "../../../lib/templates/simple_array.h"
 
 // toogle
 #define FILESYSTEM 1

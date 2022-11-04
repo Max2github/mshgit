@@ -28,10 +28,12 @@ int msh_readScript(char Script[]) {
     char ** Zeilen;
     int Zeilen_Anzahl = split(Script, "\n", &Zeilen);
     // printf("%d\n", Zeilen_Anzahl);
+    msh_info msh = MSH_INFO_DEFAULT;
     for (msh_Script_it = 0; msh_Script_it <= Zeilen_Anzahl; msh_Script_it++) {
         // printf("it: %d\n", msh_Script_it);
-        if (!check_Func(Zeilen)) {
-            msh_readZeile(Zeilen[msh_Script_it], NULL);
+        if (!check_Func(Zeilen) && !check_bigdata(&msh, Zeilen)) {
+            msh.info.line = msh_Script_it + 1;
+            msh_readZeile(&msh, Zeilen[msh_Script_it]);
             if (msh_STOP == 1) {
                 msh_STOP = 0;
                 break;
@@ -42,13 +44,21 @@ int msh_readScript(char Script[]) {
     msh_freeRessources();
     return 0;
 };
-int msh_readFunc(char Script[], FUNC_LOCAL_STACK * stack) {
+int msh_readFunc(msh_info * msh, const char Script[], const char * funcName) {
     char ** Zeilen;
     int msh_Script_it_echt = msh_Script_it;
+
+    // save in_func and add state in func
+    int IN_FUNC_old = IN_FUNC;
+    bool msh_in_func_old = msh->info.in_func;
     IN_FUNC = 1;
+    msh->info.in_func = true;
+    msh_func_deph_add_func(msh, funcName);
+
     int Zeilen_Anzahl = split(Script, "\n", &Zeilen);
     for (int FuncI = 0; FuncI <= Zeilen_Anzahl; FuncI++) {
-        msh_readZeile(Zeilen[FuncI], stack);
+        msh->info.line = FuncI + 1;
+        msh_readZeile(msh, Zeilen[FuncI]);
         if (msh_STOP == 1) {
             msh_STOP = 0;
             break;
@@ -59,6 +69,12 @@ int msh_readFunc(char Script[], FUNC_LOCAL_STACK * stack) {
         }
     };
     freeWordArr(Zeilen, Zeilen_Anzahl);
+    // reset in_func state
+
+    IN_FUNC = IN_FUNC_old;
+    msh->info.in_func = msh_in_func_old;
+    msh_func_depth_remove_last_func(msh);
+
     // reset func-memory / stack
     // msh_func_stack_print(FUNC_STACKS, msh_func_stacks_count(FUNC_STACKS) - 1);
     // FUNC_STACKS = msh_func_remove_last(FUNC_STACKS);

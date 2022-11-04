@@ -4,75 +4,6 @@
 #include "../dependencies/words.h"
 #include "../include/msh.h"
 
-/*
-int msh_func_stacks_count(FUNC_STACK head) {
-    int i = 0;
-    for (; head != NULL; i++) { head = head->next; }
-    return i;
-}
-void msh_func_stack_print(FUNC_STACK head, int stack_id) {
-    MSH_PUTS("READ");
-        MSH_PRINTF("Stack %d:\n", stack_id);
-        s_arr_print(*msh_func_get_func_var_names_pointer(stack_id));
-        s_arr_print(*msh_func_get_func_var_speicher_pointer(stack_id));
-    MSH_PUTS("READ END");
-}
-void msh_func_stacks_print(FUNC_STACK head) {
-    MSH_PUTS("READ");
-    int i = 0;
-    for (;head != NULL; i++) {
-        MSH_PRINTF("Stack %d:\n", i);
-        s_arr_print(head->VAR_NAMES);
-        s_arr_print(head->VAR_SPEICHER);
-        head = head->next;
-    }
-    MSH_PUTS("READ END");
-}
-FUNC_STACK msh_func_create_new_stack(FUNC_STACK head) {
-    FUNC_STACK new_FUNC_stack = (FUNC_STACK) MSH_MALLOC(sizeof(FUNC_ONE_STACK));
-    new_FUNC_stack->VAR_NAMES = NULL;
-    new_FUNC_stack->VAR_SPEICHER = NULL;
-    if (head == NULL) {
-        new_FUNC_stack->next = NULL;
-        return new_FUNC_stack;
-    }
-    new_FUNC_stack->next = NULL;
-    FUNC_STACK temp = head;
-    for (;temp->next != NULL; temp = temp->next);
-    temp->next = new_FUNC_stack;
-    return head;
-}
-FUNC_STACK msh_func_remove_last(FUNC_STACK head) {
-    if (head == NULL) { return NULL; }
-    if (head->next == NULL) {
-        s_arr_free(head->VAR_NAMES);
-        s_arr_free(head->VAR_SPEICHER);
-        MSH_FREE(head);
-        return NULL;
-    }
-    FUNC_STACK temp = head;
-    for (;temp->next->next != NULL; temp = temp->next);
-    s_arr_free(temp->next->VAR_NAMES);
-    s_arr_free(temp->next->VAR_SPEICHER);
-    MSH_FREE(temp->next);
-    temp->next = NULL;
-    return head;
-}
-void msh_func_remove_all() {
-    while (FUNC_STACKS != NULL){
-        FUNC_STACKS = msh_func_remove_last(FUNC_STACKS);
-    }
-}
-s_arr * msh_func_get_func_var_names_pointer(int func_speicher_index) {
-    FUNC_STACK temp = FUNC_STACKS;
-    for (int i = 0; i < func_speicher_index; i++) { temp = temp->next; }
-    return &(temp->VAR_NAMES);
-}
-s_arr * msh_func_get_func_var_speicher_pointer(int func_speicher_index) {
-    FUNC_STACK temp = FUNC_STACKS;
-    for (int i = 0; i < func_speicher_index; i++) { temp = temp->next; }
-    return &(temp->VAR_SPEICHER);
-} */
 int msh_func_get_local_Var_index(const char name[], FUNC_LOCAL_STACK * stack) {
     superstring nameS = s_init(name);
     // s_arr func_var_names = *msh_func_get_func_var_names_pointer(func_speicher_index);
@@ -156,8 +87,7 @@ superstring msh_func_get_code(const char name[]) {
     return s_arr_getEl(FUNC_SPEICHER, msh_func_get_index(name));
 }
 
-void msh_func_call(const char * name) {
-    int IN_FUNC_old = IN_FUNC;
+void msh_func_call(msh_info * msh, const char * name) {
     // FUNC_STACKS = msh_func_create_new_stack(FUNC_STACKS);
     // int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
     FUNC_LOCAL_STACK stack;
@@ -184,7 +114,6 @@ void msh_func_call(const char * name) {
             superstring nameS = temp->element; // the current argument / just for better understanding
 
             // define the names (without the values) in the stack
-            // *func_var_names_pointer = s_arr_addFirst(*func_var_names_pointer, s_copy(nameS));
             stack.VAR_NAMES = s_arr_addFirst(stack.VAR_NAMES, s_copy(nameS));
         }
         s_arr_free(argList);
@@ -208,19 +137,12 @@ void msh_func_call(const char * name) {
             if (find(argArray[i], ":")) {
                 char ** argTeile;
                 int argTeile_Anzahl = split(argArray[i], ":", &argTeile);
-                /* if (s_arr_len(*func_var_speicher_pointer) != s_arr_len(*func_var_names_pointer)) {
-                    *func_var_speicher_pointer = s_arr_addFirst(*func_var_speicher_pointer, s_init(argTeile[1]));
-                } else {
-                    msh_func_update_local_Var(argTeile[0], argTeile[1], stack_id);
-                } */
                 if (s_arr_len(stack.VAR_SPEICHER) != s_arr_len(stack.VAR_NAMES)) {
                     stack.VAR_SPEICHER = s_arr_addFirst(stack.VAR_SPEICHER, s_init(argTeile[1]));
                 } else {
                     // msh_func_update_local_Var(argTeile[0], argTeile[1], stack_id);
                 }
                 freeWordArr(argTeile, argTeile_Anzahl);
-            // } else if (s_arr_len(*func_var_speicher_pointer) < s_arr_len(*func_var_names_pointer)) {
-            //     *func_var_speicher_pointer = s_arr_addFirst(*func_var_speicher_pointer, s_init(argArray[i]));
             } else if (s_arr_len(stack.VAR_SPEICHER) < s_arr_len(stack.VAR_NAMES)) {
                 stack.VAR_SPEICHER = s_arr_addFirst(stack.VAR_SPEICHER, s_init(argArray[i]));
             } else {
@@ -231,17 +153,16 @@ void msh_func_call(const char * name) {
 
         freeWordArr(wordArr, Teile);
     }
-    // if (s_arr_len(*func_var_speicher_pointer) != s_arr_len(*func_var_names_pointer)) {
      if (s_arr_len(stack.VAR_SPEICHER) != s_arr_len(stack.VAR_NAMES)) {
-        // s_arr_print(FUNC_VAR_NAMES);
-        // s_arr_print(FUNC_VAR_SPEICHER);
         msh_error("count of required arguments and provided arguments is not even!\n!! Abording");
-        // msh_func_remove_last(FUNC_STACKS);
+        s_arr_free(stack.VAR_NAMES);
+        s_arr_free(stack.VAR_SPEICHER);
         return;
     }
+    // give stack to msh_info
+    msh->stack = &stack;
     // executing function
-    msh_readFunc(codeStr, &stack);
+    msh_readFunc(msh, codeStr, name);
     s_arr_free(stack.VAR_NAMES);
     s_arr_free(stack.VAR_SPEICHER);
-    IN_FUNC = IN_FUNC_old;
 }

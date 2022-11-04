@@ -1,4 +1,6 @@
-#pragma once
+#ifndef LIST_H_H
+#define LIST_H_H
+
 #include <stdarg.h>
 
 #ifdef __cplusplus
@@ -99,4 +101,6 @@ void list_sort(list head, sort_key keyword);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

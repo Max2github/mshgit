@@ -37,6 +37,19 @@ void msh_error(const char * msg) {
     printf("!! ERROR at line %d : %s!\n", msh_Script_it + 1, msg);
 }
 
+void msh_error_new(const msh_info * msh, const char * msg) {
+    if(msh->info.in_func) {
+        printf("!! ERROR at line %d", msh->info.line);
+        msh_func_depth temp = msh->info.funcs;
+        SIMPLE_LIST_FOREACH(temp, 
+            printf("in %s", temp->data);
+        )
+        printf(" : %s!\n", msg);
+        return;
+    }
+    printf("!! ERROR at line %d : %s!\n", msh->info.line, msg);
+}
+
 void set_msh_Wert(const char * w) {
     // while (MSH_MUTEX); // wait till other threads are finished
     // MSH_MUTEX = 1;
@@ -51,4 +64,40 @@ void set_msh_Wert(const char * w) {
 
 void msh_add_on_exit(void(*function)()) {
     MSH_ON_EXIT = list_addFirst(MSH_ON_EXIT, Char_pointer, (char *) function, End);
+}
+
+const char * get_msh_Wert_new(msh_info * msh) {
+    // return (const char *) info->wert.data;
+    return msh->wert;
+}
+void set_msh_Wert_new(msh_info * msh, const char * value) {
+    // SIMPLE_ARRAY_APPEND_DATA(info->wert, value, word_len(value) + 1);
+    // SIMPLE_ARRAY_WRITE(info->wert, 0, value, word_len(value) + 1)
+    word_copy(msh->wert, value);
+}
+
+void msh_func_deph_add_func(msh_info * msh, const char * name) {
+    msh_func_depth temp = msh->info.funcs;
+    char * allocValue = MSH_MALLOC(word_len(name) + 1);
+    SIMPLE_LIST_ADDLAST(temp, allocValue);
+    if (msh->info.funcs == NULL) {
+        msh->info.funcs = temp;
+    }
+}
+
+void msh_func_depth_remove_last_func(msh_info * msh) {
+    if (msh->info.funcs == NULL) {
+        msh_error_new(msh, "Internal: Could not remove last funcname from info. There are no funcnames in the info!");
+        return;
+    }
+    msh_func_depth temp = msh->info.funcs;
+    msh_func_depth before = NULL;
+    while ((msh_func_depth) temp->next != NULL) {
+        before = temp;
+        temp = (msh_func_depth) temp->next;
+    }
+    MSH_FREE((char *) temp->data);
+    MSH_FREE(temp);
+    before->next = (long) NULL;
+    return;
 }

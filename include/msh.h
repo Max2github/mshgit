@@ -1,6 +1,12 @@
-#pragma once
+#ifndef MSH_H
+#define MSH_H
+
+#include "../include/alg.h"
 #include "../dependencies/list.h"
 #include "../include/func.h"
+
+#define MSH_CALLINFO_DEFAULT { 1, false, NULL }
+#define MSH_INFO_DEFAULT { NULL, MSH_CALLINFO_DEFAULT, NULL }
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,9 +33,11 @@ void msh_command_spezial_forcount(char Cond[], char text[], FUNC_LOCAL_STACK * s
 void msh_command_spezial_while(char Cond[], char text[], FUNC_LOCAL_STACK * stack); // 478
 
 // execute
-int msh_readZeile(char Zeile[], FUNC_LOCAL_STACK * stack); // 483
+// int msh_readZeile(char Zeile[], FUNC_LOCAL_STACK * stack); // 483
+int msh_readZeile(msh_info * msh, const char * Zeile);
 int msh_readScript(char Script[]); // 662
-int msh_readFunc(char Script[], FUNC_LOCAL_STACK * stack); // 676
+// int msh_readFunc(char Script[], FUNC_LOCAL_STACK * stack); // 676
+int msh_readFunc(msh_info * msh, const char * Script, const char * funcName);
 int msh_readFile(char filename[]); // 688
 
 void msh_freeRessources();
@@ -37,4 +45,6 @@ void msh_freeRessources();
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

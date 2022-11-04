@@ -1,4 +1,4 @@
-#include "../../../lib/list.h"
-#include "../../../lib/superstring.h"
-#include "../../../lib/mathe.h"
-//#include "../../../lib/words.h"
+#include "../../../lib/src/list.h"
+#include "../../../lib/src/superstring.h"
+#include "../../../lib/src/mathe.h"
+//#include "../../../lib/src/words.h"

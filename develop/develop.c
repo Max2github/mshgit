@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../dependencies/words.h"
+// #include "../../../lib/word_pick_h.h"
+#include "../../../lib/src/word_pick.h"
 
 #if defined(WINDOWS) || defined(WIN32) || defined(_WIN32)
     #include <direct.h>
@@ -98,7 +100,6 @@ bool File_deleteBytes(const  char * path, long startPos, int bytes) {
 }
 
 bool File_insertBytes(const char * path, long startPos, const char * byteStream, int bytes) {
-
     FILE* file = NULL;
     file_open(&file, path, "r+");
     if (file == NULL) { return false; }
@@ -211,7 +212,7 @@ void add(const char * list, const char * def, const char * cut, const char * fun
     word_add(temp, def);
     FILE* def_custom = NULL;
     file_open(&def_custom, temp, "a");
-    fputs("void ", def_custom); fputs(full, def_custom); fputs("();", def_custom); fputc('\n', def_custom);
+    fputs("void ", def_custom); fputs(full, def_custom); fputs("(msh_info *);", def_custom); fputc('\n', def_custom);
     fclose(def_custom);
 
     // add to cut
@@ -231,7 +232,7 @@ void add(const char * list, const char * def, const char * cut, const char * fun
     file_open(&func_main, temp, "a");
     fputs("int found_", func_main); fputs(name, func_main); fputs(" = find(newZeile, \"", func_main); fputs(nameMsh, func_main); fputs("()\");\n", func_main);
     fputs("if (found_", func_main); fputs(name, func_main); fputs(" != 0) {\n", func_main);
-    fputs("    ", func_main); fputs(full, func_main); fputs("();\n", func_main);
+    fputs("    ", func_main); fputs(full, func_main); fputs("(msh);\n", func_main);
     fputs("};\n", func_main);
     fclose(func_main);
 }
@@ -318,7 +319,7 @@ void removeC(const char * list, const char * def, const char * cut, const char *
     // delete from def
     temp[word_len(path)] = '\0';
     word_add(temp, def);
-    word_copy(toRemove, "void "); word_add(toRemove, full); word_add(toRemove, "();");
+    word_copy(toRemove, "void "); word_add(toRemove, full); word_add(toRemove, "(msh_info *);");
     removeStatement(temp, nameMsh, toRemove);
 
     // delete from cut
@@ -334,11 +335,51 @@ void removeC(const char * list, const char * def, const char * cut, const char *
     removeStatement(temp, nameMsh, toRemove);
     word_copy(toRemove, "if (found_"); word_add(toRemove, name); word_add(toRemove, " != 0) {");
     removeStatement(temp, nameMsh, toRemove);
-    word_copy(toRemove, "    "); word_add(toRemove, full); word_add(toRemove, "();");
+    word_copy(toRemove, "    "); word_add(toRemove, full); word_add(toRemove, "(msh);");
     removeStatement(temp, nameMsh, toRemove);
     word_copy(toRemove, "};");
 
     // removeStatement(temp, nameMsh, toRemove);
+}
+
+void package_readConfig_C(const char * line) {
+    word_picker_array spl = word_pick_split(line, " ");
+    if (spl.written == 0) { return; }
+    if (word_pick_compare(WORD_PICKER_ARRAY_GET(spl, 0), "")) {
+        
+    }
+    SIMPLE_ARRAY_FREE(spl);
+}
+void package_readConfig_M(const char * line) {
+    word_picker_array spl = word_pick_split(line, " ");
+    if (spl.written == 0) { return; }
+    word_picker keyword = WORD_PICKER_ARRAY_GET(spl, 0);
+
+    if (spl.written >= 5 && word_pick_compare(keyword, "lib") == 0) {
+        const char libpath[] = "../../lib/";
+        word_picker key1 = WORD_PICKER_ARRAY_GET(spl, 1);
+        word_picker val1 = WORD_PICKER_ARRAY_GET(spl, 2);
+        word_picker key2 = WORD_PICKER_ARRAY_GET(spl, 3);
+        word_picker val2 = WORD_PICKER_ARRAY_GET(spl, 4);
+
+        if (word_pick_compare(key1, "-h")) {
+            // header
+        }
+        // else if ...
+
+        if (word_pick_compare(key2, "-c")) {
+            // source
+        }
+        // else if ...
+    } else if (spl.written >= 3 && word_pick_compare(keyword, "set") == 0) {
+        word_picker key = WORD_PICKER_ARRAY_GET(spl, 1);
+        word_picker value = WORD_PICKER_ARRAY_GET(spl, 2);
+
+        // add to dependencies/std.h
+        // #undef <key>
+        // #define <key> <value>
+    }
+    SIMPLE_ARRAY_FREE(spl);
 }
 
 void package(const char * path, const char * list) {
@@ -370,6 +411,22 @@ void package(const char * path, const char * list) {
 
     const char * reading = content;
     while (*reading != '\0') {
+        // check for special config
+        if (*reading == '#') {
+            len = word_len_until(reading, "\n");
+            char line[len+1];
+            word_copy_until(line, reading, "\n");
+            package_readConfig_C(line);
+            continue;
+        }
+        if (*reading == '-') {
+            len = word_len_until(reading, "\n");
+            char line[len+1];
+            word_copy_until(line, reading, "\n");
+            package_readConfig_M(line);
+            continue;
+        }
+        // read regular line
         len = word_len_until(reading, ":");
         char type[len+1];
         reading = word_copy_until(type, reading, ":");
@@ -380,10 +437,12 @@ void package(const char * path, const char * list) {
         char src[len+1];
         reading = word_copy_until(src, reading, "\n");
 
+        // remove blanks
         replaceS(type, " ", "");
         replaceS(name, " ", "");
         replaceS(src, " ", "");
 
+        // execute regular line
         replace(name, "-", "_"); // for names including '-' : in c '-' is an operator, in msh '_' is a space
         char full[200] = "msh_command_";
         word_add(full, type);

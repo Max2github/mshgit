@@ -39,7 +39,7 @@ void msh_error_old(const char * msg) {
 
 void msh_error(const msh_info * msh, const char * msg) {
     if(msh->info.in_func) {
-        printf("!! ERROR at line %d", msh->info.line);
+        printf("!! ERROR at line %d ", msh->info.line);
         msh_func_depth temp = msh->info.funcs;
         SIMPLE_LIST_FOREACH(temp, 
             printf("in %s", temp->data);
@@ -79,6 +79,7 @@ void set_msh_Wert(msh_info * msh, const char * value) {
 void msh_func_deph_add_func(msh_info * msh, const char * name) {
     msh_func_depth temp = msh->info.funcs;
     char * allocValue = MSH_MALLOC(word_len(name) + 1);
+    word_copy(allocValue, name);
     SIMPLE_LIST_ADDLAST(temp, allocValue);
     if (msh->info.funcs == NULL) {
         msh->info.funcs = temp;
@@ -96,8 +97,10 @@ void msh_func_depth_remove_last_func(msh_info * msh) {
         before = temp;
         temp = (msh_func_depth) temp->next;
     }
+    msh_func_depth next = (msh_func_depth) temp->next;
     MSH_FREE((char *) temp->data);
     MSH_FREE(temp);
-    before->next = (long) NULL;
+    if (before != NULL) { before->next = (long) next; }
+    else { msh->info.funcs = next; }
     return;
 }

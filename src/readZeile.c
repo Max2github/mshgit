@@ -6,7 +6,7 @@
 
 #include "cparts/command_def.h"
 
-void msh_command_sub_pointto();
+void msh_command_sub_pointto(msh_info *);
 
 int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack*/) {
     char ** Zeile_Teile;
@@ -80,7 +80,7 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
         if (found_pointTo == 0) {
             break;
         };
-        msh_command_sub_pointto();
+        msh_command_sub_pointto(msh);
         // printf("Wert: %s\n", msh_Wert);
     };
     // sub-commands

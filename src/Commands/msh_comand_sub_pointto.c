@@ -1,7 +1,7 @@
 #include "../../include/alg.h"
 #include "../../dependencies/words.h"
 
-void msh_command_sub_pointto() {
+void msh_command_sub_pointto(msh_info * msh) {
     char var_name[33];
     int i = 0;
     while (msh_Wert[i] != 'p' || msh_Wert[i+1] != 'o' || msh_Wert[i+2] != 'i' || msh_Wert[i+3] != 'n' || msh_Wert[i+4] != 't' || msh_Wert[i+5] != 'T' || msh_Wert[i+6] != 'o' || msh_Wert[i+7] != '(' || msh_Wert[i+8] != ')') {
@@ -12,7 +12,7 @@ void msh_command_sub_pointto() {
     int n = 0;
     while (msh_Wert[i] != '\\' || msh_Wert[i+1] != 'p') {
         if (n > 32) {
-            msh_error("Could not find finishing \"\\p\"!\n");
+            msh_error(msh, "Could not find finishing \"\\p\"!\n");
             replaceS(msh_Wert, "pointTo()", "");
             break;
         }

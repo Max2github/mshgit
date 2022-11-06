@@ -6,7 +6,7 @@
 #include "../include/func.h"
 
 #define MSH_CALLINFO_DEFAULT { 1, false, NULL }
-#define MSH_INFO_DEFAULT { NULL, MSH_CALLINFO_DEFAULT, NULL }
+#define MSH_INFO_DEFAULT { msh_Wert, MSH_CALLINFO_DEFAULT, NULL, NULL }
 
 #ifdef __cplusplus
 extern "C" {

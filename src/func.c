@@ -146,7 +146,7 @@ void msh_func_call(msh_info * msh, const char * name) {
             } else if (s_arr_len(stack.VAR_SPEICHER) < s_arr_len(stack.VAR_NAMES)) {
                 stack.VAR_SPEICHER = s_arr_addFirst(stack.VAR_SPEICHER, s_init(argArray[i]));
             } else {
-                msh_error("too many nameless arguments");
+                msh_error(msh, "too many nameless arguments");
             }
         }
         freeWordArr(argArray, argAnzahl);
@@ -154,7 +154,7 @@ void msh_func_call(msh_info * msh, const char * name) {
         freeWordArr(wordArr, Teile);
     }
      if (s_arr_len(stack.VAR_SPEICHER) != s_arr_len(stack.VAR_NAMES)) {
-        msh_error("count of required arguments and provided arguments is not even!\n!! Abording");
+        msh_error(msh, "count of required arguments and provided arguments is not even!\n!! Abording");
         s_arr_free(stack.VAR_NAMES);
         s_arr_free(stack.VAR_SPEICHER);
         return;

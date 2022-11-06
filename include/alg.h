@@ -64,11 +64,11 @@ extern int msh_Script_it;
     #endif
 #endif
 
-void msh_error(const char *);
-void msh_error_new(const msh_info *, const char *);
-void set_msh_Wert(const char *);
+void msh_error_old(const char *);
+void msh_error(const msh_info *, const char *);
+void set_msh_Wert_old(const char *);
 // const char * get_msh_Wert();
-void set_msh_Wert_new(msh_info *, const char *);
+void set_msh_Wert(msh_info *, const char *);
 const char * get_msh_Wert(const msh_info *);
 
 void msh_add_on_exit(void(*function)());

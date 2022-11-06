@@ -63,7 +63,7 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     };
     replaceS(newZeile, "&/equals//", "=");
     // word_copy(msh_Wert, newZeile);
-    set_msh_Wert(newZeile);
+    set_msh_Wert(msh, newZeile);
     // printf("%s\n", newZeile);
 
     // cut functions out of value
@@ -124,7 +124,7 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
             int index = msh_get_Var(var_el[0], var);
             // printf("    %d : %s\n", index, var);
             if (index == -1) {
-                msh_error("Object does not exist!");
+                msh_error(msh, "Object does not exist!");
                 return 1;
             } else {
                 char newWert[VAR_MAXCHAR];

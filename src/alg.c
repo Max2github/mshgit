@@ -29,7 +29,7 @@ int msh_Script_it = 0;
     int MSH_PRINT_MUTEX;
 #endif
 
-void msh_error(const char * msg) {
+void msh_error_old(const char * msg) {
     if (IN_FUNC) {
         printf("!! ERROR at line %d (inside a func) : %s!\n", msh_Script_it + 1, msg);
         return;
@@ -37,7 +37,7 @@ void msh_error(const char * msg) {
     printf("!! ERROR at line %d : %s!\n", msh_Script_it + 1, msg);
 }
 
-void msh_error_new(const msh_info * msh, const char * msg) {
+void msh_error(const msh_info * msh, const char * msg) {
     if(msh->info.in_func) {
         printf("!! ERROR at line %d", msh->info.line);
         msh_func_depth temp = msh->info.funcs;
@@ -50,7 +50,7 @@ void msh_error_new(const msh_info * msh, const char * msg) {
     printf("!! ERROR at line %d : %s!\n", msh->info.line, msg);
 }
 
-void set_msh_Wert(const char * w) {
+void set_msh_Wert_old(const char * w) {
     // while (MSH_MUTEX); // wait till other threads are finished
     // MSH_MUTEX = 1;
     word_copy(msh_Wert, w);
@@ -70,7 +70,7 @@ const char * get_msh_Wert_new(msh_info * msh) {
     // return (const char *) info->wert.data;
     return msh->wert;
 }
-void set_msh_Wert_new(msh_info * msh, const char * value) {
+void set_msh_Wert(msh_info * msh, const char * value) {
     // SIMPLE_ARRAY_APPEND_DATA(info->wert, value, word_len(value) + 1);
     // SIMPLE_ARRAY_WRITE(info->wert, 0, value, word_len(value) + 1)
     word_copy(msh->wert, value);
@@ -87,7 +87,7 @@ void msh_func_deph_add_func(msh_info * msh, const char * name) {
 
 void msh_func_depth_remove_last_func(msh_info * msh) {
     if (msh->info.funcs == NULL) {
-        msh_error_new(msh, "Internal: Could not remove last funcname from info. There are no funcnames in the info!");
+        msh_error(msh, "Internal: Could not remove last funcname from info. There are no funcnames in the info!");
         return;
     }
     msh_func_depth temp = msh->info.funcs;

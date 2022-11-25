@@ -5,13 +5,20 @@ test*
 
 # unnecessairy .o files
 o/lib/*.o
+# makefile
 o/dependencies/*.o
 o/lib/*.o
 o/main/*.o
 o/sub/*.o
 o/*.o
 shell.o
-**.obj
+# Visual Studio
+o/VS/dependencies/*.obj
+o/VS/develop/*.obj
+o/VS/main/*.obj
+o/VS/sub/*.obj
+o/VS/*.obj
+o/VS/**.obj
 **/Debug/*
 **/x64/*
 **/Release/*

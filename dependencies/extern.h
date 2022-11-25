@@ -18,4 +18,5 @@
 
 // #include "../../../lib/mathe_h.h"
 #include "mathe.h"
-#include "../../../lib/superstring_h.h"
+// #include "../../../lib/superstring_h.h"
+#include "superstring.h"

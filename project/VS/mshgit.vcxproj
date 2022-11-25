@@ -138,19 +138,19 @@
     <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
     <SourcePath>$(VC_SourcePath);$(ProjectDir)</SourcePath>
     <IntDir>$(ProjectDir)\o\VS\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>build\VS\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)\build\VS\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
     <SourcePath>$(VC_SourcePath);$(ProjectDir)</SourcePath>
     <IntDir>$(ProjectDir)\o\VS\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>build\VS\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)\build\VS\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
     <SourcePath>$(VC_SourcePath);$(ProjectDir)</SourcePath>
     <IntDir>$(ProjectDir)\o\VS\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>build\VS\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)\build\VS\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
@@ -168,13 +168,13 @@
     <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
     <SourcePath>$(VC_SourcePath);$(ProjectDir)</SourcePath>
     <IntDir>$(ProjectDir)\o\VS\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>build\VS\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)\build\VS\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <IncludePath>$(LLVMInstallDir)\lib\clang\$(LLVMToolsVersion)\include;$(IncludePath);$(ProjectDir)</IncludePath>
     <SourcePath>$(VC_SourcePath);$(ProjectDir)</SourcePath>
     <IntDir>$(ProjectDir)\o\VS\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>build\VS\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)\build\VS\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -199,6 +199,7 @@
       <ConformanceMode>true</ConformanceMode>
       <ObjectFileName>$(ProjectDir)\o\VS\$(IntDir)%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -215,6 +216,7 @@
       <ConformanceMode>true</ConformanceMode>
       <ObjectFileName>$(ProjectDir)\o\VS\$(IntDir)%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -233,6 +235,7 @@
       <ConformanceMode>true</ConformanceMode>
       <ObjectFileName>$(ProjectDir)\o\VS\$(IntDir)%(RelativeDir)</ObjectFileName>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -289,6 +292,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ObjectFileName>$(ProjectDir)\o\VS\$(IntDir)%(RelativeDir)</ObjectFileName>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -310,6 +314,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ObjectFileName>$(ProjectDir)\o\VS\$(IntDir)%(RelativeDir)</ObjectFileName>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

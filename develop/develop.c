@@ -1,23 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../dependencies/words.h"
+#include "../dependencies/extern.h"
 // #include "../../../lib/word_pick_h.h"
-#include "../../../lib/src/word_pick.h"
 
-#if defined(WINDOWS) || defined(WIN32) || defined(_WIN32)
-    #include <direct.h>
-    #include <io.h>
-    #define GetCurrentDir _getcwd
-    #define PATH_SEP_CHAR '\\'
-    #define PATH_SEP_STRING "\\"
-    #define file_open(fileStruct, fileName, mode) fopen_s(fileStruct, fileName, mode)
-#else
-    #include <unistd.h>
-    #define GetCurrentDir getcwd
-    #define PATH_SEP_CHAR '/'
-    #define PATH_SEP_STRING "/"
-    #define file_open(fileStruct, fileName, mode) *(fileStruct) = fopen(fileName, mode)
-#endif
+// put up with it for now - source code !!!
+#include "../../../lib/src/word_pick.h"
+#include "../../../lib/src/fileIO.h"
 
 #define PATH_PACKAGE_LIST "src/cparts/packages.txt"
 #define PATH_COMMAND_LIST "src/cparts/commandList.txt"
@@ -33,120 +21,9 @@
 
 bool OPTION_FLAG_NOCOPY = false;
 
-char File_getCurrentByte(FILE * file) {
-    char b = fgetc(file);
-    // file->_offset--; // do not advance offset
-    fseek(file, -1, SEEK_CUR);
-    return b;
-}
-
-void File_setCurrentByte(char b, FILE * file) {
-    fputc(b, file);
-    // file->_offset--; // do not advance offset
-    fseek(file, -1, SEEK_CUR);
-}
-
-bool File_copy(const char * tar, const char * src) {
-    FILE* srcFile = NULL;
-    file_open(&srcFile, src, "r");
-    FILE* tarAlready = NULL;
-    file_open(&tarAlready, tar, "r");
-    if(tarAlready == NULL && srcFile != NULL) {
-        FILE* tarFile = NULL;
-        file_open(&tarFile, tar, "w");
-        int ch;
-        while((ch = fgetc(srcFile)) != EOF) { fputc(ch, tarFile); };
-        fclose(tarFile);
-    } else  {
-        fclose(tarAlready);
-    }
-    fclose(srcFile);
-    return true;
-}
-
-// move all bytes after the bytes to delete forward by one position
-bool File_deleteBytes(const  char * path, long startPos, int bytes) {
-    char byte = 'n'; // our dummy buffer
-    long readPos = startPos + bytes;
-    FILE* file = NULL;
-    file_open(&file, path, "r+");
-    if (file == NULL) { return false; }
-
-    fseek(file, 0, SEEK_END);
-    const long fileEndPos = ftell(file);
-
-    // read
-    fseek(file, readPos, SEEK_SET);
-    while((byte = fgetc(file)) != EOF /*fread(&byte, sizeof(byte), 1, file)*/) {
-        readPos++;
-        // readPos = ftell(file);
-
-        // write
-        fseek(file, startPos, SEEK_SET);
-        // fwrite(&byte, sizeof(byte), 1, file);
-        fputc(byte, file);
-        startPos++;
-        // startPos = ftell(file);
-        // switch to reading
-        fseek(file, readPos, SEEK_SET);
-    }
-#if defined(WINDOWS) || defined(WIN32) || defined(_WIN32)
-    _chsize_s(_fileno(file), fileEndPos - bytes);
-#else
-    ftruncate(fileno(file), fileEndPos - bytes);
-#endif
-    fclose(file);
-    return true;
-}
-
-bool File_insertBytes(const char * path, long startPos, const char * byteStream, int bytes) {
-    FILE* file = NULL;
-    file_open(&file, path, "r+");
-    if (file == NULL) { return false; }
-
-    fseek(file, 0, SEEK_END);
-    long endPos = ftell(file);
-    if (startPos > endPos) { startPos = endPos; }
-    long bytesWritten = endPos - startPos;
-
-    // set dummy at the end of the file if needed
-    for (int i = 0; i < bytes; i++) {
-        fputc(-1, file);
-    }
-
-    fseek(file, 0, SEEK_END);
-    long endPosOld = endPos;
-    endPos = ftell(file);
-    printf("%ld %ld\n", endPosOld, endPos);
-    long readPos = endPos - bytes - 1;
-    long targetPos = endPos - 1;
-    if (readPos < startPos) { readPos = startPos; }
-
-    fseek(file, readPos, SEEK_SET);
-    printf("w: %ld, n: %d, s:%c\n", bytesWritten, bytes, File_getCurrentByte(file));
-
-    // move all backwards
-    while(readPos >= startPos) {
-        // read
-        fseek(file, readPos, SEEK_SET);
-        char byte = File_getCurrentByte(file);
-        readPos--;
-        // write
-        fseek(file, targetPos, SEEK_SET);
-        File_setCurrentByte(byte, file);
-        // go back (we are reading backwards)
-        targetPos--;
-    }
-    // write our new content
-    fseek(file, startPos, SEEK_SET);
-    fwrite(byteStream, bytes, 1, file);
-    fclose(file);
-    return true;
-}
-
 long File_read_until(char * target, const char * path, const long startPos, const char search) {
     FILE* file = NULL;
-    file_open(&file, path, "r");
+    File_open(&file, path, "r");
     if (file == NULL) { return 0; }
 
     fseek(file, startPos, SEEK_SET);
@@ -175,7 +52,7 @@ void add(const char * list, const char * def, const char * cut, const char * fun
     word_copy(nameMsh, name);
     replace(nameMsh, "_", "-"); // for names including '-' : in c '-' is an operator, in msh '_' is a space
     FILE* commandList = NULL;
-    file_open(&commandList, temp, "a+");
+    File_open(&commandList, temp, "a+");
     if (commandList == NULL) {
         printf("!! ERROR: Can not open file \"%s\"!\n", temp);
         return;
@@ -211,7 +88,7 @@ void add(const char * list, const char * def, const char * cut, const char * fun
     word_copy(temp, path);
     word_add(temp, def);
     FILE* def_custom = NULL;
-    file_open(&def_custom, temp, "a");
+    File_open(&def_custom, temp, "a");
     fputs("void ", def_custom); fputs(full, def_custom); fputs("(msh_info *);", def_custom); fputc('\n', def_custom);
     fclose(def_custom);
 
@@ -219,7 +96,7 @@ void add(const char * list, const char * def, const char * cut, const char * fun
     word_copy(temp, path);
     word_add(temp, cut);
     FILE* cut_main = NULL;
-    file_open(&cut_main, temp, "a");
+    File_open(&cut_main, temp, "a");
     fputs("replaceS(msh_Wert, \"", cut_main);
     fputs(nameMsh, cut_main);
     fputs("()\", \"\");\n", cut_main);
@@ -229,7 +106,7 @@ void add(const char * list, const char * def, const char * cut, const char * fun
     word_copy(temp, path);
     word_add(temp, func);
     FILE* func_main = NULL;
-    file_open(&func_main, temp, "a");
+    File_open(&func_main, temp, "a");
     fputs("int found_", func_main); fputs(name, func_main); fputs(" = find(newZeile, \"", func_main); fputs(nameMsh, func_main); fputs("()\");\n", func_main);
     fputs("if (found_", func_main); fputs(name, func_main); fputs(" != 0) {\n", func_main);
     fputs("    ", func_main); fputs(full, func_main); fputs("(msh);\n", func_main);
@@ -273,7 +150,7 @@ void removeC(const char * list, const char * def, const char * cut, const char *
     word_copy(nameMsh, name);
     replace(nameMsh, "_", "-"); // for names including '-' : in c '-' is an operator, in msh '_' is a space
     FILE* commandList = NULL;
-    file_open(&commandList, temp, "r");
+    File_open(&commandList, temp, "r");
     if (commandList == NULL) {
         puts("Error: No commands installed!");
         fclose(commandList);
@@ -393,7 +270,7 @@ void package(const char * path, const char * list) {
     word_add(pathfull, PATH_SEP_STRING); word_add(pathfull, "config.txt");
 
     FILE* config = NULL;
-    file_open(&config, pathfull, "r");
+    File_open(&config, pathfull, "r");
     if(config == NULL) {
         printf("!! ERROR: Can not open file \"%s\"!\n", pathfull);
     };

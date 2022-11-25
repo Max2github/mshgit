@@ -1,8 +1,10 @@
-#include "../include/alg.h"
 #include "../dependencies/std.h"
-#include "../dependencies/words.h"
+
+#include "../include/alg.h"
 #include "../include/super.h"
 #include "../include/msh.h"
+
+#include "../dependencies/extern.h"
 
 #include "cparts/command_def.h"
 
@@ -15,12 +17,15 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     int teile_Anzahl = split(Zeile, " ", &Zeile_Teile);
     join((const char **) Zeile_Teile, teile_Anzahl, "", newZeile);
     freeWordArr(Zeile_Teile, teile_Anzahl);
+    if (!msh->info.in_func) {
+        // MSH_PRINTF(msh, "Zeile: %s\n", newZeile);
+    }
 
-    if (msh_Breaks(newZeile, msh->stack) == 1) {
+    if (msh_Breaks(msh, newZeile) == 1) {
         return 0;
     };
 
-    if (msh_command_isSpezial(newZeile, msh->stack) != 0) {
+    if (msh_command_isSpezial(msh, newZeile) != 0) {
         return 0;
     };
 
@@ -42,11 +47,11 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
         };
     };
 
-    if (msh_Breaks(newZeile, msh->stack) == 1) {
+    if (msh_Breaks(msh, newZeile) == 1) {
         return 0;
     };
 
-    if (msh_command_isSpezial(newZeile, msh->stack) != 0) {
+    if (msh_command_isSpezial(msh, newZeile) != 0) {
         return 0;
     };
 

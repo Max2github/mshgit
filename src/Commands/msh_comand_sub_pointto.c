@@ -1,5 +1,6 @@
 #include "../../include/alg.h"
-#include "../../dependencies/words.h"
+
+#include "../../dependencies/extern.h"
 
 void msh_command_sub_pointto(msh_info * msh) {
     char var_name[33];

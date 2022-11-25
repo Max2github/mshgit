@@ -1,12 +1,11 @@
 #include "../../include/msh.h"
 #include "../../include/alg.h"
-#include "../../dependencies/words.h"
+#include "../../include/super.h"
 
-int check_Func(char ** Script);
-void msh_fill_local_Var(char Code[], FUNC_LOCAL_STACK * stack);
+#include "../../dependencies/extern.h"
 
-int check_Func(char ** Script) {
-    char * Zeile = Script[msh_Script_it];
+int check_Func(msh_info * msh, char ** Script) {
+    char * Zeile = Script[msh->info.line-1];
     if (find(Zeile, "func()")) {
         replaceS(Zeile, "func()", "");
 
@@ -18,13 +17,13 @@ int check_Func(char ** Script) {
         FUNC_NAMES = s_arr_addFirst(FUNC_NAMES, func_name);
         
         superstring code = NULL;
-        msh_Script_it++;
-        code = s_addStr(code, Script[msh_Script_it]);
-        msh_Script_it++;
-        while (!find(Script[msh_Script_it], "funcEnd()")) {
+        msh->info.line++;
+        code = s_addStr(code, Script[msh->info.line-1]);
+        msh->info.line++;
+        while (!find(Script[msh->info.line-1], "funcEnd()")) {
             s_addLast(code, '\n', 1);
-            code = s_addStr(code, Script[msh_Script_it]);
-            msh_Script_it++;
+            code = s_addStr(code, Script[msh->info.line-1]);
+            msh->info.line++;
         }
         FUNC_SPEICHER = s_arr_addFirst(FUNC_SPEICHER, code);
         return 1;
@@ -90,7 +89,7 @@ void msh_fill_local_Obj(char Code[], FUNC_LOCAL_STACK * stack) {
 // refs / bigdata
 
 bool check_bigdata(msh_info * msh, char ** Script) {
-    char * Zeile = Script[msh_Script_it];
+    char * Zeile = Script[msh->info.line-1];
     if (find(Zeile, "bigdata()")) {
         replaceS(Zeile, "bigdata()", "");
 
@@ -110,15 +109,14 @@ bool check_bigdata(msh_info * msh, char ** Script) {
             msh_Script_it++;
         } */
         superstring code = NULL;
-        msh_Script_it++;
-        code = s_addStr(code, Script[msh_Script_it]);
-        msh_Script_it++;
-        while (!find(Script[msh_Script_it], "bigdataEnd()")) {
+        msh->info.line++;
+        code = s_addStr(code, Script[msh->info.line-1]);
+        msh->info.line++;
+        while (!find(Script[msh->info.line-1], "bigdataEnd()")) {
             s_addLast(code, '\n', 1);
-            code = s_addStr(code, Script[msh_Script_it]);
-            msh_Script_it++;
+            code = s_addStr(code, Script[msh->info.line-1]);
+            msh->info.line++;
         }
-        msh->info.line = msh_Script_it;
         index64 nbytes = s_len(code) + 1;
         char * codeStr = MSH_MALLOC(nbytes);
         s_stringify(code, codeStr);

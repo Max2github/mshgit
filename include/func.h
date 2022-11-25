@@ -1,5 +1,7 @@
-#pragma once
-#include "../dependencies/superstring.h"
+#ifndef MSH_FUNC_H
+#define MSH_FUNC_H
+
+#include "../dependencies/extern.h"
 
 typedef struct msh_info msh_info;
 
@@ -30,4 +32,6 @@ void msh_func_call(msh_info * msh, const char * name); // executes a func (inclu
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

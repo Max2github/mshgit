@@ -1,5 +1,7 @@
-#pragma once
-#include "../dependencies/list.h"
+#ifndef MSH_LIST_H
+#define MSH_LIST_H
+
+#include "../dependencies/extern.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,4 +14,6 @@ list msh_getBeforeNodeByName(const char * name);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

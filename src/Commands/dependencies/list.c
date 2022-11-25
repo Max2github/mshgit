@@ -1,5 +1,5 @@
 #include "../../../include/alg.h"
-#include "../../../dependencies/words.h"
+#include "../../../../mshgit/dependencies/extern.h"
 
 list msh_getListByName(const char * name) {
     list temp = LIST_SPEICHER;

@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 // funcs
-int check_Func(char ** Script);
+int  check_Func(msh_info * msh, char ** Script);
 void msh_fill_local_Var(char Code[], FUNC_LOCAL_STACK * stack);
 
 // refs / bigdata

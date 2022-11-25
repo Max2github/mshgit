@@ -1,7 +1,8 @@
 #include "../include/alg.h"
 #include "../dependencies/std.h"
-#include "../dependencies/words.h"
 #include "../include/msh.h"
+
+#include "../dependencies/extern.h"
 
 int msh_push_Var(char value[], char name[]) {
     int zeichen = word_len(value);
@@ -13,7 +14,7 @@ int msh_push_Var(char value[], char name[]) {
 
     };
     if (32 < len) {
-        MSH_PRINTF("Name of Variable \"%s\" is too long (maximum lenght = 32)", name);
+        MSH_PRINTF(NULL, "Name of Variable \"%s\" is too long (maximum lenght = 32)", name);
         return 1;
     };
     /* for (int n = 0; n < zeichen; n++) {
@@ -211,12 +212,12 @@ int msh_fillObj(char Code[]) {
     };
     return 0;
 };
-int msh_Breaks(char Code[], FUNC_LOCAL_STACK * stack) {
+int msh_Breaks(msh_info * msh, char Code[]) {
     char ** Code_Teile;
     int CodeTeile = split(Code, "&/break//", &Code_Teile);
     if (CodeTeile > 0) {
         for (int i = 0; i <= CodeTeile; i++) {
-            msh_readZeile(Code_Teile[i], stack);
+            msh_readZeile(msh, Code_Teile[i]);
         };
         freeWordArr(Code_Teile, CodeTeile);
         return 1;

@@ -1,7 +1,7 @@
 #include "../dependencies/std.h"
 
-#ifndef ALL_EXTERN_H
-#define ALL_EXTERN_H
+#ifndef MSH_ALL_EXTERN_H
+#define MSH_ALL_EXTERN_H
 
 typedef struct msh_info msh_info;
 

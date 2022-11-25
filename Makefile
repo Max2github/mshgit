@@ -7,7 +7,7 @@
 CC = gcc # compiler
 LD = gcc #ld # linker
 CFLAGS = -c -Wall #-std=c++20 # flags for compiler
-LD_FLAGS =  # flags for linker
+LD_FLAGS = -pthread # flags for linker
 # executable / target file
 EXE_BASE_NAME := msh
 EXE = $(EXE_BASE_NAME)
@@ -239,9 +239,25 @@ ifndef file
 	file := 
 endif
 
+ifdef debug
+	ifeq ($(debug), true)
+		CFLAGS += -g
+		LD_FLAGS += -g
+	endif
+endif
+
+ifndef PREFIX
+	PREFIX := /usr/local
+endif
+ifeq ($(PREFIX),)
+    PREFIX := /usr/local
+endif
+DESTDIR := 
+
 .PHONY: all # default: do nothing
 .PHONY: clean cleanshell cleanexe_win cleanexe cleanbuild # cleaning up
 .PHONY: objlib shell release # building
+.PHONY: install # install
 .PHONY: develop # build development tools
 .PHONY: command # use development tools
 .PHONY: help # help screen
@@ -264,14 +280,21 @@ shell: $(EXE)
 shell.o: shell.c
 	$(CC) $(CFLAGS) -o $@ $^
 
-release:
-	mkdir build
+
 release: $(EXE_RELEASE_LINUX_ARM64) $(EXE_RELEASE_LINUX_x86_64)
 #release : $(EXE_RELEASE_LINUX_x86_32)
 #release: $(EXE_RELEASE_MACOS_ARM64)
 #release: $(EXE_RELEASE_MACOS_x86_64)
 release: $(EXE_RELEASE_WINDOWS_x86_32) $(EXE_RELEASE_WINDOWS_x86_64)
-release: $(EXE) # nativ -> in this case for macos
+#release: $(EXE) # nativ -> in this case for macos
+
+# temporary - change this later and move it somewhere else
+
+install: shell
+	install -d $(DESTDIR)$(PREFIX)/bin/Max2/
+	install -m 755 $(EXE) $(DESTDIR)$(PREFIX)/bin/Max2/
+	export PATH=$$PATH:$(DESTDIR)$(PREFIX)/bin/Max2
+
 
 # release
 $(EXE_RELEASE_LINUX_ARM64):

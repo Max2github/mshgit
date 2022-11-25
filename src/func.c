@@ -1,8 +1,9 @@
 #include "../include/func.h"
 #include "../include/alg.h"
 #include "../dependencies/std.h"
-#include "../dependencies/words.h"
 #include "../include/msh.h"
+
+#include "../dependencies/extern.h"
 
 int msh_func_get_local_Var_index(const char name[], FUNC_LOCAL_STACK * stack) {
     superstring nameS = s_init(name);
@@ -90,6 +91,7 @@ superstring msh_func_get_code(const char name[]) {
 void msh_func_call(msh_info * msh, const char * name) {
     // FUNC_STACKS = msh_func_create_new_stack(FUNC_STACKS);
     // int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
+    FUNC_LOCAL_STACK * msh_old_stack = msh->stack;
     FUNC_LOCAL_STACK stack;
     stack.VAR_NAMES = NULL;
     stack.VAR_SPEICHER = NULL;
@@ -165,4 +167,5 @@ void msh_func_call(msh_info * msh, const char * name) {
     msh_readFunc(msh, codeStr, name);
     s_arr_free(stack.VAR_NAMES);
     s_arr_free(stack.VAR_SPEICHER);
+    msh->stack = msh_old_stack;
 }

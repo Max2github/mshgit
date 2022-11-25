@@ -1,0 +1,33 @@
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/max/Desktop/Max/C/privat/msh/mshgit",
+            "binaryPath": "/Users/max/Desktop/Max/C/privat/msh/mshgit/msh",
+            "binaryArgs": []
+        }
+    ],
+    "files.associations": {
+        "*.phpSeg": "php",
+        "*.make": "makefile",
+        "*.c": "c",
+        "*.asm": "asm-intel-x86-generic",
+        "*.odt": "odt",
+        "*.json": "json",
+        "*.natvis": "xml",
+        "def.h": "c",
+        "stack": "c",
+        "list.h": "c",
+        "random": "c",
+        "simple_array.h": "c",
+        "unistd.h": "c",
+        "std.h": "c",
+        "__mutex_base": "c",
+        "__threading_support": "c",
+        "thread": "c",
+        "words.h": "c",
+        "__functional_03": "c",
+        "functional": "c"
+    },
+    "C_Cpp.dimInactiveRegions": false
+}

@@ -7,12 +7,14 @@
                 "/usr/local/include"
             ],
             "defines": [],
-            "macFrameworkPath": [
-                "/Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk/System/Library/Frameworks"
-            ],
+            "osx": {
+                "macFrameworkPath": [
+                    "/Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk/System/Library/Frameworks"
+                ]
+            },
             "cStandard": "c17",
             "cppStandard": "c++14",
-            "intelliSenseMode": "macos-clang-x64",
+            "intelliSenseMode": "${default}",
             "configurationProvider": "ms-vscode.makefile-tools",
             "compilerPath": "/usr/bin/gcc",
             "compilerArgs": [

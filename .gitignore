@@ -17,8 +17,13 @@ o/VS/dependencies/*.obj
 o/VS/develop/*.obj
 o/VS/main/*.obj
 o/VS/sub/*.obj
+o/VS/src/*obj
+o/VS/src/Commands/*.obj
+o/VS/src/Commands/dependencies/*.obj
 o/VS/*.obj
-o/VS/**.obj
+o/packages/*/src/*/*.obj
+o/*obj
+
 **/Debug/*
 **/x64/*
 **/Release/*
@@ -43,4 +48,3 @@ src/cparts/readZeile_commandCut_sub.txt
 src/cparts/readZeile_commandFunc_main.txt
 src/cparts/readZeile_commandFunc_sub.txt
 src/cparts/command_def.h
-/x64/Debug

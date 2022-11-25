@@ -13,7 +13,7 @@
 
 // YOU CAN TOGGLE THESE (0 or 1, 0 -> unset, 1 -> set)
 #define FILESYSTEM 1
-#define MULTI_THREAD 1
+#define MULTI_THREAD 0
 
 // DO NOT EDIT
 

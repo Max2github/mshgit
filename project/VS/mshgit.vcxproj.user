@@ -4,6 +4,7 @@
     <LocalDebuggerCommandArguments>test.msh</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(MSBuildProjectDirectory)\$(ProjectDir)\build\VS\$(Platform)\$(Configuration)\$(ProjectName).exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <LocalDebuggerCommandArguments>test.msh</LocalDebuggerCommandArguments>
@@ -14,11 +15,13 @@
     <LocalDebuggerCommandArguments>test.msh</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(MSBuildProjectDirectory)\$(ProjectDir)\build\VS\$(Platform)\$(Configuration)\$(ProjectName).exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <LocalDebuggerCommandArguments>test.msh</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(MSBuildProjectDirectory)\$(ProjectDir)\build\VS\$(Platform)\$(Configuration)\$(ProjectName).exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>test.msh</LocalDebuggerCommandArguments>

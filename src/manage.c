@@ -50,6 +50,24 @@ int msh_get_Var(char name[], char saveto[]) {
     saveto[var_len] = '\0';
     return ret_empty;
 };*/
+
+// stop overflow, while copying
+bool msh_var_copy_general(msh_info * msh, char * dest, const char * src, unsigned int max, const char * errMsg) {
+    if (dest == NULL || src == NULL) { return false; }
+    if (word_len(src) >= max) {
+        msh_error(msh, errMsg);
+        return false;
+    }
+    word_copy(dest, src);
+    return true;
+}
+bool msh_var_copy_name(msh_info * msh, char * dest, const char * src) {
+    return msh_var_copy_general(msh, dest, src, sizeof(VAR_NAMES[0]), "Value of global var exceeds maximum of " STR(sizeof(VAR_SPEICHER[0])) " bytes / characters!");
+}
+bool msh_var_copy_value(msh_info * msh, char * dest, const char * src) {
+    return msh_var_copy_general(msh, dest, src, VAR_MAXCHAR, "Name of Variable is too long! (maximum " STR(sizeof(VAR_NAMES[0])) " bytes / characters)");
+}
+
 // add & set / update
 bool msh_var_push(msh_info * msh, const char * value, const char * name) {
     if (VAR_WORTZAELER + 1 > VAR_MAXWORDS) {
@@ -58,17 +76,19 @@ bool msh_var_push(msh_info * msh, const char * value, const char * name) {
     }
     int value_len = word_len(value);
     int name_len = word_len(name);
-    if (value_len > VAR_MAXCHAR) {
+    /*if (value_len > VAR_MAXCHAR) {
         msh_error(msh, "Value of global var exceeds maximum of " STR(sizeof(VAR_SPEICHER[0])) " bytes / characters!");
         return false;
     }
     if (name_len > sizeof(VAR_NAMES[0])) {
         msh_error(msh, "Name of Variable is too long! (maximum " STR(sizeof(VAR_NAMES[0])) " bytes / characters)");
         return false;
-    }
+    }*/
     // set global var
-    word_copy(VAR_NAMES[VAR_WORTZAELER], name);
-    word_copy(VAR_SPEICHER[VAR_WORTZAELER], value);
+    // word_copy(VAR_NAMES[VAR_WORTZAELER], name);
+    // word_copy(VAR_SPEICHER[VAR_WORTZAELER], value);
+    msh_var_copy_name(msh, VAR_NAMES[VAR_WORTZAELER], name);
+    msh_var_copy_value(msh, VAR_SPEICHER[VAR_WORTZAELER], value);
     VAR_WORTZAELER++;
     if (value_len > VAR_ZEICHENZAELER) { VAR_ZEICHENZAELER = value_len; } // may abolish this
     return true;
@@ -78,16 +98,18 @@ bool msh_var_updateByName(msh_info * msh, const char * value, const char * name)
     if (index == -1) {
         return msh_var_push(msh, value, name);
     }
-    word_copy(VAR_SPEICHER[index], value);
-    return true;
+    // word_copy(VAR_SPEICHER[index], value);
+    // return true;
+    return msh_var_copy_value(msh, VAR_SPEICHER[index], value);
 }
 bool msh_var_updateByIndex(msh_info * msh, const char * value, int index) {
     if (index + 1 > VAR_WORTZAELER || index < 0) {
         msh_error(msh, "upadating global var: index does not exist!");
         return false;
     }
-    word_copy(VAR_SPEICHER[index], value);
-    return true;
+    // word_copy(VAR_SPEICHER[index], value);
+    // return true;
+    return msh_var_copy_value(msh, VAR_SPEICHER[index], value);
 }
 // get
 const char * msh_var_getByName(msh_info * msh, const char * name) {

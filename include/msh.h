@@ -13,6 +13,8 @@ extern "C" {
 //int msh_push_Var(char value[], char name[]); // 62
 //int msh_get_Var(char name[], char saveto[]); // 86
 
+bool msh_var_copy(msh_info *, char * dest, const char * src);
+
 bool msh_var_push(msh_info *, const char * value, const char * name);
 bool msh_var_updateByName(msh_info *, const char * value, const char * name);
 bool msh_var_updateByIndex(msh_info *, const char * value, int index);

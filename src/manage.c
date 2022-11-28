@@ -3,7 +3,7 @@
 #include "../include/msh.h"
 
 #include "../dependencies/extern.h"
-
+/*
 int msh_push_Var(char value[], char name[]) {
     int zeichen = word_len(value);
     int len = word_len(name);
@@ -17,15 +17,7 @@ int msh_push_Var(char value[], char name[]) {
         MSH_PRINTF(NULL, "Name of Variable \"%s\" is too long (maximum lenght = 32)", name);
         return 1;
     };
-    /* for (int n = 0; n < zeichen; n++) {
-        VAR_SPEICHER[VAR_WORTZAELER][n] = value[n];
-    };
-    VAR_SPEICHER[VAR_WORTZAELER][zeichen] = '\0'; */
     word_copy(VAR_SPEICHER[VAR_WORTZAELER], value);
-    /* for (int n = 0; n < len; n++) {
-        VAR_NAMES[VAR_WORTZAELER][n] = name[n];
-    };
-    VAR_NAMES[VAR_WORTZAELER][len] = '\0 */
     word_copy(VAR_NAMES[VAR_WORTZAELER], name);
     VAR_WORTZAELER += 1;
     VAR_ZEICHENZAELER += zeichen;
@@ -57,7 +49,66 @@ int msh_get_Var(char name[], char saveto[]) {
     };
     saveto[var_len] = '\0';
     return ret_empty;
-};
+};*/
+// add & set / update
+bool msh_var_push(msh_info * msh, const char * value, const char * name) {
+    if (VAR_WORTZAELER + 1 > VAR_MAXWORDS) {
+        msh_error(msh, "The maximum amount of global vars has already been reached!");
+        return false;
+    }
+    int value_len = word_len(value);
+    int name_len = word_len(name);
+    if (value_len > VAR_MAXCHAR) {
+        msh_error(msh, "Value of global var exceeds maximum of " STR(sizeof(VAR_SPEICHER[0])) " bytes / characters!");
+        return false;
+    }
+    if (name_len > sizeof(VAR_NAMES[0])) {
+        msh_error(msh, "Name of Variable is too long! (maximum " STR(sizeof(VAR_NAMES[0])) " bytes / characters)");
+        return false;
+    }
+    // set global var
+    word_copy(VAR_NAMES[VAR_WORTZAELER], name);
+    word_copy(VAR_SPEICHER[VAR_WORTZAELER], value);
+    VAR_WORTZAELER++;
+    if (value_len > VAR_ZEICHENZAELER) { VAR_ZEICHENZAELER = value_len; } // may abolish this
+    return true;
+}
+bool msh_var_updateByName(msh_info * msh, const char * value, const char * name) {
+    int index = msh_var_getIndexByName(msh, name);
+    if (index == -1) {
+        return msh_var_push(msh, value, name);
+    }
+    word_copy(VAR_SPEICHER[index], value);
+    return true;
+}
+bool msh_var_updateByIndex(msh_info * msh, const char * value, int index) {
+    if (index + 1 > VAR_WORTZAELER || index < 0) {
+        msh_error(msh, "upadating global var: index does not exist!");
+        return false;
+    }
+    word_copy(VAR_SPEICHER[index], value);
+    return true;
+}
+// get
+const char * msh_var_getByName(msh_info * msh, const char * name) {
+    for (int i = 0; i < VAR_WORTZAELER; i++) {
+        if (word_compare(VAR_NAMES[i], name) == 0) {
+            return VAR_SPEICHER[i];
+        }
+    }
+    return NULL;
+}
+int msh_var_getIndexByName(msh_info * msh, const char * name) {
+    for (int i = 0; i < VAR_WORTZAELER; i++) {
+        if (word_compare(VAR_NAMES[i], name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+const char * msh_var_getByIndex(msh_info * msh, int index) {
+    return VAR_SPEICHER[index];
+}
 int msh_get_Var_element(int Var_index, char el_name[], char saveto[]) {
     if (find(VAR_SPEICHER[Var_index], "&/arr//") != 0) {
         char ** arr_Teile;

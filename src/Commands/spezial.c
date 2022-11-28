@@ -79,7 +79,8 @@ int msh_command_isSpezial(msh_info * msh, char Code[]) {
 };
 
 void msh_command_spezial_def(msh_info * msh, char Cond[], char text[]) {
-    msh_push_Var(text, Cond);
+    // msh_push_Var(text, Cond);
+    msh_var_push(msh, text, Cond);
 };
 void msh_command_spezial_val(msh_info * msh, char Cond[], char text[]) {
     // get var
@@ -89,7 +90,9 @@ void msh_command_spezial_val(msh_info * msh, char Cond[], char text[]) {
         s_stringify(textS, text);
         local = 1;
     } else {
-        msh_get_Var(text, text);
+        // msh_get_Var(text, text);
+        const char * temp = msh_var_getByName(msh, text);
+        word_copy(text, temp);
     }
 
     // replace
@@ -101,12 +104,15 @@ void msh_command_spezial_val(msh_info * msh, char Cond[], char text[]) {
     if (local) {
         msh_func_update_local_Var(Cond, text, msh->stack);
     } else {
-        char var[VAR_MAXCHAR];
-        int index = msh_get_Var(Cond, var);
+        // char var[VAR_MAXCHAR];
+        // int index = msh_get_Var(Cond, var);
+        int index = msh_var_getIndexByName(msh, Cond);
         if (index == -1) {
-            msh_push_Var(text, Cond);
+            // msh_push_Var(text, Cond);
+            msh_var_push(msh, text, Cond);
         } else {
-            word_copy(VAR_SPEICHER[index], text);
+            // word_copy(VAR_SPEICHER[index], text);
+            msh_var_updateByIndex(msh, text, index);
         };
     }
 }
@@ -196,18 +202,23 @@ void msh_command_spezial_for(msh_info * msh, char Cond[], char text[]) {
     int CondTeile = split(Cond, "IN", &array);
     if (CondTeile != 1) { return; };
     // value of iteration var
-    char value[VAR_MAXCHAR];
-    int var_index = msh_get_Var(array[0], value);
+    // char value[VAR_MAXCHAR];
+    // int var_index = msh_get_Var(array[0], value);
+    int var_index = msh_var_getIndexByName(msh, array[0]);
     if (var_index == -1) {
-        msh_push_Var("0", array[0]);
+        // msh_push_Var("0", array[0]);
+        msh_var_push(msh, "0", array[0]);
+        var_index = msh_var_getIndexByName(msh, array[0]);
     };
-    var_index = msh_get_Var(array[0], value);
+    const char * value = msh_var_getByIndex(msh, var_index);
+    // var_index = msh_get_Var(array[0], value);
     replaceS(text, ";", "\n");
     // array length
     char ** arr_Teile;
     int arrTeile = split(array[1], "&/arr//", &arr_Teile);
     freeWordArr(array, CondTeile);
-    word_copy(value, "0");
+    // word_copy(value, "0");
+    msh_var_updateByIndex(msh, "0", var_index);
     // sprintf(value, "%d", 0);
 
     for (int i = 0; i <= arrTeile;) {
@@ -220,7 +231,8 @@ void msh_command_spezial_for(msh_info * msh, char Cond[], char text[]) {
             i++;
             // sprintf(value, "%d", i);
             char tempI[intLen(i)+1];
-            word_copy(value, tempI);
+            // word_copy(value, tempI);
+            msh_var_updateByIndex(msh, tempI, var_index);
             continue;
         }
         word_copy(VAR_SPEICHER[var_index], value);
@@ -228,7 +240,8 @@ void msh_command_spezial_for(msh_info * msh, char Cond[], char text[]) {
         i++;
         // sprintf(value, "%d", i);
         char tempI[intLen(i)+1];
-        word_copy(value, tempI);
+        // word_copy(value, tempI);
+        msh_var_updateByIndex(msh, tempI, var_index);
     }
     freeWordArr(arr_Teile, arrTeile);
 };
@@ -237,17 +250,22 @@ void msh_command_spezial_foreach(msh_info * msh, char Cond[], char text[]) {
     int CondTeile = split(Cond, "IN", &array);
     if (CondTeile != 1) { return; };
     // value of iteration var
-    char value[VAR_MAXCHAR];
-    int var_index = msh_get_Var(array[0], value);
+    // char value[VAR_MAXCHAR];
+    // int var_index = msh_get_Var(array[0], value);
+    int var_index = msh_var_getIndexByName(msh, array[0]);
     if (var_index == -1) {
-        msh_push_Var("0", array[0]);
+        // msh_push_Var("0", array[0]);
+        msh_var_push(msh, "0", array[0]);
+        var_index = msh_var_getIndexByName(msh, array[0]);
     };
-    var_index = msh_get_Var(array[0], value);
+    const char * value = msh_var_getByIndex(msh, var_index);
+    // var_index = msh_get_Var(array[0], value);
     // array length
     char ** arr_Teile;
     int arrTeile = split(array[1], "&/arr//", &arr_Teile);
     // sprintf(value, "%s", arr_Teile[0]);
-    word_copy(value, arr_Teile[0]);
+    // word_copy(value, arr_Teile[0]);
+    msh_var_updateByIndex(msh, arr_Teile[0], var_index);
     freeWordArr(array, CondTeile);
 
     for (int i = 0; i <= arrTeile;) {
@@ -263,7 +281,8 @@ void msh_command_spezial_foreach(msh_info * msh, char Cond[], char text[]) {
         msh_readZeile(msh, text);
         i++;
         // sprintf(value, "%s", arr_Teile[i]);
-        word_copy(value, arr_Teile[i]);
+        // word_copy(value, arr_Teile[i]);
+        msh_var_updateByIndex(msh, arr_Teile[i], var_index);
     }
     freeWordArr(arr_Teile, arrTeile);
 };
@@ -273,14 +292,17 @@ void msh_command_spezial_forcount(msh_info * msh, char Cond[], char text[]) {
     if (CondTeile != 1 && CondTeile != 0) { return; };
     char newCond[VAR_MAXCHAR];
     // value of iteration var
-    char value[VAR_MAXCHAR];
+    // char value[VAR_MAXCHAR];
     int var_index;
     if (CondTeile == 1) {
-        var_index = msh_get_Var(array[0], value);
+        // var_index = msh_get_Var(array[0], value);
+        var_index = msh_var_getIndexByName(msh, array[0]);
         if (var_index == -1) {
-            msh_push_Var("0", array[0]);
+            // msh_push_Var("0", array[0]);
+            msh_var_push(msh, "0", array[0]);
+            var_index = msh_var_getIndexByName(msh, array[0]);
         };
-        var_index = msh_get_Var(array[0], value);
+        // var_index = msh_get_Var(array[0], value);
         word_copy(newCond, array[1]);
     } else {
         word_copy(newCond, Cond);
@@ -293,6 +315,8 @@ void msh_command_spezial_forcount(msh_info * msh, char Cond[], char text[]) {
     int Anfang = atoi(newCond_Teile[0]);
     int Ende = atoi(newCond_Teile[1]);
     freeWordArr(newCond_Teile, newCondTeile_Anzahl);
+
+    char value[VAR_MAXCHAR];
     if (CondTeile == 1) {
         intToString(Anfang, value);
         // sprintf(value, "%d", Anfang);
@@ -300,7 +324,8 @@ void msh_command_spezial_forcount(msh_info * msh, char Cond[], char text[]) {
 
     if (Ende > Anfang) {
         for (int i = Anfang; i <= Ende;) {
-            word_copy(VAR_SPEICHER[var_index], value);
+            // word_copy(VAR_SPEICHER[var_index], value);
+            msh_var_updateByIndex(msh, value, var_index);
             msh_readZeile(msh, text);
             i++;
             if (CondTeile == 1) {
@@ -310,7 +335,8 @@ void msh_command_spezial_forcount(msh_info * msh, char Cond[], char text[]) {
         };
     } else if (Anfang > Ende) {
         for (int i = Anfang; i <= Ende;) {
-            word_copy(VAR_SPEICHER[var_index], value);
+            // word_copy(VAR_SPEICHER[var_index], value);
+            msh_var_updateByIndex(msh, value, var_index);
             msh_readZeile(msh, text);
             i++;
             if (CondTeile == 1) {

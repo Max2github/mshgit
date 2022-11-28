@@ -107,7 +107,8 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
             /* if (msh_func_get_local_Var_index(array[0], stack_id) == -1 && msh_get_Var(array[0], nowhere) != -1) {
                 local_found = 0;
             } */
-            if (msh_func_get_local_Var_index(array[0], msh->stack) == -1 && msh_get_Var(array[0], nowhere) != -1) {
+            // if (msh_func_get_local_Var_index(array[0], msh->stack) == -1 && msh_get_Var(array[0], nowhere) != -1) {
+            if (msh_func_get_local_Var_index(array[0], msh->stack) == -1 && msh_var_getByName(msh, array[0]) != NULL) {
                 local_found = 0;
             }
             // not found local + not found global -> priority: local
@@ -125,8 +126,10 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
             char ** var_el;
             split(array[0], ".", &var_el);
             // printWordArr(var_el, 1);
-            char var[VAR_MAXCHAR];
-            int index = msh_get_Var(var_el[0], var);
+            // char var[VAR_MAXCHAR];
+            // int index = msh_get_Var(var_el[0], var);
+            int index = msh_var_getIndexByName(msh, var_el[0]);
+            const char * var = msh_var_getByIndex(msh, index);
             // printf("    %d : %s\n", index, var);
             if (index == -1) {
                 msh_error(msh, "Object does not exist!");
@@ -185,10 +188,12 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
             freeWordArr(var_el, 1);
             return 0;
         };
-        char var[VAR_MAXCHAR];
-        int index = msh_get_Var(array[0], var);
+        // char var[VAR_MAXCHAR];
+        // int index = msh_get_Var(array[0], var);
+        int index = msh_var_getIndexByName(msh, array[0]);
         if (index == -1) {
-            msh_push_Var(msh_Wert, array[0]);
+            // msh_push_Var(msh_Wert, array[0]);
+            msh_var_push(msh, get_msh_Wert(msh), array[0]);
         } else {
             word_copy(VAR_SPEICHER[index], msh_Wert);
         };

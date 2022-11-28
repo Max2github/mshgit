@@ -9,11 +9,21 @@ extern "C" {
 #endif
 
 // msh-functions
-int msh_push_Var(char value[], char name[]); // 62
-int msh_get_Var(char name[], char saveto[]); // 86
+// deprecated
+//int msh_push_Var(char value[], char name[]); // 62
+//int msh_get_Var(char name[], char saveto[]); // 86
+
+bool msh_var_push(msh_info *, const char * value, const char * name);
+bool msh_var_updateByName(msh_info *, const char * value, const char * name);
+bool msh_var_updateByIndex(msh_info *, const char * value, int index);
+const char * msh_var_getByName(msh_info *, const char * name);
+int msh_var_getIndexByName(msh_info *, const char * name);
+const char * msh_var_getByIndex(msh_info *, int index);
 int msh_get_Var_element(int Var_index, char el_name[], char saveto[]); // 113
+
 int msh_fillVar(char Code[]); // 126
 int msh_fillObj(char Code[]); // 144
+
 int msh_Breaks(msh_info * msh, char Code[]); // 197
 
 // Commands

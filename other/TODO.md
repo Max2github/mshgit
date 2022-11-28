@@ -14,6 +14,15 @@ list-add() seems not to work globally anymore (?).
 - when starting a msh client (doesn't have to be the cause) on macOS  (ARM64)
   word_copy        450:1
   msh_fillVar       87:1
+- when running a http server (doesn't have to be the cause) on macOS (ARM64)
+  msh_fill_local_Var 47
+
+### ideas & possible solutions
+- stack-overflow - especially, because these segmentation faults do not appear in linux
+  (I only saw them on macOS)
+  -> copy & use less memory and thik about putting VAR_SPEICHER (and VAR_NAMES) in the heap.
+- several problems -> make copying safer with limits (do not use word_copy directly, 
+  check if string is not too long)
 
 # TODO
 

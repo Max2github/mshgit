@@ -17,9 +17,9 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     int teile_Anzahl = split(Zeile, " ", &Zeile_Teile);
     join((const char **) Zeile_Teile, teile_Anzahl, "", newZeile);
     freeWordArr(Zeile_Teile, teile_Anzahl);
-    if (!msh->info.in_func) {
+    // if (!msh->info.in_func) {
         // MSH_PRINTF(msh, "Zeile: %s\n", newZeile);
-    }
+    // }
 
     if (msh_Breaks(msh, newZeile) == 1) {
         return 0;
@@ -31,7 +31,8 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
 
     while (IN_FUNC) {
         char altZeile[VAR_MAXCHAR];
-        word_copy(altZeile, newZeile);
+        // word_copy(altZeile, newZeile);
+        msh_var_copy_value(msh, altZeile, newZeile);
         msh_fill_local_Var(newZeile, msh->stack);
         if (word_compare(altZeile, newZeile) == 0) {
             break;
@@ -39,7 +40,8 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     };
     while (1) {
         char altZeile[VAR_MAXCHAR];
-        word_copy(altZeile, newZeile);
+        // word_copy(altZeile, newZeile);
+        msh_var_copy_value(msh, altZeile, newZeile);
         msh_fillObj(newZeile);
         msh_fillVar(newZeile);
         if (word_compare(altZeile, newZeile) == 0) {
@@ -56,7 +58,8 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     };
 
     char VollZeile[VAR_MAXCHAR];
-    word_copy(VollZeile, newZeile);
+    // word_copy(VollZeile, newZeile);
+    msh_var_copy_value(msh, VollZeile, newZeile);
     replace(newZeile, "_", " ");
     replaceS(newZeile, "&/underscore//", "_");
     // printf("%s\n", newZeile);
@@ -64,7 +67,8 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     char ** array;
     int arrTeile = split(newZeile, "=", &array);
     if (arrTeile > 0) {
-        word_copy(newZeile, array[1]);
+        // word_copy(newZeile, array[1]);
+        msh_var_copy_value(msh, newZeile, array[1]);
     };
     replaceS(newZeile, "&/equals//", "=");
     // word_copy(msh_Wert, newZeile);
@@ -183,7 +187,8 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
                 } else {
                     return 1;
                 };
-                word_copy(VAR_SPEICHER[index], newWert);
+                // word_copy(VAR_SPEICHER[index], newWert);
+                msh_var_updateByIndex(msh, newWert, index);
             };
             freeWordArr(var_el, 1);
             return 0;
@@ -195,7 +200,8 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
             // msh_push_Var(msh_Wert, array[0]);
             msh_var_push(msh, get_msh_Wert(msh), array[0]);
         } else {
-            word_copy(VAR_SPEICHER[index], msh_Wert);
+            // word_copy(VAR_SPEICHER[index], msh_Wert);
+            msh_var_updateByIndex(msh, get_msh_Wert(msh), index);
         };
     };
     freeWordArr(array, arrTeile);

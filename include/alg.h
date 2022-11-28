@@ -2,25 +2,18 @@
 #define MSH_ALG_H
 
 #include "../dependencies/std.h"
+
 #include "../include/func.h"
 #include "../include/ref.h"
 
 #include "../dependencies/extern.h"
 
 #define MSH_IO_SPEICHER_SIZE 4000
-#define MSH_IO_DEFAULT { stdout, stdin, 0 }
+#define MSH_IO_DEFAULT { stdout, stdin }
 #define MSH_CALLINFO_DEFAULT { 1, false, false, NULL }
 #define MSH_EVENTS_ON_DEFAULT { NULL }
 #define MSH_EVENTS_DEFAULT { false, MSH_EVENTS_ON_DEFAULT }
 #define MSH_INFO_DEFAULT { msh_Wert, MSH_CALLINFO_DEFAULT, NULL, NULL, MSH_IO_DEFAULT, MSH_EVENTS_DEFAULT }
-
-#if MULTI_THREAD
-    #include <pthread.h>
-#endif
-
-#ifndef NULL
-    #define NULL 0
-#endif
 
 #if CC_GCC
     #pragma GCC diagnostic ignored "-Wmissing-braces"
@@ -36,7 +29,7 @@ struct msh_io {
     FILE * out;
     FILE * in;
     // int bytesWritten;
-    index8 speicher[MSH_IO_SPEICHER_SIZE];
+    // index8 speicher[MSH_IO_SPEICHER_SIZE];
     struct {
         FILE * out;
         FILE * in;
@@ -107,6 +100,8 @@ extern int VAR_WORTZAELER; // ammount of vars
 extern int VAR_ZEICHENZAELER; // lenght of the current longest line
 extern list LIST_SPEICHER; // Stack / Heap / Memory for linked lists (stores in fact only pointers + names)
 // extern list MSH_ON_EXIT;
+
+#define MSH_VAR_NAMES_MAXCHAR sizeof(VAR_NAMES[0])
 
 // needed generally & especially for scripts
 extern MSH_THREAD_VAR char msh_Wert[4000];

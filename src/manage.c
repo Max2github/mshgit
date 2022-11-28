@@ -62,10 +62,10 @@ bool msh_var_copy_general(msh_info * msh, char * dest, const char * src, unsigne
     return true;
 }
 bool msh_var_copy_name(msh_info * msh, char * dest, const char * src) {
-    return msh_var_copy_general(msh, dest, src, sizeof(VAR_NAMES[0]), "Value of global var exceeds maximum of " STR(sizeof(VAR_SPEICHER[0])) " bytes / characters!");
+    return msh_var_copy_general(msh, dest, src, MSH_VAR_NAMES_MAXCHAR, "Value of global var exceeds maximum of " STR(sizeof(VAR_SPEICHER[0])) " bytes / characters!");
 }
 bool msh_var_copy_value(msh_info * msh, char * dest, const char * src) {
-    return msh_var_copy_general(msh, dest, src, VAR_MAXCHAR, "Name of Variable is too long! (maximum " STR(sizeof(VAR_NAMES[0])) " bytes / characters)");
+    return msh_var_copy_general(msh, dest, src, VAR_MAXCHAR, "Name of Variable is too long! (maximum " STR(MSH_VAR_NAMES_MAXCHAR) " bytes / characters)");
 }
 
 // add & set / update
@@ -144,6 +144,95 @@ int msh_get_Var_element(int Var_index, char el_name[], char saveto[]) {
     };
     return 0;
 };
+
+bool msh_var_fillVar(msh_info * msh, char * code) {
+    bool ret = false;
+    // for each var, check if it is called in the code
+    for (int i = 0; i < VAR_WORTZAELER; i++) {
+        char spl[MSH_VAR_NAMES_MAXCHAR + 3]; // +3 for ()\0
+        if (!msh_var_copy_name(msh, spl, VAR_NAMES[i])) { return false; };
+        word_add(spl, "()");
+
+        if (find(code, spl)) {
+            replaceS(code, spl, msh_var_getByIndex(msh, i));
+            ret = true;
+        }
+    }
+    return ret;
+}
+bool msh_var_fillArr(msh_info * msh, char * code) {
+    if (!find(code, ".")) { return false; }
+    bool ret = false;
+    // for each var, that is an object, check if it is called in the code
+    for (int i = 0; i < VAR_WORTZAELER; i++) {
+        const char * var = msh_var_getByIndex(msh, i);
+        if (!find(var, "&/arr//")) { continue; }
+
+        char splUr[MSH_VAR_NAMES_MAXCHAR + 2]; // +2 for .\0
+        if (!msh_var_copy_name(msh, splUr, VAR_NAMES[i])) { return ret; };
+        word_add(splUr, ".");
+
+        const word_picker_array children = word_pick_split(var, "&/arr//");
+        for (int childI = 0; childI < children.written; childI++) {
+            word_picker child = WORD_PICKER_ARRAY_GET(children, childI);
+            
+            char val[word_picker_len(child) + 1];
+            word_picker_toString(child, val);
+
+            int len = sizeof(splUr) + intLen(childI) + 2;
+            char spl[len];
+            word_copy(spl, splUr);
+            intToString(childI, spl + word_len(spl));
+            word_add(spl, "()");
+
+            if (find(code, spl)) {
+                replaceS(code, spl, val);
+                ret = true;
+            }
+        }
+        SIMPLE_ARRAY_FREE(children);
+    }
+    return ret;
+}
+bool msh_var_fillObj(msh_info * msh, char * code) {
+    if (!find(code, ".")) { return false; }
+    bool ret = false;
+    // for each var, that is an object, check if it is called in the code
+    for (int i = 0; i < VAR_WORTZAELER; i++) {
+        const char * var = msh_var_getByIndex(msh, i);
+        if (!find(var, "&/obj//")) { continue; }
+
+        char splUr[MSH_VAR_NAMES_MAXCHAR + 2]; // +2 for .\0
+        if (!msh_var_copy_name(msh, splUr, VAR_NAMES[i])) { return ret; };
+        word_add(splUr, ".");
+
+        const word_picker_array children = word_pick_split(var, "&/obj//");
+        for (int childI = 0; childI < children.written; childI++) {
+            word_picker child = WORD_PICKER_ARRAY_GET(children, childI);
+            word_picker_array keyVal = word_picker_split(child, ":");
+            const word_picker key = WORD_PICKER_ARRAY_GET(keyVal, 0);
+            const word_picker value = WORD_PICKER_ARRAY_GET(keyVal, 1);
+            char val[word_picker_len(value) + 1];
+            word_picker_toString(value, val);
+
+            int len = sizeof(splUr) + word_picker_len(key) + 2;
+            char spl[len];
+            word_copy(spl, splUr);
+            word_picker_toString(key, spl + word_len(spl));
+            word_add(spl, "()");
+
+            SIMPLE_ARRAY_FREE(keyVal);
+
+            if (find(code, spl)) {
+                replaceS(code, spl, val);
+                ret = true;
+            }
+        }
+        SIMPLE_ARRAY_FREE(children);
+    }
+    return ret;
+}
+/*
 int msh_fillVar(char Code[]) {
     for (int i = 0; i < VAR_WORTZAELER; i++) {
         int name_len = word_len(VAR_NAMES[i]);
@@ -284,7 +373,8 @@ int msh_fillObj(char Code[]) {
         freeWordArr(arr_Teile, arrTeile);
     };
     return 0;
-};
+};*/
+
 int msh_Breaks(msh_info * msh, char Code[]) {
     char ** Code_Teile;
     int CodeTeile = split(Code, "&/break//", &Code_Teile);

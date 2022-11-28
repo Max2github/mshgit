@@ -1,7 +1,3 @@
-#include "../../../lib/templates/def.h"
-#include "../../../lib/templates/simple_list.h"
-#include "../../../lib/templates/simple_array.h"
-
 #include <stdarg.h>
 
 #ifndef NO_STD_LIB
@@ -10,6 +6,10 @@
 #else
 
 #endif
+
+#include "../../../lib/templates/def.h"
+#include "../../../lib/templates/simple_list.h"
+#include "../../../lib/templates/simple_array.h"
 
 // YOU CAN TOGGLE THESE (0 or 1, 0 -> unset, 1 -> set)
 #define FILESYSTEM 1

@@ -280,6 +280,8 @@ shell: $(EXE)
 shell.o: shell.c
 	$(CC) $(CFLAGS) -o $@ $^
 
+test: $(OBJ) $(DEP_OBJ) test.cpp
+	g++ -o $@ $^
 
 release: $(EXE_RELEASE_LINUX_ARM64) $(EXE_RELEASE_LINUX_x86_64)
 #release : $(EXE_RELEASE_LINUX_x86_32)

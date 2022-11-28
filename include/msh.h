@@ -25,8 +25,13 @@ int msh_var_getIndexByName(msh_info *, const char * name);
 const char * msh_var_getByIndex(msh_info *, int index);
 int msh_get_Var_element(int Var_index, char el_name[], char saveto[]); // 113
 
-int msh_fillVar(char Code[]); // 126
-int msh_fillObj(char Code[]); // 144
+// deprecated
+// int msh_fillVar(char Code[]); // 126
+// int msh_fillObj(char Code[]); // 144
+
+bool msh_var_fillVar(msh_info *, char * code);
+bool msh_var_fillArr(msh_info *, char * code);
+bool msh_var_fillObj(msh_info *, char * code);
 
 int msh_Breaks(msh_info * msh, char Code[]); // 197
 
@@ -50,7 +55,7 @@ int msh_readScript(char Script[]); // 662
 int msh_readFunc(msh_info * msh, const char * Script, const char * funcName);
 int msh_readFile(char filename[]); // 688
 
-void msh_freeRessources();
+void msh_freeRessources(msh_info *);
 // void msh_initRessources();
 
 #ifdef __cplusplus

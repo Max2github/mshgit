@@ -26,8 +26,11 @@
             "program": "${workspaceFolder}/msh",
             //"args": [],
             "args": [
-                "--version",
-                // "test.msh"
+                // "--version",
+                // "test.msh",
+                "testServer.msh",
+                // "../FH/mailServer.msh",
+                // "../FH/mailClient.msh"
             ],
             "environment": [],
             //"environment": [{ "name": "config", "value": "Debug" }],

@@ -15,6 +15,7 @@
 #include "../../../lib/templates/simple_list.h"
 #include "../../../lib/words_h.h"
 #include "../../../lib/list_h.h"
+#include "../../../lib/word_pick_h.h"
 
 // #include "../../../lib/mathe_h.h"
 #include "mathe.h"

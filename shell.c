@@ -9,7 +9,8 @@
     #define GetCurrentDir _getcwd
 #elif PF_UNIX
     #include <unistd.h>
-#   define GetCurrentDir getcwd
+    #define GetCurrentDir getcwd
+    #include <signal.h>
 #endif
 
 #define DEFAULT_MAIN "main.msh"
@@ -58,7 +59,25 @@ msh_shell_options msh_shell_parse_options(int argc, char * argv[]) {
     return opt;
 }
 
+void msh_shell_sigint(int signal) {
+    // 80 times - you can count if you want to :)
+    puts("\n################################################################################");
+      puts("                            TERMINATING BY INTERUPT"                             );
+      puts("################################################################################");
+
+    msh_info dummy = MSH_INFO_DEFAULT;
+    msh_freeRessources(&dummy);
+
+    exit(0);
+}
+
 int main(int argc, char * argv[]) {
+    #if PF_UNIX
+        signal(SIGINT, msh_shell_sigint);
+    #elif PF_WINDOWS
+
+    #endif
+
     msh_shell_options opt = msh_shell_parse_options(argc, argv);
 
     if (opt.set1 & msh_shell_option_version) {

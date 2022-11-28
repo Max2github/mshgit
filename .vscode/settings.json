@@ -15,6 +15,7 @@
         "*.odt": "odt",
         "*.json": "json",
         "*.natvis": "xml",
+        "*.h": "c",
         "def.h": "c",
         "stack": "c",
         "list.h": "c",
@@ -27,7 +28,8 @@
         "thread": "c",
         "words.h": "c",
         "__functional_03": "c",
-        "functional": "c"
+        "functional": "c",
+        "__node_handle": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

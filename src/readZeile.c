@@ -42,8 +42,11 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
         char altZeile[VAR_MAXCHAR];
         // word_copy(altZeile, newZeile);
         msh_var_copy_value(msh, altZeile, newZeile);
-        msh_fillObj(newZeile);
-        msh_fillVar(newZeile);
+        // msh_fillObj(newZeile);
+        // msh_fillVar(newZeile);
+        msh_var_fillObj(msh, newZeile);
+        msh_var_fillArr(msh, newZeile);
+        msh_var_fillVar(msh, newZeile);
         if (word_compare(altZeile, newZeile) == 0) {
             break;
         };

@@ -34,8 +34,11 @@ int msh_command_isSpezial(msh_info * msh, char Code[]) {
     while (1) {
         char altCond[VAR_MAXCHAR];
         word_copy(altCond, newCond);
-        msh_fillObj(newCond);
-        msh_fillVar(newCond);
+        // msh_fillObj(newCond);
+        // msh_fillVar(newCond);
+        msh_var_fillObj(msh, newCond);
+        msh_var_fillArr(msh, newCond);
+        msh_var_fillVar(msh, newCond);
         if (word_compare(altCond, newCond) == 0) {
             break;
         };

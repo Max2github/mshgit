@@ -20,6 +20,8 @@ list-add() seems not to work globally anymore (?).
 ### ideas & possible solutions
 - stack-overflow - especially, because these segmentation faults do not appear in linux
   (I only saw them on macOS)
+  This is also very likely, because since removing the speicher[4000] in msh_io,
+  the segmentation fault occurs a lot less often.
   -> copy & use less memory and thik about putting VAR_SPEICHER (and VAR_NAMES) in the heap.
 - several problems -> make copying safer with limits (do not use word_copy directly, 
   check if string is not too long)

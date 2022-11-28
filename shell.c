@@ -60,10 +60,11 @@ msh_shell_options msh_shell_parse_options(int argc, char * argv[]) {
 }
 
 void msh_shell_sigint(int signal) {
+    putchar('\n');
     // 80 times - you can count if you want to :)
-    puts("\n################################################################################");
-      puts("                            TERMINATING BY INTERUPT"                             );
-      puts("################################################################################");
+    puts("################################################################################");
+    puts("                            TERMINATING BY INTERUPT                             ");
+    puts("################################################################################");
 
     msh_info dummy = MSH_INFO_DEFAULT;
     msh_freeRessources(&dummy);

@@ -6,7 +6,11 @@
 
 #include "../dependencies/extern.h"
 
-void msh_freeRessources(msh_info * msh) {
+void msh_exec_init(msh_info * msh) {
+
+}
+
+void msh_exec_free(msh_info * msh) {
     // execute all functions in MSH_ON_EXIT
     msh_event_callback_list temp = msh->event.on.exit;
     SIMPLE_LIST_FOREACH(temp,
@@ -15,6 +19,16 @@ void msh_freeRessources(msh_info * msh) {
     SIMPLE_LIST_FREE(msh->event.on.exit);
     msh->event.on.exit = NULL;
 
+    // free callstack
+    SIMPLE_LIST_FREE(msh->info.funcs);
+    msh->info.funcs = NULL;
+
+    // free all refs
+    msh_ref_freeAll(msh);
+    msh->refs = NULL;
+}
+
+void msh_freeRessources() {
     s_arr_free(FUNC_SPEICHER);
     s_arr_free(FUNC_NAMES);
     list_free(LIST_SPEICHER); // move to MSH_ON_EXIT later
@@ -43,7 +57,7 @@ int msh_readScript(char Script[]) {
         msh_Script_it = msh.info.line - 1;
     };
     freeWordArr(Zeilen, Zeilen_Anzahl);
-    msh_freeRessources(&msh);
+    msh_freeRessources();
     return 0;
 };
 int msh_readFunc(msh_info * msh, const char Script[], const char * funcName) {

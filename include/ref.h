@@ -30,5 +30,6 @@ void msh_ref_remove(msh_info *, index64);
 // index8 * msh_ref_getBin(msh_info *, index64);
 // char * msh_ref_getString(msh_info *, index64);
 void * msh_ref_get(msh_info *, index64);
+void msh_ref_freeAll(msh_info *);
 
 #endif

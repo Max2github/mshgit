@@ -44,3 +44,25 @@ void * msh_ref_get(msh_info * msh, index64 ref) {
     )
     return NULL;
 }
+
+void msh_ref_freeAll(msh_info * msh) {
+    msh_ref_list tempRefs = msh->refs;
+    SIMPLE_LIST_FOREACH(tempRefs,
+        switch (tempRefs->data.type) {
+            case msh_ref_type_FILE : {
+                fclose((FILE *) tempRefs->data.data);
+                break;
+            }
+            case msh_ref_type_STRING : {
+                break;
+            }
+            case msh_ref_type_BIN : {
+                
+                break;
+            }
+        }
+        s_free((superstring) msh->refs->data.ref);
+    )
+    SIMPLE_LIST_FREE(msh->refs);
+    msh->refs = NULL;
+}

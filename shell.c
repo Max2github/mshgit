@@ -66,8 +66,7 @@ void msh_shell_sigint(int signal) {
     puts("                            TERMINATING BY INTERUPT                             ");
     puts("################################################################################");
 
-    msh_info dummy = MSH_INFO_DEFAULT;
-    msh_freeRessources(&dummy);
+    msh_freeRessources();
 
     exit(0);
 }

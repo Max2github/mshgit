@@ -27,8 +27,8 @@
             //"args": [],
             "args": [
                 // "--version",
-                // "test.msh",
-                "testServer.msh",
+                "test.msh",
+                // "testServer.msh",
                 // "../FH/mailServer.msh",
                 // "../FH/mailClient.msh"
             ],

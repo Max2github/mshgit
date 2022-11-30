@@ -185,3 +185,36 @@ void msh_io_init(msh_info * msh, bool stdio) {
             msh_error(msh, "Could not open read in pipe.");
         }*/
 }
+
+void msh_info_free(msh_info * msh) {
+    // execute all functions in MSH_ON_EXIT
+    msh_event_callback_list temp = msh->event.on.exit;
+    SIMPLE_LIST_FOREACH(temp,
+        temp->data();
+    )
+    SIMPLE_LIST_FREE(msh->event.on.exit);
+    msh->event.on.exit = NULL;
+
+    SIMPLE_LIST_FREE(msh->info.funcs);
+    msh->info.funcs = NULL;
+
+    msh_ref_list tempRefs = msh->refs;
+    SIMPLE_LIST_FOREACH(tempRefs,
+        switch (tempRefs->data.type) {
+            case msh_ref_type_FILE : {
+                fclose((FILE *) tempRefs->data.data);
+                break;
+            }
+            case msh_ref_type_STRING : {
+                break;
+            }
+            case msh_ref_type_BIN : {
+                
+                break;
+            }
+        }
+        s_free((superstring) msh->refs->data.ref);
+    )
+    SIMPLE_LIST_FREE(msh->refs);
+    msh->refs = NULL;
+}

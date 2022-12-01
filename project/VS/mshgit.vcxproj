@@ -337,6 +337,8 @@
     <ClCompile Include="$(ProjectDir)\src\func.c" />
     <ClCompile Include="$(ProjectDir)\src\manage.c" />
     <ClCompile Include="$(ProjectDir)\src\readZeile.c" />
+    <ClCompile Include="..\..\src\alg\events.c" />
+    <ClCompile Include="..\..\src\alg\socket.c" />
     <ClCompile Include="..\..\src\ref.c" />
   </ItemGroup>
   <ItemGroup>
@@ -346,6 +348,8 @@
     <ClInclude Include="$(ProjectDir)\include\list.h" />
     <ClInclude Include="$(ProjectDir)\include\msh.h" />
     <ClInclude Include="$(ProjectDir)\include\super.h" />
+    <ClInclude Include="..\..\include\alg\events.h" />
+    <ClInclude Include="..\..\include\alg\socket.h" />
     <ClInclude Include="..\..\include\all_extern.h" />
     <ClInclude Include="..\..\include\ref.h" />
   </ItemGroup>

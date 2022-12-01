@@ -1,4 +1,5 @@
 #include "dependencies/std.h"
+#include "errno.h"
 
 #include "include/msh.h"
 
@@ -21,6 +22,7 @@ enum msh_shell_options_e {
     msh_shell_option_none = 0,
     msh_shell_option_version,
     msh_shell_option_help,
+    msh_shell_option_verboose = 4,
 };
 
 struct msh_shell_options {
@@ -34,6 +36,7 @@ typedef struct msh_shell_options msh_shell_options;
 bool msh_shell_handleOptionFlag(const char * option, msh_shell_options * optout) {
     if (word_compare(option, "version") == 0) { optout->set1 |= msh_shell_option_version; return true; }
     if (word_compare(option, "help") == 0) { optout->set1 |= msh_shell_option_help; return true; }
+    if (word_compare(option, "verboose") == 0) { optout->set1 |= msh_shell_option_verboose; return true; }
     return false;
 }
 
@@ -66,9 +69,13 @@ void msh_shell_sigint(int signal) {
     puts("                            TERMINATING BY INTERUPT                             ");
     puts("################################################################################");
 
-    msh_freeRessources();
+    // send exit event to all running instances / msh_info's
+    MSH_VERBOOSE_LOG(NULL, "send exit event to all running instances");
+    msh_exec_event_exitAll();
 
-    exit(0);
+    // close all open sockets
+    MSH_VERBOOSE_LOG(NULL, "close all open sockets");
+    msh_socket_closeAll();
 }
 
 int main(int argc, char * argv[]) {
@@ -83,6 +90,9 @@ int main(int argc, char * argv[]) {
     if (opt.set1 & msh_shell_option_version) {
         puts("3.0.0");
         return 0;
+    }
+    if (opt.set1 & msh_shell_option_verboose) {
+        MSH_FLAGS_BITWISE1 |= msh_flagbit1_verboose;
     }
 
     int restArg = argc - opt.number;

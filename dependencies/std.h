@@ -11,18 +11,61 @@
 #include "../../../lib/templates/simple_list.h"
 #include "../../../lib/templates/simple_array.h"
 
+#undef NULL
+#define NULL ((void *) 0)
+
+#if PF_UNIX
+    #define MSH_SLEEP(ms) sleep(ms)
+#elif PF_WINDOWS
+    #define MSH_SLEEP(ms)
+#endif
+
 // YOU CAN TOGGLE THESE (0 or 1, 0 -> unset, 1 -> set)
-#define FILESYSTEM 1
-#define MULTI_THREAD 0
+#define MSH_ALLOW_FILESYSTEM 1
+#define MSH_ALLOW_MULTI_THREAD 0
+#define MSH_ALLOW_SOCKET 1
 
 // DO NOT EDIT
 
-#if FILESYSTEM
+#if MSH_ALLOW_FILESYSTEM
     #define MSH_FILE FILE *
     #define MSH_FILE_OPEN fopen
 #endif
 
-#if MULTI_THREAD
+#if MSH_ALLOW_SOCKET
+    #if PF_UNIX
+        #include <netinet/in.h>
+        #include <sys/socket.h>
+        #include <arpa/inet.h>
+
+        #define MSH_SOCKET_ALL_INIT
+        #define MSH_SOCKET_ALL_CLEANUP
+
+        #define MSH_SOCKET int
+        #define MSH_SOCKET_DEFAULT 
+
+    #elif PF_WINDOWS
+        #include <windows.h>
+        #include <winsock2.h>
+        #include <ws2tcpip.h>
+        #include <iphlpapi.h>
+
+        #pragma comment(lib, "Ws2_32.lib")
+
+        #define MSH_SOCKET_ALL_INIT { \
+            WSADATA wsaData; \
+            int err = WSAStartup(MAKEWORD(2,2), &wsaData); \
+            if (err != 0) { msh_error("WSAStartup failed with an error!"); } \
+        }
+        #define MSH_SOCKET_ALL_CLEANUP WSACleanup() 
+
+        #define MSH_SOCKET SOCKET
+        #define MSH_SOCKET_DEFAULT INVALID_SOCKET
+
+    #endif
+#endif
+
+#if MSH_ALLOW_MULTI_THREAD
     #define MSH_THREAD_VAR __thread
     #if PF_WINDOWS && !PF_POSIX
         #include <windows.h>

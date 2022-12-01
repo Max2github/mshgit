@@ -29,7 +29,8 @@
         "words.h": "c",
         "__functional_03": "c",
         "functional": "c",
-        "__node_handle": "c"
+        "__node_handle": "c",
+        "iterator": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

@@ -6,11 +6,13 @@
 
 #include "../dependencies/extern.h"
 
-void msh_exec_init(msh_info * msh) {
-
+void msh_exec_init(msh_info * msh, bool use_std_IO) {
+    msh_io_init(msh, use_std_IO); // true for use stdio
+    msh_exec_event_register(msh);
 }
 
 void msh_exec_free(msh_info * msh) {
+    msh_exec_event_unregister(msh);
     // execute all functions in MSH_ON_EXIT
     msh_event_callback_list temp = msh->event.on.exit;
     SIMPLE_LIST_FOREACH(temp,
@@ -43,12 +45,13 @@ int msh_readScript(char Script[]) {
     int Zeilen_Anzahl = split(Script, "\n", &Zeilen);
     // printf("%d\n", Zeilen_Anzahl);
     msh_info msh = MSH_INFO_DEFAULT;
-    msh_io_init(&msh, true);
+    msh_exec_init(&msh, true);
     
     for (int msh_Script_it = 0; msh_Script_it <= Zeilen_Anzahl; msh_Script_it++) {
         msh.info.line = msh_Script_it + 1;
         if (!check_Func(&msh, Zeilen) && !check_bigdata(&msh, Zeilen)) {
             msh_readZeile(&msh, Zeilen[msh_Script_it]);
+            if (msh.event.exit) { break; }
             if (msh.event.stop) {
                 msh.event.stop = false;
                 break;
@@ -57,6 +60,7 @@ int msh_readScript(char Script[]) {
         msh_Script_it = msh.info.line - 1;
     };
     freeWordArr(Zeilen, Zeilen_Anzahl);
+    msh_exec_free(&msh);
     msh_freeRessources();
     return 0;
 };
@@ -77,6 +81,7 @@ int msh_readFunc(msh_info * msh, const char Script[], const char * funcName) {
     for (int FuncI = 0; FuncI <= Zeilen_Anzahl; FuncI++) {
         msh->info.line = FuncI + 1;
         msh_readZeile(msh, Zeilen[FuncI]);
+        if (msh->event.exit) { break; }
         if (msh->event.stop) {
             msh->event.stop = false;
             break;
@@ -100,7 +105,7 @@ int msh_readFunc(msh_info * msh, const char Script[], const char * funcName) {
     return 0;
 };
 int msh_readFile(char filename[]) {
-    #if FILESYSTEM == 1
+    #if MSH_ALLOW_FILESYSTEM
         FILE* file;
         file = fopen(filename, "r");
         if(file == NULL) {

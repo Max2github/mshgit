@@ -74,8 +74,10 @@ COM_MAIN_SRC_DIR := $(COM_SRC_DIR)/main
 COM_SUB_SRC_DIR := $(COM_SRC_DIR)/sub
 COM_DEP_SRC_DIR := $(COM_SRC_DIR)/dependencies
 
+SRC_ALG_DIR := $(SRC_DIR)/alg
+
 # source files in different folders
-SRC_NORM := $(wildcard $(SRC_DIR)/*.c)
+SRC_NORM := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_ALG_DIR)/*.c)
 # as there are files with the same name, they will maintain the folder structure
 SRC_COM := $(wildcard $(COM_SRC_DIR)/*.c) \
 		$(wildcard $(COM_MAIN_SRC_DIR)/*.c) \

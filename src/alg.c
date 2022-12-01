@@ -19,25 +19,33 @@ char VAR_NAMES[500][32]; // saves the names of the vars
 int VAR_WORTZAELER = 0; // ammount of vars
 int VAR_ZEICHENZAELER = 0; // lenght of the current longest line
 list LIST_SPEICHER = NULL; // Stack / Heap / Memory for linked lists (stores in fact only pointers + names)
-// list MSH_ON_EXIT = NULL;
+msh_events_p_list MSH_EXEC_EVENTS = NULL;
+
+#if MSH_ALLOW_SOCKET
+    msh_socket_list MSH_SOCKET_ALL = NULL;
+#endif
+
+// flags
+unsigned char MSH_FLAGS_BITWISE1 = msh_flagbit1_none;
 
 // needed generally & especially for scripts
 MSH_THREAD_VAR char msh_Wert[4000];
-int msh_STOP = 0;
-MSH_THREAD_VAR int msh_Script_it = 0; // if not copied in each thread, a thread can cause the mai program to jump
+// int msh_STOP = 0;
+// MSH_THREAD_VAR int msh_Script_it = 0; // if not copied in each thread, a thread can cause the mai program to jump
 
-#if MULTI_THREAD
+#if MSH_ALLOW_MULTI_THREAD
     // int MSH_PRINT_MUTEX;
     MSH_MUTEX MSH_PRINT_MUTEX = MSH_MUTEX_DEFAULT;
+    MSH_MUTEX MSH_EXEC_EVENTS_MUTEX = MSH_MUTEX_DEFAULT;
 #endif
 
-void msh_error_old(const char * msg) {
+/*void msh_error_old(const char * msg) {
     if (IN_FUNC) {
         printf("!! ERROR at line %d (inside a func) : %s!\n", msh_Script_it + 1, msg);
         return;
     }
     printf("!! ERROR at line %d : %s!\n", msh_Script_it + 1, msg);
-}
+}*/
 
 void msh_error(msh_info * msh, const char * msg) {
     if(msh->info.in_func) {
@@ -133,6 +141,10 @@ void msh_printf(msh_info * msh, const char * format, ...) {
 
 void msh_puts(msh_info * msh, const char * string) {
     /*msh->io.bytesWritten +=*/ fputs(string, msh->io.out);
+}
+
+void msh_log(msh_info * msh, const char * string) {
+    MSH_PRINTF(msh, "MSH LOG: %s\n", string);
 }
 
 void msh_flush(msh_info * msh) {

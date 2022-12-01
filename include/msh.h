@@ -55,7 +55,7 @@ int msh_readScript(char Script[]); // 662
 int msh_readFunc(msh_info * msh, const char * Script, const char * funcName);
 int msh_readFile(char filename[]); // 688
 
-void msh_exec_init(msh_info *);
+void msh_exec_init(msh_info *, bool use_std_IO);
 void msh_exec_free(msh_info *);
 void msh_freeRessources();
 // void msh_initRessources();

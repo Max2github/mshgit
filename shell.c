@@ -5,10 +5,10 @@
 
 #include "dependencies/extern.h"
 
-#if PF_WINDOWS
+#if DEF_PF_WINDOWS
     #include <direct.h>
     #define GetCurrentDir _getcwd
-#elif PF_UNIX
+#elif DEF_PF_UNIX
     #include <unistd.h>
     #define GetCurrentDir getcwd
     #include <signal.h>
@@ -79,9 +79,9 @@ void msh_shell_sigint(int signal) {
 }
 
 int main(int argc, char * argv[]) {
-    #if PF_UNIX
+    #if DEF_PF_UNIX
         signal(SIGINT, msh_shell_sigint);
-    #elif PF_WINDOWS
+    #elif DEF_PF_WINDOWS
 
     #endif
 

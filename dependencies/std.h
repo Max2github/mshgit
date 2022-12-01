@@ -14,9 +14,9 @@
 #undef NULL
 #define NULL ((void *) 0)
 
-#if PF_UNIX
+#if DEF_PF_UNIX
     #define MSH_SLEEP(ms) sleep(ms)
-#elif PF_WINDOWS
+#elif DEF_PF_WINDOWS
     #define MSH_SLEEP(ms)
 #endif
 
@@ -33,7 +33,7 @@
 #endif
 
 #if MSH_ALLOW_SOCKET
-    #if PF_UNIX
+    #if DEF_PF_UNIX
         #include <netinet/in.h>
         #include <sys/socket.h>
         #include <arpa/inet.h>
@@ -44,7 +44,7 @@
         #define MSH_SOCKET int
         #define MSH_SOCKET_DEFAULT 
 
-    #elif PF_WINDOWS
+    #elif DEF_PF_WINDOWS
         #include <windows.h>
         #include <winsock2.h>
         #include <ws2tcpip.h>
@@ -67,7 +67,7 @@
 
 #if MSH_ALLOW_MULTI_THREAD
     #define MSH_THREAD_VAR __thread
-    #if PF_WINDOWS && !PF_POSIX
+    #if DEF_PF_WINDOWS && !DEF_PF_POSIX
         #include <windows.h>
         // threads
         #define MSH_THREAD HANDLE

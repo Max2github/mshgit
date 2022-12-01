@@ -11,8 +11,9 @@
 #elif DEF_PF_UNIX
     #include <unistd.h>
     #define GetCurrentDir getcwd
-    #include <signal.h>
 #endif
+
+#include <signal.h>
 
 #define DEFAULT_MAIN "main.msh"
 
@@ -79,11 +80,7 @@ void msh_shell_sigint(int signal) {
 }
 
 int main(int argc, char * argv[]) {
-    #if DEF_PF_UNIX
-        signal(SIGINT, msh_shell_sigint);
-    #elif DEF_PF_WINDOWS
-
-    #endif
+    signal(SIGINT, msh_shell_sigint);
 
     #if MSH_ALLOW_SOCKET
         // only necessary for windows
@@ -115,7 +112,7 @@ int main(int argc, char * argv[]) {
 
     #if MSH_ALLOW_SOCKET
         // only necessary for windows
-        MSH_SOCKET_ALL_CLEANUP
+        MSH_SOCKET_ALL_CLEANUP;
     #endif
     
     // char c = getchar(); // don't close - just let the user see it for a bit...

@@ -9,11 +9,7 @@
 MSH_SOCKET msh_socket_create(int ipVersion, int socketType, int subProto) {
     MSH_SOCKET ret;
 
-    #if DEF_PF_UNIX
-        ret = socket(ipVersion, socketType, subProto);
-    #elif DEF_PF_WINDOWS
-
-    #endif
+    ret = socket(ipVersion, socketType, subProto);
 
     msh_socket_register(ret);
 
@@ -29,15 +25,11 @@ void msh_socket_register(MSH_SOCKET sock) {
 }
 
 bool msh_socket_compare(MSH_SOCKET sock1, MSH_SOCKET sock2) {
-    #if DEF_PF_UNIX
-        if (
-            sock1 == sock2
-        ) {
-            return true;
-        }
-    #elif DEF_PF_WINDOWS
-
-    #endif
+    if (
+        sock1 == sock2
+    ) {
+        return true;
+    }
     return false;
 }
 
@@ -66,7 +58,7 @@ void msh_socket_close(MSH_SOCKET sock) {
         close(sock);
         close(sock);
     #elif DEF_PF_WINDOWS
-
+        closesocket(sock);
     #endif
 }
 

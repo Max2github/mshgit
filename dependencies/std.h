@@ -57,7 +57,7 @@
         #define MSH_SOCKET_ALL_INIT { \
             WSADATA wsaData; \
             int err = WSAStartup(MAKEWORD(2,2), &wsaData); \
-            if (err != 0) { msh_error("WSAStartup failed with an error!"); } \
+            if (err != 0) { msh_error(NULL, "WSAStartup failed with an error!"); } \
         }
         #define MSH_SOCKET_ALL_CLEANUP WSACleanup() 
 

@@ -6,6 +6,7 @@ test*
 # unnecessairy .o files
 o/lib/*.o
 # makefile
+o/alg/*.o
 o/dependencies/*.o
 o/lib/*.o
 o/main/*.o

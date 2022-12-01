@@ -74,7 +74,7 @@ void msh_shell_sigint(int signal) {
     msh_exec_event_exitAll();
 
     // close all open sockets
-    MSH_VERBOOSE_LOG(NULL, "close all open sockets");
+    MSH_VERBOOSE_LOG(NULL, "close all open sockets, and thus stop all communication");
     msh_socket_closeAll();
 }
 
@@ -83,6 +83,11 @@ int main(int argc, char * argv[]) {
         signal(SIGINT, msh_shell_sigint);
     #elif DEF_PF_WINDOWS
 
+    #endif
+
+    #if MSH_ALLOW_SOCKET
+        // only necessary for windows
+        MSH_SOCKET_ALL_INIT
     #endif
 
     msh_shell_options opt = msh_shell_parse_options(argc, argv);
@@ -107,6 +112,11 @@ int main(int argc, char * argv[]) {
     if (restArg == 2) { word_add(path, argv[opt.number]); }
     else { word_add(path, DEFAULT_MAIN); }
     msh_readFile(path);
+
+    #if MSH_ALLOW_SOCKET
+        // only necessary for windows
+        MSH_SOCKET_ALL_CLEANUP
+    #endif
     
     // char c = getchar(); // don't close - just let the user see it for a bit...
     return 0;

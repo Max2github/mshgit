@@ -46,10 +46,12 @@
 
     #elif DEF_PF_WINDOWS
         #include <windows.h>
-        #include <winsock2.h>
-        #include <ws2tcpip.h>
-        #include <iphlpapi.h>
+        // don't need them, everything is in windows.h
+        //#include <winsock2.h>
+        //#include <ws2tcpip.h>
+        //#include <iphlpapi.h>
 
+        // tell linker to include this static library
         #pragma comment(lib, "Ws2_32.lib")
 
         #define MSH_SOCKET_ALL_INIT { \

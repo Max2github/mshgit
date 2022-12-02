@@ -45,6 +45,9 @@
         #define MSH_SOCKET_DEFAULT 
 
     #elif OS_WINDOWS
+        #include <winsock2.h>
+        #include <ws2def.h>
+        #include <ws2tcpip.h>
         #include <windows.h>
         // don't need them, everything is in windows.h
         //#include <winsock2.h>

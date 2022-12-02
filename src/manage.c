@@ -75,7 +75,7 @@ bool msh_var_push(msh_info * msh, const char * value, const char * name) {
         return false;
     }
     int value_len = word_len(value);
-    int name_len = word_len(name);
+    /*int name_len =*/ word_len(name);
     /*if (value_len > VAR_MAXCHAR) {
         msh_error(msh, "Value of global var exceeds maximum of " STR(sizeof(VAR_SPEICHER[0])) " bytes / characters!");
         return false;

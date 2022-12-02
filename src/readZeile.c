@@ -108,7 +108,7 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
         if (find(array[0], ".") != 0) {
             local_found = 0; // not supported yet
         } else {
-            char nowhere[VAR_MAXCHAR];
+            // char nowhere[VAR_MAXCHAR];
             // if not found as local var, but as global var
             // not found local + found global -> priority: global
             /* if (msh_func_get_local_Var_index(array[0], stack_id) == -1 && msh_get_Var(array[0], nowhere) != -1) {

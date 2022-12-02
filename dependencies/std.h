@@ -51,8 +51,10 @@
         //#include <ws2tcpip.h>
         //#include <iphlpapi.h>
 
-        // tell linker to include this static library
-        #pragma comment(lib, "Ws2_32.lib")
+        // tell linker to include this static library - only for VS, compiler: MSC (CL) / ClangCl
+        #if CC_MSC
+            #pragma comment(lib, "Ws2_32.lib")
+        #endif
 
         #define MSH_SOCKET_ALL_INIT { \
             WSADATA wsaData; \

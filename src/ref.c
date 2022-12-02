@@ -21,7 +21,7 @@ void msh_ref_remove(msh_info * msh, index64 ref) {
     SIMPLE_LIST_FOREACH(temp,
         // if (temp->data.ref == ref) {
         if (s_compare((superstring) temp->data.ref, (superstring) ref)) {
-            long next = temp->next;
+            unsigned long long next = temp->next;
             s_free((superstring) temp->data.ref);
             MSH_FREE(temp);
             if (before == NULL) {

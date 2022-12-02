@@ -54,10 +54,10 @@ void msh_socket_unregister(MSH_SOCKET sock) {
 
 void msh_socket_close(MSH_SOCKET sock) {
     msh_socket_unregister(sock);
-    #if DEF_PF_UNIX
+    #if OS_UNIX
         close(sock);
         close(sock);
-    #elif DEF_PF_WINDOWS
+    #elif OS_WINDOWS
         closesocket(sock);
     #endif
 }

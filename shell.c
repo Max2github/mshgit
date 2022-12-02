@@ -5,10 +5,10 @@
 
 #include "dependencies/extern.h"
 
-#if DEF_PF_WINDOWS
+#if OS_WINDOWS
     #include <direct.h>
     #define GetCurrentDir _getcwd
-#elif DEF_PF_UNIX
+#elif OS_UNIX
     #include <unistd.h>
     #define GetCurrentDir getcwd
 #endif

@@ -26,12 +26,29 @@ Currently supports only macos or linux as host.
 
 ## Setting up the workspace
 1. Make a directory named `msh` and go into it (`mkdir msh && cd msh`)
-2. Copy the source code / clone it (`git clone <this repo>`)
-3. Copy the source code / clone the repo msh-packages (from me) (`git clone <msh-packages repo>`)
+2. Copy the source code / clone it (`git clone https://github.com/Max2github/mshgit.git`)
+3. Copy the source code / clone the repo msh-packages (from me) (`git clone https://github.com/Max2github/msh-packages.git`)
 4. go out of the folder `msh` (`cd ..`)
-5. clone the lib (from me) repo (`git clone <lib repo>`)
+5. clone the lib (from me) repo (`git clone https://github.com/Max2github/lib.git`)
 
-If you choose to have a different layout, yheckout the files `dependencies/std.h` and `dependencies/extern.h` and change the inlclude paths accordingly.
+If you choose to have a different layout, checkout the files `dependencies/std.h` and `dependencies/extern.h` and change the inlclude paths accordingly.
+
+## adding packages (or commands)
+Also look at the [wiki: Using devel: adding commands and packages](https://github.com/Max2github/mshgit/wiki/Using-devel-:--adding-commands-and-packages#to-add-a-package)
+
+Nearly all commands in msh were moved to [msh-packages](https://github.com/Max2github/msh-packages), in order to separate system and commands.
+You need to add them before compiling (there are no dynamic packages until now).
+
+### Recommended packages:
+#### basic
+- std-essential - the basics
+- std-extended - some usefull std functions (nearly essential)
+#### should work (tested)
+- IPsocket - basics to create a TCP/IP server
+#### needs to be tested again
+- list - linked lists
+#### in BETA and / or does not work on every platform
+- async - threading
 
 ## all.c vs. all.o
 As of now you cannot all get the needed libraries, so I uploaded some precompiled .o files in the folder `other`.

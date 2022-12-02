@@ -122,7 +122,7 @@ void msh_func_depth_remove_last_func(msh_info * msh) {
     msh_func_depth next = (msh_func_depth) temp->next;
     MSH_FREE((char *) temp->data);
     MSH_FREE(temp);
-    if (before != NULL) { before->next = (long) next; }
+    if (before != NULL) { before->next = (unsigned long long) next; }
     else { msh->info.funcs = next; }
     return;
 }

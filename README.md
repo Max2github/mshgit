@@ -24,16 +24,17 @@ Alternatively you can also just download the executable (see releases -> Shell p
 # Building
 Currently supports only macos or linux as host.
 
-Copy the source code / clone it.
-Check the files (mshgit/dependencies) "std.h" and "all.c". In "all.c" replace: 
+## Setting up the workspace
+1. Make a directory named `msh` and go into it (`mkdir msh && cd msh`)
+2. Copy the source code / clone it (`git clone <this repo>`)
+3. Copy the source code / clone the repo msh-packages (from me) (`git clone <msh-packages repo>`)
+4. go out of the folder `msh` (`cd ..`)
+5. clone the lib (from me) repo (`git clone <lib repo>`)
 
-    #include "../../../lib/list.h"
-    #include "../../../lib/superstring.h"
-    #include "../../../lib/mathe.h"
+If you choose to have a different layout, yheckout the files `dependencies/std.h` and `dependencies/extern.h` and change the inlclude paths accordingly.
 
-by their correct paths. If you do not have them get them (they are also from me).
-
-As of now you cannot get the libraries needed, so I uploaded some precompiled .o files in the folder "other"
+## all.c vs. all.o
+As of now you cannot all get the needed libraries, so I uploaded some precompiled .o files in the folder `other`.
 
     other/<your system>/all.o
 
@@ -47,7 +48,10 @@ Now you should build with the follwing option:
 
 If it still doesn't work try removing the all.c file from the dependency directory (then make should not find it).
 
-In std.h: You can change the <stdio.h> and the <stdlib.h> libraries with other libraries, as long as you provide the functions needed. For the moment this feature will not be possible, because the libraries also need <stdio.h> and <stdlib.h>.
+In std.h: If you define the macro `NO_STD_LIB`, you must declare a lot of othe macros
+(something like `LIST_H_FREE(p) free(p)`), in which you give replacements for the "normal" standard functions. As I did not try this a lot, I cannot guarantee that it works.
+
+If for some reason you have all libraries needed in all.c, then you just have to check the includes in all.c and you can compile without the `dep=false` argument.
 
 ## -) .o File: 
 Go to the directory in Terminal:
@@ -75,14 +79,15 @@ Here a list of what is working until now:
 
 ### macos (arm64) (host)
 
-- `windows_x86_32 | ✔`
+- `windows_x86_32 | ✔` (currently there is a linking problem with the function inet_pton - only if you need socket communication)
 - `windows_x86_64 | ✔`
 - `macos_i386     | x`
 - `macos_x86_64   | x`
-- `linux_arm      | ✔`
+- `linux_arm      | ✔` (I mean arm64, will change it later)
 - `macos_x86_64   | x` (trick -> run terminal with rosetta)
 - `linux_x86_64   | ✔`
 - `linux_x86_32   | x`
+- `linux_x86_i386 | x`
 
 ### linux (arm64) (host)
 

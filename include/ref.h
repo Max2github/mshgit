@@ -14,7 +14,7 @@ typedef enum msh_ref_type msh_ref_type;
 
 struct msh_ref {
     index64 ref;                      // reference number
-    enum msh_ref_type type : 1;           // type
+    enum msh_ref_type type : 8;           // type
     index64 size;
 
     index64 owner;                    // which thread, maybe even which function

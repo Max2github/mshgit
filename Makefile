@@ -7,7 +7,8 @@
 CC = gcc # compiler
 LD = gcc #ld # linker
 CFLAGS = -c -Wall #-std=c++20 # flags for compiler
-LD_FLAGS = -pthread # flags for linker
+LD_FLAGS = # flags for linker
+LD_LIBS = -lpthread
 # executable / target file
 EXE_BASE_NAME := msh
 EXE = $(EXE_BASE_NAME)
@@ -158,7 +159,8 @@ ifdef target
 #ifeq ($(host), $(filter linux, macos))
 #CC = aarch64-none-elf-gcc
 			CC = $(CROSS_CC_LINUX_ARM64)
-			LD = $(CROSS_LD_LINUX_ARM64)
+			# LD = $(CROSS_LD_LINUX_ARM64)
+			LD = $(CROSS_CC_LINUX_ARM64)
 #LD = aarch64-elf-gcc
 #LD_FLAGS += -L /usr/local/lib/aarch64-elf/bfd-plugins #-ldep #/usr/local/lib/gcc/aarch64-elf/12.1.0
 #LD = arm-linux-gnueabihf-ld
@@ -204,13 +206,17 @@ ifdef target
 # macos : macports : i686-w64-mingw32-gcc, x86_64-w64-mingw32-gcc
 		ifneq (, $(filter $(HOST_OS), macos linux))
 			CC = $(CROSS_CC_WIN_x86_32)
-			LD = $(CROSS_LD_WIN_x86_32)
+			# LD = $(CROSS_LD_WIN_x86_32)
+			LD = $(CROSS_CC_WIN_x86_32)
+			LD_LIBS = -lws2_32 -lwsock32
 		endif
 	endif
 	ifeq ($(target), windows_x86_64)
 		ifneq (, $(filter $(HOST_OS), macos linux))
 			CC = $(CROSS_CC_WIN_x86_64)
-			LD = $(CROSS_LD_WIN_x86_64)
+			# LD = $(CROSS_LD_WIN_x86_64)
+			LD = $(CROSS_CC_WIN_x86_64)
+			LD_LIBS = -lws2_32 -lwsock32 -lmswsock
 		endif
 	endif
 	ifeq ($(target), macos_x86_64)
@@ -224,7 +230,8 @@ ifdef target
 	ifeq ($(target), linux_x86_64)
 		ifneq (, $(filter $(HOST_OS), macos linux))
 			CC = $(CROSS_CC_LINUX_x86_64)
-			LD = $(CROSS_LD_LINUX_x86_64)
+			# LD = $(CROSS_LD_LINUX_x86_64)
+			LD = $(CROSS_CC_LINUX_x86_64)
 #CC = x86_64-elf-gcc
 #LD = x86_64-elf-ld
 #CFLAGS += -m64 -I lib/gcc/x86_64-elf/12.1.0/include
@@ -334,11 +341,11 @@ $(EXE_RELEASE_WINDOWS_x86_64):
 
 # objlib
 $(EXE_BASE_NAME).o: $(OBJ) $(DEP_OBJ)
-	$(LD) $(LD_FLAGS) -o $(EXE) $+
+	$(LD) $(LD_FLAGS) -o $(EXE) $+ $(LD_LIBS)
 
 # shell
 $(EXE): $(OBJ) $(DEP_OBJ) shell.o
-	$(CC) $(LD_FLAGS) -o $@ $^
+	$(LD) $(LD_FLAGS) -o $@ $^ $(LD_LIBS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -o $@ $^

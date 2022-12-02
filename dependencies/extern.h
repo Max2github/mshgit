@@ -13,6 +13,9 @@
 #include "../../../lib/templates/def.h"
 #include "../../../lib/templates/simple_array.h"
 #include "../../../lib/templates/simple_list.h"
+
+#include "../../../lib/freestanding/general_alloc.h"
+
 #include "../../../lib/words_h.h"
 #include "../../../lib/list_h.h"
 #include "../../../lib/word_pick_h.h"

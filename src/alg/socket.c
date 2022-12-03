@@ -40,7 +40,7 @@ void msh_socket_unregister(MSH_SOCKET sock) {
     msh_socket_list before = NULL;
     SIMPLE_LIST_FOREACH(temp, 
         if (msh_socket_compare(temp->data, sock)) {
-            unsigned long long next = temp->next;
+            indexP next = temp->next;
             MSH_FREE(temp);
             if (before == NULL) { MSH_SOCKET_ALL = (msh_socket_list) next; }
             else { before->next = next; }

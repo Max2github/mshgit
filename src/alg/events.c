@@ -23,7 +23,7 @@ bool msh_exec_event_unregister(msh_info * msh) {
             &(msh->event.exit) == temp->data.exit &&
             &(msh->event.stop) == temp->data.stop
         ) {
-            unsigned long long next = temp->next;
+            indexP next = temp->next;
             MSH_FREE(temp);
             if (before == NULL) { MSH_EXEC_EVENTS = (msh_events_p_list) next;}
             else { before->next = next; }

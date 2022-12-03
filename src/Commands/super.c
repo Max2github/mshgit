@@ -121,7 +121,9 @@ bool check_bigdata(msh_info * msh, char ** Script) {
         char * codeStr = MSH_MALLOC(nbytes);
         s_stringify(code, codeStr);
 
-        msh_ref_add(msh, (index64) ref_name, codeStr, nbytes);
+        union msh_ref_data data;
+        data.pointer = (indexP) codeStr;
+        msh_ref_add(msh, (indexP) ref_name, data, nbytes);
         return true;
     }
     return false;

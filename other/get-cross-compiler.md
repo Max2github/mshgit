@@ -50,10 +50,13 @@ Important: Before cross-compiling you must add the compiler to your PATH:
 
     sudo apt install binutils-aarch64-linux-gnu
 
-## x86_64-linux-gnu && x86_64-linux-gnux32 (64-Bit && 32-Bit)
+## x86_64-linux-gnu && x86_64-linux-gnux32 && i686-linux-gnu-gcc (64-Bit && 32-Bit)
 
-    sudo apt install x86_64-linux-gnux32-gcc
+    sudo apt install gcc-x86-64-linux-gnux32
 
 
-    x86_64-linux-gnu-gcc
+    sudo apt install gcc-x86-64-linux-gnu
+
+
+    sudo apt install gcc-i686-linux-gnu
 

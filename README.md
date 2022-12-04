@@ -112,9 +112,10 @@ Here a list of what is working until now:
 - `windows_x86_64 | ✔`
 - `macos_i386     | x`
 - `macos_x86_64   | x`
-- `macos_x86_64   | x` (trick -> run terminal with rosetta, see below)
-- `linux_x86_64   | ✔` (not tested yet)
+- `macos_x86_64   | x`
+- `linux_x86_64   | ✔`
 - `linux_x86_32   | ✔` (not tested yet)
+- `linux_x86_i386 | ✔`
 
 If you have a m1 mac, but want to compile for macos_x86_64, 
 there is a little trick:

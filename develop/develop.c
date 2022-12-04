@@ -4,7 +4,6 @@
 // #include "../../../lib/word_pick_h.h"
 
 // put up with it for now - source code !!!
-#include "../../../lib/src/word_pick.h"
 #include "../../../lib/src/fileIO.h"
 
 #define PATH_PACKAGE_LIST "src/cparts/packages.txt"

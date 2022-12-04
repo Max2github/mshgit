@@ -105,7 +105,7 @@ HOST_ARCH = arm
 ifdef host
 	ifneq (,$(filter $(host),macos_i386 macos_x86_32 macos_x86 macos_x86_64))
 		HOST_OS = macos
-		HOST_ARCH = x86_64
+		HOST_ARCH = x86
 	endif
 	ifneq (,$(filter $(host),macos_arm macos_arm64 macos_aarch64 macos_m1))
 		HOST_OS = macos
@@ -121,13 +121,17 @@ ifdef host
 		CROSS_CC_LINUX_x86_64 = x86_64-linux-gnu-gcc
 		CROSS_LD_LINUX_x86_64 = x86_64-linux-gnu-ld
 		HOST_OS = linux
-		HOST_ARCH = arm
+		HOST_ARCH = x86
 	endif
 	ifeq ($(host), linux_x86_64)
-		CROSS_CC_LINUX_x86_32 = gcc
-		CROSS_LD_LINUX_x86_32 = gcc
+		CROSS_CC_LINUX_x86_32 = x86_64-linux-gnux32-gcc
+		CROSS_LD_LINUX_x86_32 = x86_64-linux-gnux32-gcc
+		CROSS_CC_LINUX_i386 = i686-linux-gnu-gcc
+		CROSS_LD_LINUX_i386 = i686-linux-gnu-gcc
 		CROSS_CC_LINUX_x86_64 = gcc
 		CROSS_LD_LINUX_x86_64 = gcc
+		HOST_OS = linux
+		HOST_ARCH = x86
 	endif
 	ifneq (,$(filter $(host),linux_arm linux_arm64 linux_aarch64 linux_m1))
 		MEMCHECK = valgrind
@@ -190,12 +194,12 @@ ifdef target
 #export PATH="/usr/local/Cellar/x86_64-elf-binutils/2.38/bin/:/usr/local/Cellar/x86_64-elf-gcc/12.1.0/bin/:/usr/local/Cellar/i386-elf-gdb/12.1/bin:$PATH"
 #CC = x86_64-elf-gcc
 #LD = x86_64-elf-ld
-			ifneq ($(target), linux_i386)
+			ifeq ($(target), linux_i386)
 				CC = $(CROSS_CC_LINUX_i386)
 				LD = $(CROSS_LD_LINUX_i386)
 			else
-				CC = $(CROSS_CC_LINUX_i386)
-				LD = $(CROSS_LD_LINUX_i386)
+				CC = $(CROSS_CC_LINUX_x86_32)
+				LD = $(CROSS_LD_LINUX_x86_32)
 			endif
 #CFLAGS += -m64 #--sysroot=/usr/local/Cellar/x86_64-elf-gcc/12.1.0/
 #LD_FLAGS += -m elf_x86_64

@@ -65,12 +65,9 @@ void msh_socket_close(MSH_SOCKET sock) {
 void msh_socket_closeAll() {
     MSH_MUTEX_LOCK(MSH_SOCKET_MUTEX);
 
-    msh_socket_list temp = MSH_SOCKET_ALL;
-    SIMPLE_LIST_FOREACH(temp,
-        msh_socket_close(temp->data);
-    )
-    SIMPLE_LIST_FREE(MSH_SOCKET_ALL);
-    MSH_SOCKET_ALL = NULL;
+    while (MSH_SOCKET_ALL != NULL) {
+        msh_socket_close(MSH_SOCKET_ALL->data);
+    }
 
     MSH_MUTEX_UNLOCK(MSH_SOCKET_MUTEX);
 }

@@ -135,7 +135,7 @@ ifdef host
 	endif
 	ifneq (,$(filter $(host),linux_arm linux_arm64 linux_aarch64 linux_m1))
 		MEMCHECK = valgrind
-		MEMCHECK_FLAGS = --leak-check=full
+		MEMCHECK_FLAGS = --leak-check=full --show-leak-kinds=all
 		CROSS_CC_LINUX_x86_32 = x86_64-linux-gnux32-gcc
 		CROSS_LD_LINUX_x86_32 = x86_64-linux-gnux32-gcc
 		CROSS_CC_LINUX_i386 = i686-linux-gnu-gcc

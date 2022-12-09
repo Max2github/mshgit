@@ -11,8 +11,8 @@
 #include "../../../lib/templates/simple_list.h"
 #include "../../../lib/templates/simple_array.h"
 
-#undef NULL
-#define NULL ((void *) 0)
+//#undef NULL
+//#define NULL ((void *) 0)
 
 #if OS_UNIX
     #define MSH_SLEEP(ms) sleep(ms)

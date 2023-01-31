@@ -8,7 +8,7 @@ CC = gcc # compiler
 LD = gcc #ld # linker
 CFLAGS = -c -Wall #-std=c++20 # flags for compiler
 LD_FLAGS = # flags for linker
-LD_LIBS = -lpthread
+LD_LIBS = -lpthread #-lws2_32 -lwsock32
 # executable / target file
 EXE_BASE_NAME := msh
 EXE = $(EXE_BASE_NAME)
@@ -273,6 +273,7 @@ DESTDIR :=
 .PHONY: install # install
 .PHONY: develop # build development tools
 .PHONY: command # use development tools
+.PHONY: test # test for development
 .PHONY: help # help screen
 .PHONY: memcheck_shell # testing
 

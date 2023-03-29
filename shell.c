@@ -71,11 +71,11 @@ void msh_shell_sigint(int signal) {
     puts("################################################################################");
 
     // send exit event to all running instances / msh_info's
-    MSH_VERBOOSE_LOG(NULL, "send exit event to all running instances");
+    MSH_VERBOSE_LOG(NULL, "send exit event to all running instances");
     msh_exec_event_exitAll();
 
     // close all open sockets
-    MSH_VERBOOSE_LOG(NULL, "close all open sockets, and thus stop all communication");
+    MSH_VERBOSE_LOG(NULL, "close all open sockets, and thus stop all communication");
     msh_socket_closeAll();
 }
 
@@ -94,7 +94,7 @@ int main(int argc, char * argv[]) {
         return 0;
     }
     if (opt.set1 & msh_shell_option_verboose) {
-        MSH_FLAGS_BITWISE1 |= msh_flagbit1_verboose;
+        MSH_FLAGS_BITWISE1 |= msh_flagbit1_verbose;
     }
 
     int restArg = argc - opt.number;

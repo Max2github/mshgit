@@ -2,13 +2,11 @@
 #define MSH_FUNC_H
 
 #include "../dependencies/extern.h"
-
-typedef struct msh_info msh_info;
+#include "all_extern.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 struct FUNC_LOCAL_STACK {
     s_arr VAR_SPEICHER;

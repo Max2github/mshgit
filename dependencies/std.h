@@ -3,9 +3,32 @@
 #ifndef NO_STD_LIB
     #include <stdio.h>
     #include <stdlib.h>
+
+    // input
+    #define MSH_GETCHAR() getchar()
+    // alloc
+    #define MSH_MALLOC(size) malloc(size)
+    #define MSH_REALLOC(oldPtr, newSize) realloc(oldPtr, newSize)
+    #define MSH_FREE(ptr) free(ptr)
+    // other
+    #define MSH_STRING_TO_INT(str) atoi(str)
 #else
 
 #endif
+
+#undef SIMPLE_ARRAY_H_MALLOC
+#undef SIMPLE_ARRAY_H_REALLOC
+#undef SIMPLE_ARRAY_H_FREE
+
+#undef SIMPLE_LIST_H_MALLOC
+#undef SIMPLE_LIST_H_FREE
+
+#define SIMPLE_ARRAY_H_MALLOC  MSH_MALLOC
+#define SIMPLE_ARRAY_H_REALLOC MSH_REALLOC
+#define SIMPLE_ARRAY_H_FREE    MSH_FREE
+
+#define SIMPLE_LIST_H_MALLOC  MSH_MALLOC
+#define SIMPLE_LIST_H_FREE    MSH_FREE
 
 #include "../../../lib/templates/def.h"
 #include "../../../lib/templates/simple_list.h"
@@ -121,18 +144,12 @@
     #define MSH_MUTEX_UNLOCK(mutex) 
 #endif
 
+#define MSH_PUTCHAR_NO_FLUSH(msh, c) msh_putchar(msh, c)
 #define MSH_PUTS_NO_FLUSH(msh, ...) msh_puts(msh, __VA_ARGS__)
 #define MSH_PRINTF_NO_FLUSH(msh, ...) msh_printf(msh, __VA_ARGS__)
-#define MSH_PUTS(msh, str) msh_puts(msh, str); msh_flush(msh);
-#define MSH_PRINTF(msh, ...) msh_printf(msh, __VA_ARGS__); msh_flush(msh);
-//#define MSH_PUTS(str) puts(str); fflush(stdout)
-//#define MSH_PRINTF(msh, ...) printf(__VA_ARGS__); fflush(stdout)
+#define MSH_VPRINTF_NO_FLUSH(msh, format, args) msh_vprintf(msh, format, args)
 
-// input
-#define MSH_GETCHAR() getchar()
-// alloc
-#define MSH_MALLOC(size) malloc(size)
-#define MSH_REALLOC(oldPtr, newSize) realloc(oldPtr, newSize)
-#define MSH_FREE(ptr) free(ptr)
-// other
-#define MSH_STRING_TO_INT(str) atoi(str)
+#define MSH_PUTCHAR(msh, c) msh_putchar(msh, c); msh_flush(msh)
+#define MSH_PUTS(msh, str) MSH_PUTS_NO_FLUSH(msh, str); msh_flush(msh)
+#define MSH_PRINTF(msh, ...) MSH_PRINTF_NO_FLUSH(msh, __VA_ARGS__); msh_flush(msh)
+#define MSH_VPRINTF(msh, format, args) MSH_VPRINTF_NO_FLUSH(msh, format, args); msh_flush(msh)

@@ -9,6 +9,7 @@
 #include "alg/socket.h"
 
 #include "../dependencies/extern.h"
+#include "all_extern.h"
 
 #define MSH_IO_SPEICHER_SIZE 4000
 #define MSH_IO_DEFAULT { stdout, stdin }
@@ -129,10 +130,10 @@ extern msh_events_p_list MSH_EXEC_EVENTS; // set or get events from each executi
 enum msh_flags_bitwise {
     // 1
     msh_flagbit1_none = 0,
-    msh_flagbit1_verboose = 1,
+    msh_flagbit1_verbose = 1,
 };
 extern unsigned char MSH_FLAGS_BITWISE1;
-#define MSH_VERBOOSE_LOG(msh, str) (MSH_FLAGS_BITWISE1 & msh_flagbit1_verboose) ? msh_log(msh, str) : MSH_FLAGS_BITWISE1
+#define MSH_VERBOSE_LOG(msh, str) (MSH_FLAGS_BITWISE1 & msh_flagbit1_verbose) ? msh_log(msh, str) : MSH_FLAGS_BITWISE1
 
 // extern list MSH_ON_EXIT;
 
@@ -149,10 +150,8 @@ extern MSH_THREAD_VAR char msh_Wert[4000];
     extern MSH_MUTEX MSH_EXEC_EVENTS_MUTEX;
 #endif
 
-void msh_error_old(const char *);
-void msh_error(msh_info *, const char *);
+void msh_error(msh_info *, const char *, ...);
 void set_msh_Wert_old(const char *);
-// const char * get_msh_Wert();
 void set_msh_Wert(msh_info *, const char *);
 char * get_msh_Wert(const msh_info *);
 
@@ -162,6 +161,8 @@ void msh_func_deph_add_func(msh_info *, const char *);
 void msh_func_depth_remove_last_func(msh_info *);
 
 void msh_printf(msh_info *, const char *, ...);
+void msh_vprintf(msh_info *, const char *, va_list);
+void msh_putchar(msh_info *, int);
 void msh_puts(msh_info *, const char *);
 void msh_log(msh_info *, const char *);
 void msh_flush(msh_info *);

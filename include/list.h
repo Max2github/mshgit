@@ -7,6 +7,10 @@
 extern "C" {
 #endif
 
+#if MSH_ALLOW_MULTI_THREAD
+    extern MSH_MUTEX MSH_LIST_MUTEX;
+#endif
+
 list msh_getListByName(const char * name);
 list msh_getListBossByName(const char * name);
 list msh_getNodeByName(const char * name);

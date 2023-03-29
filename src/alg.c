@@ -39,19 +39,16 @@ MSH_THREAD_VAR char msh_Wert[4000];
     MSH_MUTEX MSH_EXEC_EVENTS_MUTEX = MSH_MUTEX_DEFAULT;
 #endif
 
-/*void msh_error_old(const char * msg) {
-    if (IN_FUNC) {
-        printf("!! ERROR at line %d (inside a func) : %s!\n", msh_Script_it + 1, msg);
-        return;
-    }
-    printf("!! ERROR at line %d : %s!\n", msh_Script_it + 1, msg);
-}*/
+void msh_error(msh_info * msh, const char * format, ...) {
+    va_list args;
+    va_start(args, format);
 
-void msh_error(msh_info * msh, const char * msg) {
     if(msh->info.in_func) {
         MSH_MUTEX_LOCK(MSH_PRINT_MUTEX);
 
-        MSH_PRINTF_NO_FLUSH(msh, "!! ERROR at line %d in %s : %s!\n", msh->info.line, msh->info.funcs->data, msg);
+        MSH_PRINTF_NO_FLUSH(msh, "!! ERROR at line %d in %s : ", msh->info.line, msh->info.funcs->data);
+        MSH_VPRINTF_NO_FLUSH(msh, format, args);
+        MSH_PUTS(msh, "!");
         // callstack
         list_print_format(3);
         MSH_PRINTF_NO_FLUSH(msh, "Callstack:\n");
@@ -66,8 +63,12 @@ void msh_error(msh_info * msh, const char * msg) {
         return;
     }
     MSH_MUTEX_LOCK(MSH_PRINT_MUTEX);
-    MSH_PRINTF(msh, "!! ERROR at line %d : %s!\n", msh->info.line, msg);
+    MSH_PRINTF(msh, "!! ERROR at line %d : ", msh->info.line);
+    MSH_VPRINTF(msh, format, args);
+    MSH_PUTS(msh, "!");
     MSH_MUTEX_UNLOCK(MSH_PRINT_MUTEX);
+
+    va_end(args);
 }
 
 void set_msh_Wert_old(const char * w) {
@@ -130,13 +131,20 @@ void msh_func_depth_remove_last_func(msh_info * msh) {
 void msh_printf(msh_info * msh, const char * format, ...) {
     va_list args;
     va_start(args, format);
+    msh_vprintf(msh, format, args);
+    va_end(args);
+}
+void msh_vprintf(msh_info * msh, const char * format, va_list args) {
     if (msh == NULL) {
         vprintf(format, args);
         va_end(args);
         return;
     }
     /*msh->io.bytesWritten +=*/ vfprintf(msh->io.out, format, args);
-    va_end(args);
+}
+
+void msh_putchar(msh_info * msh, int c) {
+    putchar(c);
 }
 
 void msh_puts(msh_info * msh, const char * string) {

@@ -87,7 +87,24 @@
         "queue": "c",
         "unordered_map": "c",
         "vector": "c",
-        "utility": "c"
+        "utility": "c",
+        "bit": "cpp",
+        "cmath": "cpp",
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "condition_variable": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "numbers": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "semaphore": "cpp",
+        "__functional_base": "cpp",
+        "algorithm": "cpp",
+        "*.tcc": "cpp",
+        "memory_resource": "cpp",
+        "stop_token": "cpp",
+        "cinttypes": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false
 }

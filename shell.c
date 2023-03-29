@@ -23,7 +23,7 @@ enum msh_shell_options_e {
     msh_shell_option_none = 0,
     msh_shell_option_version,
     msh_shell_option_help,
-    msh_shell_option_verboose = 4,
+    msh_shell_option_verbose = 4,
 };
 
 struct msh_shell_options {
@@ -37,7 +37,7 @@ typedef struct msh_shell_options msh_shell_options;
 bool msh_shell_handleOptionFlag(const char * option, msh_shell_options * optout) {
     if (word_compare(option, "version") == 0) { optout->set1 |= msh_shell_option_version; return true; }
     if (word_compare(option, "help") == 0) { optout->set1 |= msh_shell_option_help; return true; }
-    if (word_compare(option, "verboose") == 0) { optout->set1 |= msh_shell_option_verboose; return true; }
+    if (word_compare(option, "verbose") == 0) { optout->set1 |= msh_shell_option_verbose; return true; }
     return false;
 }
 
@@ -93,7 +93,7 @@ int main(int argc, char * argv[]) {
         puts("3.0.0");
         return 0;
     }
-    if (opt.set1 & msh_shell_option_verboose) {
+    if (opt.set1 & msh_shell_option_verbose) {
         MSH_FLAGS_BITWISE1 |= msh_flagbit1_verbose;
     }
 

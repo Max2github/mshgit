@@ -149,7 +149,7 @@
 #define MSH_PRINTF_NO_FLUSH(msh, ...) msh_printf(msh, __VA_ARGS__)
 #define MSH_VPRINTF_NO_FLUSH(msh, format, args) msh_vprintf(msh, format, args)
 
-#define MSH_PUTCHAR(msh, c) msh_putchar(msh, c); msh_flush(msh)
+#define MSH_PUTCHAR(msh, c) MSH_PUTCHAR_NO_FLUSH(msh, c); msh_flush(msh)
 #define MSH_PUTS(msh, str) MSH_PUTS_NO_FLUSH(msh, str); msh_flush(msh)
 #define MSH_PRINTF(msh, ...) MSH_PRINTF_NO_FLUSH(msh, __VA_ARGS__); msh_flush(msh)
 #define MSH_VPRINTF(msh, format, args) MSH_VPRINTF_NO_FLUSH(msh, format, args); msh_flush(msh)

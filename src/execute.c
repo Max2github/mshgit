@@ -69,10 +69,8 @@ int msh_readFunc(msh_info * msh, const char Script[], const char * funcName) {
     // int msh_Script_it_echt = msh_Script_it;
 
     // save in_func and add state in func
-    int IN_FUNC_old = IN_FUNC;
     bool msh_in_func_old = msh->info.in_func;
     msh_func_deph_add_func(msh, funcName);
-    IN_FUNC = 1;
     msh->info.in_func = true;
     // save line
     unsigned int msh_info_line_old = msh->info.line;
@@ -91,7 +89,6 @@ int msh_readFunc(msh_info * msh, const char Script[], const char * funcName) {
     freeWordArr(Zeilen, Zeilen_Anzahl);
 
     // reset in_func state
-    IN_FUNC = IN_FUNC_old;
     msh->info.in_func = msh_in_func_old;
     msh_func_depth_remove_last_func(msh);
     // reset line

@@ -1,7 +1,8 @@
 #ifndef REF_H
 #define REF_H
 
-#include "../include/all_extern.h"
+#include "all_extern.h"
+#include "../dependencies/extern.h"
 
 enum msh_ref_type {
     msh_ref_type_BIN,
@@ -15,26 +16,46 @@ typedef enum msh_ref_type msh_ref_type;
 union msh_ref_data {
     index64 data;
     indexP pointer;
-}; // 4 byte free i case of pointer, on 32-Bit systems
+}; // 4 byte free in case of pointer, on 32-Bit systems
 
+// may add:
+// - bool for const / read only - not writable / mutable
+// - may add separation between allocated and written (like in SIMPLE_ARRAY)
 struct msh_ref {
-    indexP ref;                 // reference number / string / whatever - some ID
-    enum msh_ref_type type : 8; // type
+    index32 id;           // reference number / string / whatever - some ID
+    msh_ref_type type : 8; // type
     index64 size;
 
-    index64 owner;              // which thread, maybe even which function
+    index32 owner;            // which thread, maybe even which function
     union msh_ref_data data;  // the pointer to the data or the data itself, if little
-} ATTRIBUTE_PACKED;
+};
 typedef struct msh_ref msh_ref;
 
 typedef SIMPLE_LIST(msh_ref) msh_ref_list;
 
-void msh_ref_add(msh_info *, indexP, union msh_ref_data, index64);
-void msh_ref_remove(msh_info *, indexP);
+#define MSH_REF_STRING_SEPARATOR "&/ref//"
+
+msh_ref * msh_ref_insert_ref(msh_info *, msh_ref);
+
+const index32 msh_ref_string_separator_len();
+const index32 msh_ref_id_as_string_len(index32 id);
+index32 msh_ref_id_from_string(const char *, index32);
+void msh_ref_id_to_string(index32, char *);
+
+index32 msh_ref_add(msh_info *, union msh_ref_data, msh_ref_type, index64);
+void msh_ref_remove(msh_info *, index32);
 
 // index8 * msh_ref_getBin(msh_info *, index64);
 // char * msh_ref_getString(msh_info *, index64);
-void * msh_ref_get(msh_info *, indexP);
+msh_ref * msh_ref_get(msh_info *, index32);
+union msh_ref_data msh_ref_get_data(msh_info *, index32);
+const char * msh_ref_get_data_as_string(msh_info *, index32);
 void msh_ref_freeAll(msh_info *);
+
+bool msh_ref_string_is_ref(const char * str);
+word_picker_array msh_ref_string_split(const char * str);
+
+void msh_ref_append(msh_info *, index32, union msh_ref_data, index64);
+void msh_ref_assign(msh_info *, index32, union msh_ref_data, index64);
 
 #endif

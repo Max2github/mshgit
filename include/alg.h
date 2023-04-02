@@ -108,8 +108,6 @@ extern s_arr FUNC_SPEICHER;
 extern s_arr FUNC_NAMES;
 
 // init global vars
-// extern int MSH_MUTEX;
-extern MSH_THREAD_VAR int IN_FUNC;
 
 // Variables & Memory
 extern int VAR_MAXWORDS; // max-ammount of vars

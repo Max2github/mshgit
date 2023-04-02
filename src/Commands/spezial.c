@@ -23,8 +23,8 @@ int msh_command_isSpezial(msh_info * msh, char Code[]) {
     word_copy(newCond, Code_Teile[0]);
     freeWordArr(Code_Teile, CodeTeile);
 
-    while (IN_FUNC) {
-        char altCond[VAR_MAXCHAR];
+    char altCond[VAR_MAXCHAR];
+    while (msh->info.in_func) {
         word_copy(altCond, newCond);
         msh_fill_local_Var(newCond, msh->stack);
         if (word_compare(altCond, newCond) == 0) {
@@ -32,10 +32,7 @@ int msh_command_isSpezial(msh_info * msh, char Code[]) {
         };
     };
     while (1) {
-        char altCond[VAR_MAXCHAR];
         word_copy(altCond, newCond);
-        // msh_fillObj(newCond);
-        // msh_fillVar(newCond);
         msh_var_fillObj(msh, newCond);
         msh_var_fillArr(msh, newCond);
         msh_var_fillVar(msh, newCond);
@@ -88,7 +85,7 @@ void msh_command_spezial_def(msh_info * msh, char Cond[], char text[]) {
 void msh_command_spezial_val(msh_info * msh, char Cond[], char text[]) {
     // get var
     int local = 0;
-    if (IN_FUNC && msh_func_get_local_Var_index(text, msh->stack) != -1) {
+    if (msh->info.in_func && msh_func_get_local_Var_index(text, msh->stack) != -1) {
         superstring textS = msh_func_get_local_Var(text, msh->stack);
         s_stringify(textS, text);
         local = 1;

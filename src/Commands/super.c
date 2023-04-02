@@ -31,9 +31,6 @@ int check_Func(msh_info * msh, char ** Script) {
     return 0;
 }
 void msh_fill_local_Var(char Code[], FUNC_LOCAL_STACK * stack) {
-    // int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
-
-    // s_arr temp = *msh_func_get_func_var_names_pointer(stack_id);
     s_arr temp = stack->VAR_NAMES;
     while (temp != NULL) {
         superstring name = temp->element;
@@ -97,18 +94,25 @@ bool check_bigdata(msh_info * msh, char ** Script) {
         replace(Zeile, "_", " ");
         replaceS(Zeile, "&/underscore//", "_");
 
-        superstring ref_name = s_init(Zeile);
-        
-        /* superstring code = NULL;
-        msh_Script_it++;
-        code = s_addStr(code, Script[msh_Script_it]);
-        msh_Script_it++;
-        while (!find(Script[msh_Script_it], "bigdataEnd()")) {
-            s_addLast(code, '\n', 1);
-            code = s_addStr(code, Script[msh_Script_it]);
-            msh_Script_it++;
-        } */
-        superstring code = NULL;
+        typedef SIMPLE_ARRAY(char) check_bigdata_string;
+        check_bigdata_string code = SIMPLE_ARRAY_CREATE(char);
+        msh->info.line++;
+
+        index64 nbytes = 0;
+
+        const char * toAdd = Script[msh->info.line-1];
+        while (!find(toAdd, "bigdataEnd()")) {
+            index64 bytesNow = word_len(toAdd);
+            SIMPLE_ARRAY_APPEND_DATA(code, toAdd, bytesNow);
+            nbytes += bytesNow;
+            msh->info.line++;
+            toAdd = Script[msh->info.line-1];
+        }
+        char strEnd = '\0';
+        SIMPLE_ARRAY_APPEND(code, strEnd);
+        char * codeStr = (char *) code.data;
+
+        /*superstring code = NULL;
         msh->info.line++;
         code = s_addStr(code, Script[msh->info.line-1]);
         msh->info.line++;
@@ -119,11 +123,21 @@ bool check_bigdata(msh_info * msh, char ** Script) {
         }
         index64 nbytes = s_len(code) + 1;
         char * codeStr = MSH_MALLOC(nbytes);
-        s_stringify(code, codeStr);
+        s_stringify(code, codeStr);*/
 
         union msh_ref_data data;
         data.pointer = (indexP) codeStr;
-        msh_ref_add(msh, (indexP) ref_name, data, nbytes);
+        index32 id = msh_ref_add(msh, data, msh_ref_type_STRING, nbytes);
+
+        char idStr[msh_ref_id_as_string_len(id)];
+        msh_ref_id_to_string(id, idStr);
+
+        if (msh->info.in_func) {
+            msh_func_update_local_Var(Zeile, idStr, msh->stack);
+        } else {
+            msh_var_updateByName(msh, idStr, Zeile);
+        }
+
         return true;
     }
     return false;

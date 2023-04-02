@@ -32,11 +32,9 @@ class msh::execute::execinfo : public msh_info {
         void enter_func(const char * name) {
             this->in_func_old = this->info.in_func;
             this->info.in_func = true;
-            IN_FUNC = true; // this should be abolished / replaced by msh_info::info.in_func
             msh_func_deph_add_func(this, name);
         }
         void exit_func() {
-            IN_FUNC = in_func_old; // this should be abolished / replaced by msh_info::info.in_func
             this->info.in_func = in_func_old;
             msh_func_depth_remove_last_func(this);
         }

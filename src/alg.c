@@ -9,7 +9,6 @@ s_arr FUNC_SPEICHER = NULL;
 s_arr FUNC_NAMES = NULL;
 
 // init global vars
-MSH_THREAD_VAR int IN_FUNC = 0;
 
 // Variables & Memory
 int VAR_MAXWORDS = 500; // max-ammount of vars
@@ -48,7 +47,7 @@ void msh_error(msh_info * msh, const char * format, ...) {
 
         MSH_PRINTF_NO_FLUSH(msh, "!! ERROR at line %d in %s : ", msh->info.line, msh->info.funcs->data);
         MSH_VPRINTF_NO_FLUSH(msh, format, args);
-        MSH_PUTS(msh, "!");
+        MSH_PRINTF_NO_FLUSH(msh, "!\n");
         // callstack
         list_print_format(3);
         MSH_PRINTF_NO_FLUSH(msh, "Callstack:\n");
@@ -65,7 +64,7 @@ void msh_error(msh_info * msh, const char * format, ...) {
     MSH_MUTEX_LOCK(MSH_PRINT_MUTEX);
     MSH_PRINTF(msh, "!! ERROR at line %d : ", msh->info.line);
     MSH_VPRINTF(msh, format, args);
-    MSH_PUTS(msh, "!");
+    MSH_PRINTF(msh, "!\n");
     MSH_MUTEX_UNLOCK(MSH_PRINT_MUTEX);
 
     va_end(args);

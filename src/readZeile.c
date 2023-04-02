@@ -29,21 +29,17 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
         return 0;
     };
 
-    while (IN_FUNC) {
-        char altZeile[VAR_MAXCHAR];
-        // word_copy(altZeile, newZeile);
+    char altZeile[VAR_MAXCHAR];
+    while (msh->info.in_func) {
         msh_var_copy_value(msh, altZeile, newZeile);
         msh_fill_local_Var(newZeile, msh->stack);
         if (word_compare(altZeile, newZeile) == 0) {
             break;
         };
     };
+    
     while (1) {
-        char altZeile[VAR_MAXCHAR];
-        // word_copy(altZeile, newZeile);
         msh_var_copy_value(msh, altZeile, newZeile);
-        // msh_fillObj(newZeile);
-        // msh_fillVar(newZeile);
         msh_var_fillObj(msh, newZeile);
         msh_var_fillArr(msh, newZeile);
         msh_var_fillVar(msh, newZeile);
@@ -60,23 +56,36 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
         return 0;
     };
 
-    char VollZeile[VAR_MAXCHAR];
-    // word_copy(VollZeile, newZeile);
-    msh_var_copy_value(msh, VollZeile, newZeile);
     replace(newZeile, "_", " ");
     replaceS(newZeile, "&/underscore//", "_");
     // printf("%s\n", newZeile);
 
+    // check for equals sign
     char ** array;
     int arrTeile = split(newZeile, "=", &array);
     if (arrTeile > 0) {
-        // word_copy(newZeile, array[1]);
         msh_var_copy_value(msh, newZeile, array[1]);
     };
     replaceS(newZeile, "&/equals//", "=");
-    // word_copy(msh_Wert, newZeile);
-    set_msh_Wert(msh, newZeile);
     // printf("%s\n", newZeile);
+
+    // check for ref append "<<" (only if there is no ref append)
+    char ** ref_append_arr;
+    int ref_append_teile = split(newZeile, "<<", &ref_append_arr);
+    if (ref_append_teile > 0) {
+        msh_var_copy_value(msh, newZeile, ref_append_arr[1]);
+    }
+    replaceS(newZeile, "&/refappend//", "<<");
+
+    // check for ref assign "<-"
+    char ** ref_assign_arr;
+    int ref_assign_teile = split(newZeile, "<-", &ref_assign_arr);
+    if (ref_assign_teile > 0) {
+        msh_var_copy_value(msh, newZeile, ref_assign_arr[1]);
+    }
+    replaceS(newZeile, "&/refassign//", "<-");
+
+    set_msh_Wert(msh, newZeile);
 
     // cut functions out of value
     // sub
@@ -101,20 +110,38 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     // main-commands
     #include "cparts/readZeile_commandFunc_main.txt"
 
+    // check ref assigning
+    if (ref_assign_teile > 0) {
+        if (msh_ref_string_is_ref(ref_assign_arr[0])) {
+            index32 id = msh_ref_id_from_string(ref_assign_arr[0], word_len(ref_assign_arr[0]));
+            union msh_ref_data data;
+            index64 len = word_len(msh->wert);
+            data.pointer = (indexP) MSH_MALLOC(len + 1);
+            word_copy((char *) data.pointer, msh->wert);
+            msh_ref_assign(msh, id, data, word_len(msh->wert));
+        }
+    }
+
+    // check ref appending
+    if (ref_append_teile > 0) {
+        if (msh_ref_string_is_ref(ref_append_arr[0])) {
+            index32 id = msh_ref_id_from_string(ref_append_arr[0], word_len(ref_append_arr[0]));
+            union msh_ref_data data;
+            data.pointer = (indexP) msh->wert;
+            msh_ref_append(msh, id, data, word_len(msh->wert));
+        }
+    }
+
+    // check variable assigning
+
     int local_found = 0;
-    if (IN_FUNC && arrTeile > 0) {
+    if (msh->info.in_func && arrTeile > 0) {
         local_found = 1;
-        // int stack_id = msh_func_stacks_count(FUNC_STACKS) - 1;
         if (find(array[0], ".") != 0) {
             local_found = 0; // not supported yet
         } else {
-            // char nowhere[VAR_MAXCHAR];
             // if not found as local var, but as global var
             // not found local + found global -> priority: global
-            /* if (msh_func_get_local_Var_index(array[0], stack_id) == -1 && msh_get_Var(array[0], nowhere) != -1) {
-                local_found = 0;
-            } */
-            // if (msh_func_get_local_Var_index(array[0], msh->stack) == -1 && msh_get_Var(array[0], nowhere) != -1) {
             if (msh_func_get_local_Var_index(array[0], msh->stack) == -1 && msh_var_getByName(msh, array[0]) != NULL) {
                 local_found = 0;
             }
@@ -126,15 +153,13 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
                 local_found = 1;
             }
         }
-    } 
+    }
     if (arrTeile > 0 && local_found == 0) {
         if (find(array[0], ".") != 0) {
             // printf("%s = %s\n", array[0], msh_Wert);
             char ** var_el;
             split(array[0], ".", &var_el);
             // printWordArr(var_el, 1);
-            // char var[VAR_MAXCHAR];
-            // int index = msh_get_Var(var_el[0], var);
             int index = msh_var_getIndexByName(msh, var_el[0]);
             const char * var = msh_var_getByIndex(msh, index);
             // printf("    %d : %s\n", index, var);
@@ -160,7 +185,6 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
                             word_copy(echtEl[eEt], var_el[1]);
                             word_add(echtEl[eEt], ":");
                             word_add(echtEl[eEt], msh_Wert);
-                            // sprintf(echtEl[eEt], "%s:%s", var_el[1], msh_Wert);
                             // printf("    %s\n", echtEl[eEt]);
                             break;
                         };
@@ -181,7 +205,6 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
                         };
                         if (alle == word_len(var_el[0])-1) {
                             word_copy(echtEl[eEt], var_el[1]);
-                            // sprintf(echtEl[eEt], "%s", var_el[1]);
                             break;
                         };
                     };
@@ -190,20 +213,15 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
                 } else {
                     return 1;
                 };
-                // word_copy(VAR_SPEICHER[index], newWert);
                 msh_var_updateByIndex(msh, newWert, index);
             };
             freeWordArr(var_el, 1);
             return 0;
         };
-        // char var[VAR_MAXCHAR];
-        // int index = msh_get_Var(array[0], var);
         int index = msh_var_getIndexByName(msh, array[0]);
         if (index == -1) {
-            // msh_push_Var(msh_Wert, array[0]);
             msh_var_push(msh, get_msh_Wert(msh), array[0]);
         } else {
-            // word_copy(VAR_SPEICHER[index], msh_Wert);
             msh_var_updateByIndex(msh, get_msh_Wert(msh), index);
         };
     };

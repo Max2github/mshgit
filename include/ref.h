@@ -49,7 +49,7 @@ void msh_ref_remove(msh_info *, index32);
 // char * msh_ref_getString(msh_info *, index64);
 msh_ref * msh_ref_get(msh_info *, index32);
 union msh_ref_data msh_ref_get_data(msh_info *, index32);
-const char * msh_ref_get_data_as_string(msh_info *, index32);
+word_picker msh_ref_get_data_as_string(msh_info *, index32);
 void msh_ref_freeAll(msh_info *);
 
 bool msh_ref_string_is_ref(const char * str);

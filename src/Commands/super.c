@@ -100,17 +100,30 @@ bool check_bigdata(msh_info * msh, char ** Script) {
 
         index64 nbytes = 0;
 
-        const char * toAdd = Script[msh->info.line-1];
-        while (!find(toAdd, "bigdataEnd()")) {
+        #define CONTINUE \
+            msh->info.line++; \
+            toAdd = Script[msh->info.line-1]; \
+            continue;
+
+        /*const */char * toAdd = Script[msh->info.line-1];
+        while (toAdd != NULL && !find(toAdd, "bigdataEnd()")) {
+            replaceS(toAdd, "\\r", "\r");
+            replaceS(toAdd, "\\n", "\n");
             index64 bytesNow = word_len(toAdd);
+            if (bytesNow == 0) { CONTINUE; }
             SIMPLE_ARRAY_APPEND_DATA(code, toAdd, bytesNow);
             nbytes += bytesNow;
-            msh->info.line++;
-            toAdd = Script[msh->info.line-1];
+            CONTINUE;
         }
         char strEnd = '\0';
         SIMPLE_ARRAY_APPEND(code, strEnd);
         char * codeStr = (char *) code.data;
+
+        // very bad, but ok here
+        /*int teileCR = replaceS(codeStr, "\\r", "\r"); // messing with the string, SIMPLE_ARRAY
+        int teileLF = replaceS(codeStr, "\\n", "\n"); // has the ownership of, is pretty bad
+        code.written -= teileCR * 1; // modify written count manually
+        code.written -= teileLF * 1; // this is usually very bad*/
 
         /*superstring code = NULL;
         msh->info.line++;

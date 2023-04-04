@@ -24,10 +24,10 @@ msh_ref * msh_ref_insert_ref(msh_info * msh, msh_ref ref) {
     );
     // if there was no empty space in between, append it at the end
     msh_ref_list newP = NULL; // newP will be assigned the allocated address
+    ref.id = before->data.id + 1;
     SIMPLE_LIST_CREATE_EL(newP, ref, NULL);
     before->next = (indexP) newP;
-
-    return NULL;
+    return &(newP->data);
 }
 
 const index32 msh_ref_string_separator_len() { return word_len(MSH_REF_STRING_SEPARATOR); }
@@ -62,7 +62,11 @@ index32 msh_ref_add(msh_info * msh, union msh_ref_data data, msh_ref_type type, 
     newRef.owner = 1;
     newRef.type = type;
 
-    return msh_ref_insert_ref(msh, newRef)->id;
+    msh_ref * ref = msh_ref_insert_ref(msh, newRef);
+    if (ref == NULL) {
+        return -1;
+    }
+    return ref->id;
 }
 
 void msh_ref_remove(msh_info * msh, index32 id) {
@@ -99,15 +103,15 @@ union msh_ref_data msh_ref_get_data(msh_info * msh, index32 id) {
     return res->data;
 }
 
-const char * msh_ref_get_data_as_string(msh_info * msh, index32 id) {
+word_picker msh_ref_get_data_as_string(msh_info * msh, index32 id) {
     msh_ref * res = msh_ref_get(msh, id);
-    if (res == NULL) { return "<null>"; }
+    if (res == NULL) { return word_pick_from_to_index("<null>", 0, 6); }
     switch (res->type) {
-        case msh_ref_type_BIN   : return "<binary data>"; break;
-        case msh_ref_type_STRING: return (const char *) res->data.pointer; break;
-        case msh_ref_type_FILE  : return "<file>"; break;
+        case msh_ref_type_BIN   : return word_pick_from_to_index("<binary data>", 0, 13); break;
+        case msh_ref_type_STRING: return word_pick_from_to_index((const char *) res->data.pointer, 0, res->size); break;
+        case msh_ref_type_FILE  : return word_pick_from_to_index("<file>", 0, 6); break;
     }
-    return "<unknown>";
+    return word_pick_from_to_index("<unknown>", 0, 9);
 }
 
 void msh_ref_freeAll(msh_info * msh) {

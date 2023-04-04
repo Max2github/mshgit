@@ -158,10 +158,11 @@ void msh_ref_assign(msh_info * msh, index32 id, union msh_ref_data data, index64
     switch (ref->type) {
         case msh_ref_type_BIN   : msh_error(msh, "msh_ref: unable to append to binary yet!"); return; break;
         case msh_ref_type_STRING: {
-            /*if (len > ref->size) {
+            /*if (ref->allocated && len > ref->size) {
                 ref->data.pointer = (indexP) MSH_REALLOC((void *) ref->data.pointer, len);
             }*/
             ref->data = data;
+            ref->size = len;
             return;
             break;
         }

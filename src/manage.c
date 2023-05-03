@@ -172,7 +172,7 @@ bool msh_var_fillArr(msh_info * msh, char * code) {
         if (!msh_var_copy_name(msh, splUr, VAR_NAMES[i])) { return ret; };
         word_add(splUr, ".");
 
-        const word_picker_array children = word_pick_split(var, "&/arr//");
+        word_picker_array children = word_pick_split(var, "&/arr//");
         for (int childI = 0; childI < children.written; childI++) {
             word_picker child = WORD_PICKER_ARRAY_GET(children, childI);
             
@@ -206,7 +206,7 @@ bool msh_var_fillObj(msh_info * msh, char * code) {
         if (!msh_var_copy_name(msh, splUr, VAR_NAMES[i])) { return ret; };
         word_add(splUr, ".");
 
-        const word_picker_array children = word_pick_split(var, "&/obj//");
+        word_picker_array children = word_pick_split(var, "&/obj//");
         for (int childI = 0; childI < children.written; childI++) {
             word_picker child = WORD_PICKER_ARRAY_GET(children, childI);
             word_picker_array keyVal = word_picker_split(child, ":");

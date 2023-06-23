@@ -82,9 +82,8 @@ class msh {
                     private:
                         Func();
                     public :
-                        
                         // proper function management
-                        // define a function - does nothing for now
+                        // define a function
                         void Push(const char * name, const char * script);
                         // call a function
                         void Call(const char * name);
@@ -118,6 +117,8 @@ class msh {
          * that's why it's here.
          */
         static void Script(char *);
+    public:
+        var var;
 };
 
 #endif

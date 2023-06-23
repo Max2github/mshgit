@@ -11,7 +11,6 @@ void msh::Script(char * script) { msh_readScript(script); }
 // inline class
 class msh::execute::execinfo : public msh_info {
     private:
-        bool in_func_old;
     public:
         execinfo() {
             // *this = MSH_INFO_DEFAULT;
@@ -21,8 +20,6 @@ class msh::execute::execinfo : public msh_info {
             this->refs = NULL;
             this->io = (msh_io) MSH_IO_DEFAULT;
             this->event = (msh_events) MSH_EVENTS_DEFAULT;
-
-            this->in_func_old = false;
         }
         ~execinfo() {
 
@@ -30,13 +27,12 @@ class msh::execute::execinfo : public msh_info {
 
         // may not be needed!
         void enter_func(const char * name) {
-            this->in_func_old = this->info.in_func;
             this->info.in_func = true;
             msh_func_deph_add_func(this, name);
         }
         void exit_func() {
-            this->info.in_func = in_func_old;
             msh_func_depth_remove_last_func(this);
+            this->info.in_func = (this->info.funcs != NULL);
         }
 };
 
@@ -131,7 +127,11 @@ void msh::execute::Var::PrintAll() const {
 
 msh::execute::Func::Func() : entered_stack(NULL), old_stack(NULL) {}
 
-void msh::execute::Func::Push(const char * name, const char * script) { /* does not do anything yet */ }
+void msh::execute::Func::Push(const char * name, const char * script) {
+    /* does not do anything yet */
+    FUNC_NAMES = s_arr_addFirst(FUNC_NAMES, s_init(name));
+    FUNC_SPEICHER = s_arr_addFirst(FUNC_SPEICHER, s_init(script));
+}
 void msh::execute::Func::Call(const char * name) { return msh_func_call(this->msh, name); }
 
 bool msh::execute::Func::Enter(const char * name) {

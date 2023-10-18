@@ -10,11 +10,19 @@
 #include MSH_LIB_DIR "templates/simple_array.h"
 #include MSH_LIB_DIR "templates/simple_list.h"*/
 
+#include "all_defines.h"
+
 #include "../../../lib/templates/def.h"
 #include "../../../lib/templates/simple_array.h"
 #include "../../../lib/templates/simple_list.h"
 
 #include "../../../lib/freestanding/general_alloc.h"
+
+#if 0
+#include "../../../lib/smartbuffer.h"
+#else
+#include "../../../lib/smartstring.h"
+#endif
 
 #include "../../../lib/words_h.h"
 #include "../../../lib/list_h.h"

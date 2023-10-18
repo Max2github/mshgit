@@ -9,6 +9,7 @@
 void msh_exec_init(msh_info * msh, bool use_std_IO) {
     msh_io_init(msh, use_std_IO); // true for use stdio
     msh_exec_event_register(msh);
+    msh_val_init(msh);
 }
 
 void msh_exec_free(msh_info * msh) {
@@ -27,6 +28,7 @@ void msh_exec_free(msh_info * msh) {
 
     // free all refs
     msh_ref_freeAll(msh);
+    msh_val_free(msh);
     msh->refs = NULL;
 }
 
@@ -115,12 +117,12 @@ int msh_readFile(char filename[]) {
         int len = ftell(file);
         // go to the beginning of the file
         fseek(file, 0, SEEK_SET);
-        string = malloc(len+1 * sizeof(char));
+        string = MSH_MALLOC(len+1 * sizeof(char));
         fread(string, len, 1, file);
         fclose(file);
         // printf("%s\n", string);
         msh_readScript(string);
-        free(string);
+        MSH_FREE(string);
     #else
         MSH_PRINTF(NULL, "Error: %s\n", "No filesystem provided!");
     #endif

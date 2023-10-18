@@ -94,8 +94,9 @@ bool check_bigdata(msh_info * msh, char ** Script) {
         replace(Zeile, "_", " ");
         replaceS(Zeile, "&/underscore//", "_");
 
-        typedef SIMPLE_ARRAY(char) check_bigdata_string;
-        check_bigdata_string code = SIMPLE_ARRAY_CREATE(char);
+        typedef sString check_bigdata_string;
+        check_bigdata_string * code = MSH_MALLOC(sizeof(check_bigdata_string));
+        *code = sString_create();
         msh->info.line++;
 
         index64 nbytes = 0;
@@ -109,38 +110,20 @@ bool check_bigdata(msh_info * msh, char ** Script) {
         while (toAdd != NULL && !find(toAdd, "bigdataEnd()")) {
             replaceS(toAdd, "\\r", "\r");
             replaceS(toAdd, "\\n", "\n");
+
             index64 bytesNow = word_len(toAdd);
             if (bytesNow == 0) { CONTINUE; }
-            SIMPLE_ARRAY_APPEND_DATA(code, toAdd, bytesNow);
+
+            sString_addStr(code, (const sString_char_t *) toAdd, bytesNow);
+
             nbytes += bytesNow;
+
             CONTINUE;
         }
-        char strEnd = '\0';
-        SIMPLE_ARRAY_APPEND(code, strEnd);
-        char * codeStr = (char *) code.data;
-
-        // very bad, but ok here
-        /*int teileCR = replaceS(codeStr, "\\r", "\r"); // messing with the string, SIMPLE_ARRAY
-        int teileLF = replaceS(codeStr, "\\n", "\n"); // has the ownership of, is pretty bad
-        code.written -= teileCR * 1; // modify written count manually
-        code.written -= teileLF * 1; // this is usually very bad*/
-
-        /*superstring code = NULL;
-        msh->info.line++;
-        code = s_addStr(code, Script[msh->info.line-1]);
-        msh->info.line++;
-        while (!find(Script[msh->info.line-1], "bigdataEnd()")) {
-            s_addLast(code, '\n', 1);
-            code = s_addStr(code, Script[msh->info.line-1]);
-            msh->info.line++;
-        }
-        index64 nbytes = s_len(code) + 1;
-        char * codeStr = MSH_MALLOC(nbytes);
-        s_stringify(code, codeStr);*/
 
         union msh_ref_data data;
-        data.pointer = (indexP) codeStr;
-        index32 id = msh_ref_add(msh, data, msh_ref_type_STRING, nbytes);
+        data.pointer.sstr = code;
+        index32 id = msh_ref_add(msh, data, msh_ref_type_SMARTSTRING, nbytes);
 
         char idStr[msh_ref_id_as_string_len(id)];
         msh_ref_id_to_string(id, idStr);

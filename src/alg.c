@@ -28,9 +28,7 @@ msh_events_p_list MSH_EXEC_EVENTS = NULL;
 unsigned char MSH_FLAGS_BITWISE1 = msh_flagbit1_none;
 
 // needed generally & especially for scripts
-MSH_THREAD_VAR char msh_Wert[4000];
-// int msh_STOP = 0;
-// MSH_THREAD_VAR int msh_Script_it = 0; // if not copied in each thread, a thread can cause the mai program to jump
+MSH_THREAD_VAR char msh_Wert[MSH_WERT_INITIAL_SIZE];
 
 #if MSH_ALLOW_MULTI_THREAD
     // int MSH_PRINT_MUTEX;
@@ -70,32 +68,69 @@ void msh_error(msh_info * msh, const char * format, ...) {
     va_end(args);
 }
 
-void set_msh_Wert_old(const char * w) {
-    // while (MSH_MUTEX); // wait till other threads are finished
-    // MSH_MUTEX = 1;
-    word_copy(msh_Wert, w);
-    // MSH_MUTEX = 0;
-}
-
-/* const char * get_msh_Wert() {
-    while (MSH_MUTEX); // wait till other threads are finished
-    return msh_Wert;
-} */
-
 void msh_add_on_exit(msh_info * msh, msh_event_callback function) {
-    // MSH_ON_EXIT = list_addFirst(MSH_ON_EXIT, Char_pointer, (char *) function, End);
     SIMPLE_LIST_ADDFIRST(msh->event.on.exit, function);
 }
 
+// msh_Wert (old)
+
 char * get_msh_Wert(const msh_info * msh) {
-    // return (const char *) info->wert.data;
     return msh->wert;
 }
 void set_msh_Wert(msh_info * msh, const char * value) {
-    // SIMPLE_ARRAY_APPEND_DATA(info->wert, value, word_len(value) + 1);
-    // SIMPLE_ARRAY_WRITE(info->wert, 0, value, word_len(value) + 1)
     word_copy(msh->wert, value);
 }
+
+// msh_val (new)
+
+void msh_val_init(msh_info * msh) { msh->val = sBuffer_create(0); };
+void msh_val_clear(msh_info * msh) {
+    //msh->val.written = 0;
+    msh_val_free(msh);
+    msh_val_init(msh);
+}
+void msh_val_free(msh_info * msh) { sBuffer_free(&(msh->val)); }
+
+msh_val_len_t msh_val_count(msh_info * msh) { return sBuffer_count_single(&(msh->val)); };
+msh_val_len_t msh_val_len(msh_info * msh) { return sBuffer_count(&(msh->val)); };
+
+msh_val_len_t msh_val_read(msh_info * msh, msh_val_pos_t start, msh_val_reader reader, msh_val_len_t length, void * userData) {
+    msh_val_reader_data data = (msh_val_reader_data) { msh, userData };
+    return sBuffer_read(&(msh->val), (sBuffer_readHandler) reader, length, &data);
+}
+
+// writing
+msh_val_len_t msh_val_write(msh_info * msh, msh_val_pos_t start, const msh_val_char_t * data, msh_val_len_t length) {
+    msh_val_len_t index = 0;
+    sBuffer_single_ptr temp = sBuffer_get(&(msh->val), index);
+    for (; temp != NULL;) {
+        msh_val_len_t count = sBuffer_single_count(temp);
+        start -= count;
+        if (start <= 0) {
+            break;
+        }
+        // continue / next element
+        index++;
+        temp = sBuffer_get(&(msh->val), index);
+    }
+    start = start * -1;
+    if (temp == NULL) {
+        return 0;
+    } else if (start == 0) {
+        sBuffer_addStr(&(msh->val), data, length);
+        return sBuffer_get(&(msh->val), index)->data.written;
+    } else {
+        SIMPLE_ARRAY_WRITE(temp->data, start, data, length);
+        return length;
+    }
+    return 0;
+}
+void msh_val_add(msh_info * msh, const msh_val_char_t * data, msh_val_len_t length) { return sBuffer_addStr(&(msh->val), data, length); }
+void msh_val_add_static(msh_info * msh, const msh_val_char_t * data, msh_val_len_t length) {
+    return sBuffer_add(&(msh->val), sBuffer_single_create_static(data, length));
+};
+
+// callstack
 
 void msh_func_deph_add_func(msh_info * msh, const char * name) {
     msh_func_depth temp = msh->info.funcs;

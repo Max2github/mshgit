@@ -46,7 +46,6 @@ void msh_func_update_local_Var(const char name[], const char value[], FUNC_LOCAL
     temp->element = s_init(value);
 }
 superstring msh_func_get_fullname(const char * name) {
-    int i = 0;
     s_arr temp = FUNC_NAMES;
     new_superstring search = s_init(name);
     while (temp != NULL) {
@@ -64,7 +63,6 @@ superstring msh_func_get_fullname(const char * name) {
         s_arr_free(nameANDargsSEARCH);
         s_arr_free(nameANDargsTEMP);
         temp = temp->next;
-        i++;
     }
     s_free(search);
     return NULL;
@@ -156,7 +154,7 @@ void msh_func_call(msh_info * msh, const char * name) {
         freeWordArr(wordArr, Teile);
     }
      if (s_arr_len(stack.VAR_SPEICHER) != s_arr_len(stack.VAR_NAMES)) {
-        msh_error(msh, "count of required arguments and provided arguments is not even!\n!! Abording");
+        msh_error(msh, "count of required arguments and provided arguments is not even!\n!! Aborting");
         s_arr_free(stack.VAR_NAMES);
         s_arr_free(stack.VAR_SPEICHER);
         return;

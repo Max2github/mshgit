@@ -6,7 +6,7 @@
 
 CC = gcc # compiler
 LD = gcc #ld # linker
-CFLAGS = -c -Wall #-std=c++20 # flags for compiler
+CFLAGS = -c -Wall -Wno-missing-braces #-std=c++20 # flags for compiler
 LD_FLAGS = # flags for linker
 LD_LIBS = -lpthread #-lws2_32 -lwsock32
 # executable / target file

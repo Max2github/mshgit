@@ -70,7 +70,7 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     // printf("%s\n", newZeile);
 
     // check for ref append "<<" (only if there is no ref append)
-    char ** ref_append_arr;
+    char ** ref_append_arr = NULL;
     int ref_append_teile = split(newZeile, "<<", &ref_append_arr);
     if (ref_append_teile > 0) {
         msh_var_copy_value(msh, newZeile, ref_append_arr[1]);
@@ -78,7 +78,7 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     replaceS(newZeile, "&/refappend//", "<<");
 
     // check for ref assign "<-"
-    char ** ref_assign_arr;
+    char ** ref_assign_arr = NULL;
     int ref_assign_teile = split(newZeile, "<-", &ref_assign_arr);
     if (ref_assign_teile > 0) {
         msh_var_copy_value(msh, newZeile, ref_assign_arr[1]);
@@ -114,23 +114,35 @@ int msh_readZeile(msh_info * msh, const char Zeile[]/*, FUNC_LOCAL_STACK * stack
     if (ref_assign_teile > 0) {
         if (msh_ref_string_is_ref(ref_assign_arr[0])) {
             index32 id = msh_ref_id_from_string(ref_assign_arr[0], word_len(ref_assign_arr[0]));
-            union msh_ref_data data;
+
             index64 len = word_len(msh->wert);
-            data.pointer = (indexP) MSH_MALLOC(len + 1);
-            word_copy((char *) data.pointer, msh->wert);
+
+            sString * str = MSH_MALLOC(sizeof(sString));
+            *str = sString_init((sString_char_t *) msh->wert, len, SMARTSTRING_FLAG_U_ZERO);
+
+            union msh_ref_data data;
+            data.pointer.sstr = str;
             msh_ref_assign(msh, id, data, word_len(msh->wert));
         }
     }
+    freeWordArr(ref_assign_arr, ref_assign_teile);
 
     // check ref appending
     if (ref_append_teile > 0) {
         if (msh_ref_string_is_ref(ref_append_arr[0])) {
             index32 id = msh_ref_id_from_string(ref_append_arr[0], word_len(ref_append_arr[0]));
+
+            index64 len = word_len(msh->wert);
+
+            sString * str = MSH_MALLOC(sizeof(sString));
+            *str = sString_init((sString_char_t *) msh->wert, len, SMARTSTRING_FLAG_U_ZERO);
+
             union msh_ref_data data;
-            data.pointer = (indexP) msh->wert;
+            data.pointer.sstr = str;
             msh_ref_append(msh, id, data, word_len(msh->wert));
         }
     }
+    freeWordArr(ref_append_arr, ref_append_teile);
 
     // check variable assigning
 

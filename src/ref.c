@@ -136,10 +136,12 @@ void msh_ref_free(msh_ref * ref) {
     switch (ref->type) {
         case msh_ref_type_FILE : {
             fclose(ref->data.pointer.file);
+            ref->data.pointer.general = NULL;
             break;
         }
         case msh_ref_type_STRING : {
             MSH_FREE(ref->data.pointer.cstr);
+            ref->data.pointer.general = NULL;
             break;
         }
         case msh_ref_type_SMARTSTRING : {
@@ -206,6 +208,8 @@ void msh_ref_append(msh_info * msh, index32 id, union msh_ref_data data, index64
             sString * dest = ref->data.pointer.sstr;
             sString * src = data.pointer.sstr;
             sString_add(dest, *src);
+            sString_free(src);
+            MSH_FREE(src);
             return;
             break;
         }
@@ -239,7 +243,10 @@ void msh_ref_assign(msh_info * msh, index32 id, union msh_ref_data data, index64
                 *dest = sString_create();
             }
             sString_add(dest, *src);*/
-            if (ref->data.pointer.sstr != NULL) { sString_free(ref->data.pointer.sstr); }
+            if (ref->data.pointer.sstr != NULL) {
+                sString_free(ref->data.pointer.sstr);
+                MSH_FREE(ref->data.pointer.sstr);
+            }
             ref->data = data;
             return;
             break;

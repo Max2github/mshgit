@@ -1,3 +1,6 @@
+#ifndef MSH_DEP_STD_H
+#define MSH_DEP_STD_H
+
 #include <stdarg.h>
 
 #ifndef NO_STD_LIB
@@ -153,3 +156,5 @@
 #define MSH_PUTS(msh, str) MSH_PUTS_NO_FLUSH(msh, str); msh_flush(msh)
 #define MSH_PRINTF(msh, ...) MSH_PRINTF_NO_FLUSH(msh, __VA_ARGS__); msh_flush(msh)
 #define MSH_VPRINTF(msh, format, args) MSH_VPRINTF_NO_FLUSH(msh, format, args); msh_flush(msh)
+
+#endif

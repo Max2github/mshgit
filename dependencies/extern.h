@@ -1,3 +1,6 @@
+#ifndef MSH_DEP_EXTERN_H
+#define MSH_DEP_EXTERN_H
+
 /*#include <Max2/templates/def.h>
 #include <Max2/templates/simple_array.h>
 #include <Max2/templates/simple_list.h>
@@ -32,3 +35,5 @@
 #include "mathe.h"
 // #include "../../../lib/superstring_h.h"
 #include "superstring.h"
+
+#endif
